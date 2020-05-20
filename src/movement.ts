@@ -1,4 +1,4 @@
-import {Piece} from './piece'
+
 import {ActivePath} from './activePath'
 import {Red} from './pieceState'
 import {Blue} from './pieceState'
@@ -677,7 +677,7 @@ export class Movement {
     
         switch(path.pieceType){
             case Red: {
-                console.log("Moving red piece to index " + Red.StartIndex);
+                console.log("Moving red piece to index " + path.projectedStartIndex);
                 path.projectedX = Red.StartX
                 path.projectedY = Red.StartY
                 path.lineTo(Red.StartX, Red.StartY)
@@ -688,7 +688,7 @@ export class Movement {
 
             }
             case Blue: {
-                console.log("Moving red piece to index " + Blue.StartIndex);
+                console.log("Moving red piece to index " + path.projectedStartIndex);
                 path.projectedX = Blue.StartX
                 path.projectedY = Blue.StartY
                 path.lineTo(Blue.StartX, Blue.StartY)
@@ -699,7 +699,7 @@ export class Movement {
 
             }
             case Yellow: {
-                console.log("Moving red piece to index " + Yellow.StartIndex);
+                console.log("Moving red piece to index " + path.projectedStartIndex);
                 path.projectedX = Yellow.StartX
                 path.projectedY = Yellow.StartY
                 path.lineTo(Yellow.StartX, Yellow.StartY)
@@ -710,7 +710,7 @@ export class Movement {
 
             }
             case Green: {
-                console.log("Moving red piece to index " + Green.StartIndex);
+                console.log("Moving red piece to index " + path.projectedStartIndex);
                 path.projectedX = Green.StartX
                 path.projectedY = Green.StartY
                 path.lineTo(Green.StartX, Green.StartY)

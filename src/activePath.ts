@@ -7,6 +7,7 @@ export class ActivePath extends Phaser.Curves.Path {
     projectedIndex: number;
     projectedX: number;
     projectedY: number;
+    projectedStartIndex: number;
     homeIndex: number;
     activePiece: Piece;
     projectedPieceState: any
@@ -16,6 +17,7 @@ export class ActivePath extends Phaser.Curves.Path {
         this.scene = scene;
         this.remainderIndex = 0;
         this.projectedIndex = 0;
+        this.projectedStartIndex = piece.startIndex
         this.projectedX = piece.x;
         this.projectedY = piece.y;
         this.homeIndex = piece.homeIndex;
