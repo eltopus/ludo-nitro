@@ -6,14 +6,68 @@ import {Yellow} from './pieceState'
 
 export class Player {
     name: string
-    isAactive: boolean
+    turn: boolean
     pieces: Array<Piece>
     scene: Phaser.Scene
+    group: Phaser.Physics.Arcade.Group
+    selectedPiece: Piece
 
-    constructor(name: string, isActive: boolean, pieces: Array<Piece>, scene: Phaser.Scene) {
+    constructor(name: string, turn: boolean, scene: Phaser.Scene) {
         this.name = name
-        this.isAactive = isActive
-        this.pieces = pieces
+        this.turn = turn
         this.scene = scene
+        this.group =this.scene.physics.add.group({})
+        this.scene.events.on('pieceSelected', this.pieceSelected, this);
+        this.scene.events.on('pieceExited', this.destroyPiece, this);
+        this.selectedPiece = null
+        this.pieces = new Array<Piece>()
     }
+
+    addPieces(pieces: Array<Piece>): void {
+        for (let piece of pieces){
+            this.pieces.push(piece)
+        }
+        this.group.addMultiple(pieces)
+    }
+
+    pieceSelected(pieceId: string): void {
+        for (let piece of this.pieces) {
+            if (piece.pieceId === pieceId && this.group.contains(piece)){
+                console.log("Piece " + pieceId + " has been selected")
+                piece.tint = 0x808080;
+                
+                if (this.selectedPiece != null && this.selectedPiece != piece) {
+                    this.selectedPiece.clearTint()
+                }
+                this.selectedPiece = piece
+                this.moveSelectedPiece(4)
+                break
+            }
+        }
+    }
+
+    moveSelectedPiece(moveBy: number): boolean {
+        if (this.selectedPiece != null) {
+            this.selectedPiece.move(moveBy)
+            return true;
+        }else {
+            return false
+        }
+    }
+
+    destroyPiece(pieceId: string): void {
+       
+        let indexOf = -1
+        for (let piece of this.pieces) {
+            if (piece.pieceId === pieceId) {
+                indexOf = this.pieces.indexOf(piece)
+                piece.destroy()
+            }
+        }
+        if (indexOf >= 0)
+            this.pieces.splice(indexOf, 1);
+    }
+    
+
+
 }

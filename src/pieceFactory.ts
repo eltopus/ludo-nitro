@@ -58,37 +58,37 @@ export class PieceFactory {
             "pieces": [
                 {
                     "id": "blue1",
-                    "x": 192.45,
+                    "x": 529.15,
                     "y": 144.35,
-                    "hx": 192.45,
+                    "hx": 529.15,
                     "hy": 144.35,
                     "index": -1,
                     "state": "inactive"
                 },
                 {
                     "id": "blue2",
-                    "x": 192.45,
+                    "x": 625.35,
                     "y": 144.35,
-                    "hx": 192.45,
+                    "hx": 625.35,
                     "hy": 144.35,
                     "index": -1,
                     "state": "inactive"
                 },
                 {
                     "id": "blue3",
-                    "x": 192.45,
-                    "y": 144.35,
-                    "hx": 192.45,
-                    "hy": 144.35,
+                    "x": 577.25,
+                    "y": 192.45,
+                    "hx": 577.25,
+                    "hy": 192.45,
                     "index": -1,
                     "state": "inactive"
                 },
                 {
                     "id": "blue4",
-                    "x": 192.45,
-                    "y": 144.35,
-                    "hx": 192.45,
-                    "hy": 144.35,
+                    "x": 577.25,
+                    "y": 96.25,
+                    "hx": 577.25,
+                    "hy": 96.25,
                     "index": -1,
                     "state": "inactive"
                 }
@@ -101,37 +101,37 @@ export class PieceFactory {
             "pieces": [
                 {
                     "id": "yellow1",
-                    "x": 192.45,
-                    "y": 144.35,
-                    "hx": 192.45,
-                    "hy": 144.35,
+                    "x": 577.25,
+                    "y": 529.15,
+                    "hx": 577.25,
+                    "hy": 529.15,
                     "index": -1,
                     "state": "inactive"
                 },
                 {
                     "id": "yellow2",
-                    "x": 192.45,
-                    "y": 144.35,
-                    "hx": 192.45,
-                    "hy": 144.35,
+                    "x": 577.25,
+                    "y": 625.35,
+                    "hx": 577.25,
+                    "hy": 625.35,
                     "index": -1,
                     "state": "inactive"
                 },
                 {
                     "id": "yellow3",
-                    "x": 192.45,
-                    "y": 144.35,
-                    "hx": 192.45,
-                    "hy": 144.35,
+                    "x": 529.15,
+                    "y": 577.25,
+                    "hx": 529.15,
+                    "hy": 577.25,
                     "index": -1,
                     "state": "inactive"
                 },
                 {
                     "id": "yellow4",
-                    "x": 192.45,
-                    "y": 144.35,
-                    "hx": 192.45,
-                    "hy": 144.35,
+                    "x": 625.35,
+                    "y": 577.25,
+                    "hx": 625.35,
+                    "hy": 577.25,
                     "index": -1,
                     "state": "inactive"
                 }
@@ -192,15 +192,11 @@ export class PieceFactory {
         let homeIndex = redConfig.hIndex
         let startIndex = redConfig.sIndex
 
-       /*  redConfig.pieces.forEach((piece) => {
+        redConfig.pieces.forEach((piece) => {
             let redPiece = new Piece(this.scene, piece.x, piece.y, piece.index, homeIndex, startIndex, Red, piece.id);
             redPieces.push(redPiece);
-        }) */
+        }) 
 
-        for(let piece of redConfig.pieces) {
-            let redPiece = new Piece(this.scene, piece.x, piece.y, piece.index, homeIndex, startIndex, Red, piece.id);
-            redPieces.push(redPiece);
-        }
         return redPieces;
     }
 
@@ -210,15 +206,10 @@ export class PieceFactory {
         let homeIndex = blueConfig.hIndex
         let startIndex = blueConfig.sIndex
 
-        /* blueConfig.pieces.forEach((piece) => {
+        blueConfig.pieces.forEach((piece) => {
             let bluePiece = new Piece(this.scene, piece.x, piece.y, piece.index, homeIndex, startIndex, Blue, piece.id);
             bluePieces.push(bluePiece);
-        }) */
-
-        for(let piece of blueConfig.pieces) {
-            let bluePiece = new Piece(this.scene, piece.x, piece.y, piece.index, homeIndex, startIndex, Blue, piece.id);
-            bluePieces.push(bluePiece);
-        }
+        })
         return bluePieces;
     }
 
@@ -228,15 +219,10 @@ export class PieceFactory {
         let homeIndex = yellowConfig.hIndex
         let startIndex = yellowConfig .sIndex
 
-        /* yellowConfig .pieces.forEach((piece) => {
+        yellowConfig .pieces.forEach((piece) => {
             let yellowPiece = new Piece(this.scene, piece.x, piece.y, piece.index, homeIndex, startIndex, Yellow, piece.id);
             yellowPieces.push(yellowPiece);
         })
- */
-        for (let piece of yellowConfig.pieces) {
-            let yellowPiece = new Piece(this.scene, piece.x, piece.y, piece.index, homeIndex, startIndex, Yellow, piece.id);
-            yellowPieces.push(yellowPiece);
-        }
         return yellowPieces;
     }
 
@@ -246,15 +232,11 @@ export class PieceFactory {
         let homeIndex = greenConfig.hIndex
         let startIndex = greenConfig.sIndex
 
-        /* greenConfig.pieces.forEach((piece) => {
+        greenConfig.pieces.forEach((piece) => {
             let greenPiece = new Piece(this.scene, piece.x, piece.y, piece.index, homeIndex, startIndex, Green, piece.id);
             greenPieces.push(greenPiece);
-        }) */
+        })
 
-        for (let piece of greenConfig.pieces){
-            let greenPiece = new Piece(this.scene, piece.x, piece.y, piece.index, homeIndex, startIndex, Green, piece.id);
-            greenPieces.push(greenPiece);
-        }
         return greenPieces;
     }
 

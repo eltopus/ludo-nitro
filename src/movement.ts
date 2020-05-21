@@ -1,6 +1,6 @@
 
 import {ActivePath} from './activePath'
-import {Red} from './pieceState'
+import {Red, PieceState} from './pieceState'
 import {Blue} from './pieceState'
 import {Green} from './pieceState'
 import {Yellow} from './pieceState'
@@ -490,6 +490,9 @@ export class Movement {
                 path.lineTo(x + (this.grid_offset * moveBy), y)
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
+                if (newIndex == stopIndex) {
+                    path.projectedPieceState = PieceState.Exited
+                }
                 return path;
             }
         }
@@ -513,6 +516,9 @@ export class Movement {
                 path.lineTo(x, y + (this.grid_offset * moveBy))
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
+                if (newIndex == stopIndex) {
+                    path.projectedPieceState = PieceState.Exited
+                }
                 return path;
             }
         }
@@ -536,6 +542,9 @@ export class Movement {
                 path.lineTo(x - (this.grid_offset * moveBy), y)
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
+                if (newIndex == stopIndex) {
+                    path.projectedPieceState = PieceState.Exited
+                }
                 return path;
             }
         }
@@ -559,6 +568,10 @@ export class Movement {
                 path.lineTo(x, y - (this.grid_offset * moveBy))
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
+                if (newIndex == stopIndex) {
+                    console.log("Piece is exited........................... ");
+                    path.projectedPieceState = PieceState.Exited
+                }
                 return path;
             }
         }
@@ -627,12 +640,16 @@ export class Movement {
     blueFromActiveToHomePath(path: ActivePath, index: number, moveBy: number, x: number, y: number): ActivePath {
         // path is 58 - 63
         let homeStartIndex = 58
+        let homeStopIndex = 63
         let adjustedMoveBy = Math.abs((index + moveBy) - path.homeIndex)
         console.log("Adjusted Home Index: " + adjustedMoveBy)
         let y_start1 = (y + (this.grid_offset * adjustedMoveBy))
         path.lineTo(x, y_start1)
         path.remainderIndex = 0
         path.projectedIndex = (homeStartIndex + (adjustedMoveBy - 1))
+        if (path.projectedIndex == homeStopIndex) {
+            path.projectedPieceState = PieceState.Exited
+        }
         return path
         
     }
@@ -640,36 +657,48 @@ export class Movement {
     yellowFromActiveToHomePath(path: ActivePath, index: number, moveBy: number, x: number, y: number): ActivePath {
         // path is 64 - 69
         let homeStartIndex = 64
+        let homeStopIndex = 69
         let adjustedMoveBy = Math.abs((index + moveBy) - path.homeIndex)
         console.log("Adjusted Home Index: " + adjustedMoveBy)
         let x_start1 = (x - (this.grid_offset * adjustedMoveBy))
         path.lineTo(x_start1, y)
         path.remainderIndex = 0
         path.projectedIndex = (homeStartIndex + (adjustedMoveBy - 1))
+        if (path.projectedIndex == homeStopIndex) {
+            path.projectedPieceState = PieceState.Exited
+        }
         return path
     }
 
     greenFromActiveToHomePath(path: ActivePath, index: number, moveBy: number, x: number, y: number): ActivePath {
         // path is 70 - 75
         let homeStartIndex = 70
+        let homeStopIndex = 75
         let adjustedMoveBy = Math.abs((index + moveBy) - path.homeIndex)
         console.log("Adjusted Home Index: " + adjustedMoveBy)
         let y_start1 = (y - (this.grid_offset * adjustedMoveBy))
         path.lineTo(x, y_start1)
         path.remainderIndex = 0
         path.projectedIndex = (homeStartIndex + (adjustedMoveBy - 1))
+        if (path.projectedIndex == homeStopIndex) {
+            path.projectedPieceState = PieceState.Exited
+        }
         return path
     }
 
     redFromActiveToHomePath(path: ActivePath, index: number, moveBy: number, x: number, y: number): ActivePath {
         // path is 52 - 57
         let homeStartIndex = 52
+        let homeStopIndex = 57
         let adjustedMoveBy = Math.abs((index + moveBy) - path.homeIndex)
         console.log("Adjusted Home Index: " + adjustedMoveBy)
         let x_start1 = (x + (this.grid_offset * adjustedMoveBy))
         path.lineTo(x_start1, y)
         path.remainderIndex = 0
         path.projectedIndex = (homeStartIndex + (adjustedMoveBy - 1))
+        if (path.projectedIndex == homeStopIndex) {
+            path.projectedPieceState = PieceState.Exited
+        }
         return path
     }
 

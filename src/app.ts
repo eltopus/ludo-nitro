@@ -2,14 +2,15 @@ import "phaser";
 import MoveToPlugin from 'phaser3-rex-plugins/plugins/moveto-plugin.js';
 import PathFollowerPlugin from 'phaser3-rex-plugins/plugins/pathfollower-plugin.js';
 import { GameScene } from "./gameScene";
+import {SideScene} from "./sideScene"
 
 const config: Phaser.Types.Core.GameConfig = {
   title: "LudoNitro",
-  width: 1200,
-  height: 800,
+  width: 1027,
+  height: 722,
   type: Phaser.AUTO,
   parent: "game",
-  scene: [GameScene],
+  scene: [GameScene, SideScene],
   physics: {
     default: "arcade",
     arcade: {

@@ -11,10 +11,11 @@ export class Piece extends Phaser.GameObjects.Sprite {
     pieceType: any
     startIndex: number
     movement: Movement
-   
-  
+    pieceId: string
+    
     constructor(scene: Phaser.Scene, x: number, y: number, index: number, homeIndex: number, startIndex: number, pieceType: any, texture: string){
         super(scene, x, y, texture);
+        this.pieceId = texture
         this.index = index;
         this.homeIndex = homeIndex;
         this.scene.add.existing(this);
@@ -23,7 +24,11 @@ export class Piece extends Phaser.GameObjects.Sprite {
         this.startIndex = startIndex
         this.movement = new Movement(24.1, 48.1, scene);
         this.setInteractive()
+        this.on('pointerdown', (pointer) => {
+          this.scene.events.emit('pieceSelected', this.pieceId)
+        });
     }
+
 
     becomeActive(): void {
         this.pieceState = PieceState.Active
@@ -162,7 +167,10 @@ export class Piece extends Phaser.GameObjects.Sprite {
           repeat: 0,
           yoyo: false
         }).on('complete', (tween, targets) => {
-          console.log(this.x + ", " + this.y + ", " + this.index)
+          if (this.pieceState === PieceState.Exited){
+            this.scene.events.emit('pieceExited', this.pieceId)
+            console.log(this.x + ", " + this.y + ", " + this.index)
+          }
         });
     }
 
