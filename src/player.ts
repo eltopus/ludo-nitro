@@ -33,21 +33,21 @@ export class Player {
     pieceSelected(pieceId: string): void {
         for (let piece of this.pieces) {
             if (piece.pieceId === pieceId && this.group.contains(piece)){
-                console.log("Piece " + pieceId + " has been selected")
+                //console.log("Piece " + pieceId + " has been selected")
                 piece.tint = 0x808080;
                 
                 if (this.selectedPiece != null && this.selectedPiece != piece) {
                     this.selectedPiece.clearTint()
                 }
                 this.selectedPiece = piece
-                this.moveSelectedPiece(4)
+                //this.moveSelectedPiece(4)
                 break
             }
         }
     }
 
     moveSelectedPiece(moveBy: number): boolean {
-        if (this.selectedPiece != null) {
+        if (this.selectedPiece != null && !this.selectedPiece.isMoving()) {
             this.selectedPiece.move(moveBy)
             return true;
         }else {
@@ -56,7 +56,6 @@ export class Player {
     }
 
     destroyPiece(pieceId: string): void {
-       
         let indexOf = -1
         for (let piece of this.pieces) {
             if (piece.pieceId === pieceId) {
@@ -64,8 +63,10 @@ export class Player {
                 piece.destroy()
             }
         }
-        if (indexOf >= 0)
+        if (indexOf >= 0) {
             this.pieces.splice(indexOf, 1);
+        }
+        this.selectedPiece = null
     }
     
 

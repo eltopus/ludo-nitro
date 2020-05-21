@@ -39,6 +39,7 @@ export class GameScene extends Phaser.Scene {
     this.load.image("green2", "assets/green.png");
     this.load.image("green3", "assets/green.png");
     this.load.image("green4", "assets/green.png");
+    this.load.image('play', '/assets/play.png')
     
   }
 
@@ -57,9 +58,55 @@ export class GameScene extends Phaser.Scene {
     let player1 = new Player("PlayerOne", false, this)
     player1.addPieces(redPieces);
     player1.addPieces(bluePieces)
+
+    let play = this.add.sprite(360, 360, 'play')
+    play.setInteractive()
+
+    play.on('pointerdown', (pointer) => {
+        
+        if (this.bothDiceSelected()) {
+          let dieOneScore = this.registry.get('die1')
+          let dieTwoScore = this.registry.get('die2')
+          let isMoved = player1.moveSelectedPiece(dieOneScore + dieTwoScore)
+          if(isMoved) {
+            //this.registry.set('die1', 0)
+            //this.registry.set('die2', 0)
+          }
+        }else {
+          let dieValue = this.selectedDieValue()
+          let isMoved = player1.moveSelectedPiece(dieValue)
+          if(isMoved) {
+            //this.registry.set('die1', 0)
+            //this.registry.set('die2', 0)
+          }
+        }
+    });
+
+    this.events.on('pieceMovementCompleted', this.evaluateRule, this);
     
 
   }
+
+  evaluateRule(pieceId: string, pieceIndex: number): void {
+   console.log("Evaluating pieceId: " + pieceId + " pieceIndex: " + pieceIndex)
+    
+  }
+
+  bothDiceSelected(): boolean {
+    return (this.registry.get('die1-selected') && this.registry.get('die2-selected'))
+  }
+
+  selectedDieValue(): number {
+    if (this.registry.get('die1-selected')) {
+      return this.registry.get('die1')
+    }
+
+    if (this.registry.get('die2-selected')) {
+      return this.registry.get('die2')
+    }
+    return 0
+  }
+
 
   
   update(time: number): void {

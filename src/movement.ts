@@ -483,7 +483,9 @@ export class Movement {
             console.log("index: " + index + " Meets A4 criteria because it is " +  startIndex + " <= " + stopIndex);
             if ((index + moveBy) > stopIndex){
                 console.log("Movement denied because index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
-                return null;
+                path.remainderIndex = 0
+                path.isValid = false
+                return path;
             }else {
                 let newIndex = (index + moveBy);
                 console.log("Movement index: " + newIndex + " is <= " + stopIndex);
@@ -509,7 +511,9 @@ export class Movement {
             console.log("index: " + index + " Meets D4 criteria because it is " +  startIndex + " <= " + stopIndex);
             if ((index + moveBy) > stopIndex){
                 console.log("Movement denied because index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
-                return null;
+                path.remainderIndex = 0
+                path.isValid = false
+                return path;
             }else {
                 let newIndex = (index + moveBy);
                 console.log("Movement index: " + newIndex + " is <= " + stopIndex);
@@ -535,7 +539,9 @@ export class Movement {
             console.log("index: " + index + " Meets B4 criteria because it is " +  startIndex + " <= " + stopIndex);
             if ((index + moveBy) > stopIndex){
                 console.log("Movement denied because index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
-                return null;
+                path.remainderIndex = 0
+                path.isValid = false
+                return path;
             }else {
                 let newIndex = (index + moveBy);
                 console.log("Movement index: " + newIndex + " is <= " + stopIndex);
@@ -561,7 +567,9 @@ export class Movement {
             console.log("index: " + index + " Meets C4 criteria because it is " +  startIndex + " <= " + stopIndex);
             if ((index + moveBy) > stopIndex){
                 console.log("Movement denied because index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
-                return null;
+                path.isValid = false
+                path.remainderIndex = 0
+                return path;
             }else {
                 let newIndex = (index + moveBy);
                 console.log("Movement index: " + newIndex + " is <= " + stopIndex);
@@ -643,6 +651,12 @@ export class Movement {
         let homeStopIndex = 63
         let adjustedMoveBy = Math.abs((index + moveBy) - path.homeIndex)
         console.log("Adjusted Home Index: " + adjustedMoveBy)
+        if (adjustedMoveBy > 6) {
+            path.remainderIndex = 0
+            path.isValid = false
+            return path
+
+        }
         let y_start1 = (y + (this.grid_offset * adjustedMoveBy))
         path.lineTo(x, y_start1)
         path.remainderIndex = 0
@@ -660,6 +674,12 @@ export class Movement {
         let homeStopIndex = 69
         let adjustedMoveBy = Math.abs((index + moveBy) - path.homeIndex)
         console.log("Adjusted Home Index: " + adjustedMoveBy)
+        if (adjustedMoveBy > 6) {
+            path.remainderIndex = 0
+            path.isValid = false
+            return path
+
+        }
         let x_start1 = (x - (this.grid_offset * adjustedMoveBy))
         path.lineTo(x_start1, y)
         path.remainderIndex = 0
@@ -676,6 +696,12 @@ export class Movement {
         let homeStopIndex = 75
         let adjustedMoveBy = Math.abs((index + moveBy) - path.homeIndex)
         console.log("Adjusted Home Index: " + adjustedMoveBy)
+        if (adjustedMoveBy > 6) {
+            path.remainderIndex = 0
+            path.isValid = false
+            return path
+
+        }
         let y_start1 = (y - (this.grid_offset * adjustedMoveBy))
         path.lineTo(x, y_start1)
         path.remainderIndex = 0
@@ -692,6 +718,12 @@ export class Movement {
         let homeStopIndex = 57
         let adjustedMoveBy = Math.abs((index + moveBy) - path.homeIndex)
         console.log("Adjusted Home Index: " + adjustedMoveBy)
+        if (adjustedMoveBy > 6) {
+            path.remainderIndex = 0
+            path.isValid = false
+            return path
+
+        }
         let x_start1 = (x + (this.grid_offset * adjustedMoveBy))
         path.lineTo(x_start1, y)
         path.remainderIndex = 0

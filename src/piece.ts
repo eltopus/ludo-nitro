@@ -12,6 +12,7 @@ export class Piece extends Phaser.GameObjects.Sprite {
     startIndex: number
     movement: Movement
     pieceId: string
+    moving: boolean
     
     constructor(scene: Phaser.Scene, x: number, y: number, index: number, homeIndex: number, startIndex: number, pieceType: any, texture: string){
         super(scene, x, y, texture);
@@ -23,6 +24,7 @@ export class Piece extends Phaser.GameObjects.Sprite {
         this.pieceType = pieceType
         this.startIndex = startIndex
         this.movement = new Movement(24.1, 48.1, scene);
+        this.moving = false
         this.setInteractive()
         this.on('pointerdown', (pointer) => {
           this.scene.events.emit('pieceSelected', this.pieceId)
@@ -50,8 +52,15 @@ export class Piece extends Phaser.GameObjects.Sprite {
         let activePath= new ActivePath(this.scene, this)
         activePath = this.generatePath(moveby, this.movement, activePath)
         if (activePath != null) {
-          this.movePieceAlong(activePath, this.scene)
-          activePath.updatePiece();
+          if (activePath.isValid) {
+            this.movePieceAlong(activePath, this.scene)
+            activePath.updatePiece();
+          }else {
+            console.log("Path cannot be applied because it is not valid")
+          }
+          
+        }else {
+          console.log("Path return null value")
         }
 
     }
@@ -158,6 +167,7 @@ export class Piece extends Phaser.GameObjects.Sprite {
           rotateToPath: true
         }
         let pathFollower = new PathFollower(this, config)
+        this.moving = true
        
         scene.tweens.add({
           targets: pathFollower,
@@ -171,6 +181,8 @@ export class Piece extends Phaser.GameObjects.Sprite {
             this.scene.events.emit('pieceExited', this.pieceId)
             console.log(this.x + ", " + this.y + ", " + this.index)
           }
+          this.moving = false
+          this.scene.events.emit('pieceMovementCompleted', this.pieceId, this.index)
         });
     }
 
@@ -186,6 +198,10 @@ export class Piece extends Phaser.GameObjects.Sprite {
         moveTo.on('complete', function(gameObject, moveTo){
           //piece.setPosition(72.2, 312.7);
         });
+      }
+
+      isMoving(): boolean {
+        return this.moving
       }
 
 }

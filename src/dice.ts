@@ -16,6 +16,7 @@ export class Dice {
         }
     }
 
+
     getFrame(index: number): number {
         return this.dice[index].dieFrame
     }
