@@ -69,7 +69,8 @@ export class GameScene extends Phaser.Scene {
     players[1].addPieces(yellowPieces)
     players[1].addPieces(greenPieces)
 
-    //players[0].setPieceDraggable()
+    players[0].setPieceDraggable()
+    players[1].setPieceDraggable()
  
     this.rule.addPlayers(players)
     this.currentPlayer = this.rule.getNextPlayer()
