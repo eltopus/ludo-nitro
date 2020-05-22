@@ -1,9 +1,6 @@
 
 import {ActivePath} from './activePath'
-import {Red, PieceState} from './pieceState'
-import {Blue} from './pieceState'
-import {Green} from './pieceState'
-import {Yellow} from './pieceState'
+import {PieceState, Red, Blue, Green, Yellow} from './pieceState'
 export class Movement {
     piece_offset: number;
     grid_offset: number;
@@ -20,10 +17,9 @@ export class Movement {
         const stopIndex = 5;
 
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets A1 criteria because it is " +  startIndex + " <= " + stopIndex);
-        
+            //console.log("index: " + index + " Meets A1 criteria because it is " +  startIndex + " <= " + stopIndex);
             if ((index + moveBy) > stopIndex){
-                console.log("Movement index " + (index + moveBy) + " is >= " + stopIndex);
+                //console.log("Movement index " + (index + moveBy) + " is >= " + stopIndex);
                 let adjustedMoveBy = (stopIndex - index)
                 let x_start1 = (x + (this.grid_offset * adjustedMoveBy))
                 if (adjustedMoveBy > 0) {
@@ -40,7 +36,7 @@ export class Movement {
                 return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= 5");
+                //console.log("Movement index: " + newIndex + " is <= 5");
                 path.lineTo(x + (this.grid_offset * moveBy), y)
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -58,10 +54,10 @@ export class Movement {
         const stopIndex = 11;
     
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets C1 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets C1 criteria because it is " +  startIndex + " <= " + stopIndex);
         
             if ((index + moveBy) > stopIndex){
-                console.log("Movement index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
+                //console.log("Movement index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
                 let adjustedMoveBy = (stopIndex - index)
                 let y_start1 = (y - (this.grid_offset * adjustedMoveBy))
                 if (adjustedMoveBy > 0) {
@@ -76,7 +72,7 @@ export class Movement {
 ;               return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= 11");
+                //console.log("Movement index: " + newIndex + " is <= 11");
                 path.lineTo(x, y - (this.grid_offset * moveBy))
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -93,16 +89,16 @@ export class Movement {
         const stopIndex = 13;
 
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets A2 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets A2 criteria because it is " +  startIndex + " <= " + stopIndex);
 
             if (path.homeIndex === 12){
-                console.log("Detecting blue home index...")
+                //console.log("Detecting blue home index...")
                 let blueHomePath = this.blueFromActiveToHomePath(path, index, moveBy,x, y)
                 return blueHomePath
             }
         
             if ((index + moveBy) > stopIndex){
-                console.log("Movement index " + (index + moveBy) + " is greater than stop index: " + stopIndex);
+                //console.log("Movement index " + (index + moveBy) + " is greater than stop index: " + stopIndex);
                 let adjustedMoveBy = (stopIndex - index)
                 let x_start1 = (x + (this.grid_offset * adjustedMoveBy))
                 let y_start1 = (y + this.grid_offset)
@@ -117,7 +113,7 @@ export class Movement {
                 return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " <= 13");
+                //console.log("Movement index: " + newIndex + " <= 13");
                 path.lineTo(x + (this.grid_offset * moveBy), y)
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -136,10 +132,10 @@ export class Movement {
         const stopIndex = 18;
 
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets D1 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets D1 criteria because it is " +  startIndex + " <= " + stopIndex);
         
             if ((index + moveBy) > stopIndex){
-                console.log("Movement index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
+                //console.log("Movement index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
                 let adjustedMoveBy = (stopIndex - index)
                 let y_start1 = (y + (this.grid_offset * adjustedMoveBy))
                 let y_start2 = (y_start1 + this.grid_offset)
@@ -155,7 +151,7 @@ export class Movement {
 ;               return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= 18");
+                //console.log("Movement index: " + newIndex + " is <= 18");
                 path.lineTo(x, y + (this.grid_offset * moveBy))
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -172,10 +168,10 @@ export class Movement {
         const stopIndex = 24;
 
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets A3 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets A3 criteria because it is " +  startIndex + " <= " + stopIndex);
         
             if ((index + moveBy) > stopIndex){
-                console.log("Movement index " + (index + moveBy) + " is >= " + stopIndex);
+                //console.log("Movement index " + (index + moveBy) + " is >= " + stopIndex);
                 let adjustedMoveBy = (stopIndex - index)
                 let x_start1 = (x + (this.grid_offset * adjustedMoveBy))
                 if (adjustedMoveBy > 0) {
@@ -190,7 +186,7 @@ export class Movement {
                 return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= 5");
+                //console.log("Movement index: " + newIndex + " is <= 5");
                 path.lineTo(x + (this.grid_offset * moveBy), y)
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -208,16 +204,16 @@ export class Movement {
         const stopIndex = 26;
 
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets D2 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets D2 criteria because it is " +  startIndex + " <= " + stopIndex);
 
             if (path.homeIndex === 25){
-                console.log("Detecting yellow home index...")
+                //console.log("Detecting yellow home index...")
                 let blueHomePath = this.yellowFromActiveToHomePath(path, index, moveBy,x, y)
                 return blueHomePath
             }
         
             if ((index + moveBy) > stopIndex){
-                console.log("Movement index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
+                //console.log("Movement index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
                 let adjustedMoveBy = (stopIndex - index)
                 let y_start1 = (y + (this.grid_offset * adjustedMoveBy))
                 if (adjustedMoveBy > 0) {
@@ -232,7 +228,7 @@ export class Movement {
 ;               return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= 26");
+                //console.log("Movement index: " + newIndex + " is <= 26");
                 path.lineTo(x, y + (this.grid_offset * moveBy))
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -249,7 +245,7 @@ export class Movement {
         const stopIndex = 31;
 
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets B1 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets B1 criteria because it is " +  startIndex + " <= " + stopIndex);
         
             if ((index + moveBy) > stopIndex){
                 console.log("Movement index " + (index + moveBy) + " is >= " + stopIndex);
@@ -268,7 +264,7 @@ export class Movement {
                 return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= 5");
+                //console.log("Movement index: " + newIndex + " is <= 5");
                 path.lineTo(x - (this.grid_offset * moveBy), y)
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -286,10 +282,10 @@ export class Movement {
         const stopIndex = 37;
 
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets D3 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets D3 criteria because it is " +  startIndex + " <= " + stopIndex);
         
             if ((index + moveBy) > stopIndex){
-                console.log("Movement index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
+                //console.log("Movement index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
                 let adjustedMoveBy = (stopIndex - index)
                 let y_start1 = (y + (this.grid_offset * adjustedMoveBy))
                 if (adjustedMoveBy > 0) {
@@ -304,7 +300,7 @@ export class Movement {
 ;               return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= 18");
+                //console.log("Movement index: " + newIndex + " is <= 18");
                 path.lineTo(x, y + (this.grid_offset * moveBy))
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -321,18 +317,18 @@ export class Movement {
         const stopIndex = 39;
 
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets B2 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets B2 criteria because it is " +  startIndex + " <= " + stopIndex);
 
             if (path.homeIndex === 38){
-                console.log("Detecting green home index...")
+                //console.log("Detecting green home index...")
                 let greenHomePath = this.greenFromActiveToHomePath(path, index, moveBy,x, y)
                 return greenHomePath
             }
         
             if ((index + moveBy) > stopIndex){
-                console.log("Movement index " + (index + moveBy) + " is >= " + stopIndex);
+                //console.log("Movement index " + (index + moveBy) + " is >= " + stopIndex);
                 let adjustedMoveBy = (stopIndex - index)
-                console.log("Adjusted: " + adjustedMoveBy)
+                //console.log("Adjusted: " + adjustedMoveBy)
                 let x_start1 = (x - (this.grid_offset * adjustedMoveBy))
                 if (adjustedMoveBy > 0) {
                     path.lineTo(x_start1, y)
@@ -346,7 +342,7 @@ export class Movement {
                 return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= " + stopIndex);
+                //console.log("Movement index: " + newIndex + " is <= " + stopIndex);
                 path.lineTo(x - (this.grid_offset * moveBy), y)
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -367,7 +363,7 @@ export class Movement {
             console.log("index: " + index + " Meets C2 criteria because it is " +  startIndex + " <= " + stopIndex);
         
             if ((index + moveBy) > stopIndex){
-                console.log("Movement index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
+                //console.log("Movement index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
                 let adjustedMoveBy = (stopIndex - index)
                 let y_start1 = (y - (this.grid_offset * adjustedMoveBy))
                 if (adjustedMoveBy > 0) {
@@ -384,7 +380,7 @@ export class Movement {
 ;               return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= 44");
+                //console.log("Movement index: " + newIndex + " is <= 44");
                 path.lineTo(x, y - (this.grid_offset * moveBy))
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -401,7 +397,7 @@ export class Movement {
         const stopIndex = 50;
 
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets B3 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets B3 criteria because it is " +  startIndex + " <= " + stopIndex);
         
             if ((index + moveBy) > stopIndex){
                 console.log("Movement index " + (index + moveBy) + " is >= " + stopIndex);
@@ -419,7 +415,7 @@ export class Movement {
                 return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= 50");
+                //console.log("Movement index: " + newIndex + " is <= 50");
                 path.lineTo(x - (this.grid_offset * moveBy), y)
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -435,7 +431,7 @@ export class Movement {
     generatePathC3(moveBy: number, index: number, x: number, y: number, path: ActivePath): ActivePath {
         const stopIndex = 51;
         const startIndex = 51;
-        console.log("C3 ProjectedIndexBefore: " + path.projectedIndex)
+        //console.log("C3 ProjectedIndexBefore: " + path.projectedIndex)
 
         if (path.homeIndex === 51){
             console.log("Detecting red home index...")
@@ -444,10 +440,10 @@ export class Movement {
         }
 
         if (index === stopIndex) {
-            console.log("index: " + index + " Meets C3 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets C3 criteria because it is " +  startIndex + " <= " + stopIndex);
         
             if ((index + moveBy) > stopIndex){
-                console.log("Movement index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
+                //console.log("Movement index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
                 let adjustedMoveBy = Math.abs(stopIndex - index)
                 let y_start1 = (y - this.grid_offset);
                 if (adjustedMoveBy > 0) {
@@ -463,7 +459,7 @@ export class Movement {
 ;               return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is == 51");
+                //console.log("Movement index: " + newIndex + " is == 51");
                 path.lineTo(x, y - (this.grid_offset * moveBy))
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -480,15 +476,15 @@ export class Movement {
         const stopIndex = 57;
         // red
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets A4 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets A4 criteria because it is " +  startIndex + " <= " + stopIndex);
             if ((index + moveBy) > stopIndex){
-                console.log("Movement denied because index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
+                //console.log("Movement denied because index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
                 path.remainderIndex = 0
                 path.isValid = false
                 return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= " + stopIndex);
+                //console.log("Movement index: " + newIndex + " is <= " + stopIndex);
                 path.lineTo(x + (this.grid_offset * moveBy), y)
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -508,9 +504,9 @@ export class Movement {
         const stopIndex = 63;
         // blue
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets D4 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets D4 criteria because it is " +  startIndex + " <= " + stopIndex);
             if ((index + moveBy) > stopIndex){
-                console.log("Movement denied because index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
+                //console.log("Movement denied because index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
                 path.remainderIndex = 0
                 path.isValid = false
                 return path;
@@ -536,15 +532,15 @@ export class Movement {
         const stopIndex = 69;
         // yellow
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets B4 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets B4 criteria because it is " +  startIndex + " <= " + stopIndex);
             if ((index + moveBy) > stopIndex){
-                console.log("Movement denied because index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
+                //console.log("Movement denied because index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
                 path.remainderIndex = 0
                 path.isValid = false
                 return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= " + stopIndex);
+                //console.log("Movement index: " + newIndex + " is <= " + stopIndex);
                 path.lineTo(x - (this.grid_offset * moveBy), y)
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -564,15 +560,15 @@ export class Movement {
         const stopIndex = 75;
         // green
         if (index >= startIndex && index <= stopIndex) {
-            console.log("index: " + index + " Meets C4 criteria because it is " +  startIndex + " <= " + stopIndex);
+            //console.log("index: " + index + " Meets C4 criteria because it is " +  startIndex + " <= " + stopIndex);
             if ((index + moveBy) > stopIndex){
-                console.log("Movement denied because index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
+                //console.log("Movement denied because index: " + (index + moveBy) + " is greater than stop index: " + stopIndex);
                 path.isValid = false
                 path.remainderIndex = 0
                 return path;
             }else {
                 let newIndex = (index + moveBy);
-                console.log("Movement index: " + newIndex + " is <= " + stopIndex);
+                //console.log("Movement index: " + newIndex + " is <= " + stopIndex);
                 path.lineTo(x, y - (this.grid_offset * moveBy))
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
@@ -650,7 +646,7 @@ export class Movement {
         let homeStartIndex = 58
         let homeStopIndex = 63
         let adjustedMoveBy = Math.abs((index + moveBy) - path.homeIndex)
-        console.log("Adjusted Home Index: " + adjustedMoveBy)
+        //console.log("Adjusted Home Index: " + adjustedMoveBy)
         if (adjustedMoveBy > 6) {
             path.remainderIndex = 0
             path.isValid = false
@@ -673,7 +669,7 @@ export class Movement {
         let homeStartIndex = 64
         let homeStopIndex = 69
         let adjustedMoveBy = Math.abs((index + moveBy) - path.homeIndex)
-        console.log("Adjusted Home Index: " + adjustedMoveBy)
+        //console.log("Adjusted Home Index: " + adjustedMoveBy)
         if (adjustedMoveBy > 6) {
             path.remainderIndex = 0
             path.isValid = false
@@ -695,7 +691,7 @@ export class Movement {
         let homeStartIndex = 70
         let homeStopIndex = 75
         let adjustedMoveBy = Math.abs((index + moveBy) - path.homeIndex)
-        console.log("Adjusted Home Index: " + adjustedMoveBy)
+        //console.log("Adjusted Home Index: " + adjustedMoveBy)
         if (adjustedMoveBy > 6) {
             path.remainderIndex = 0
             path.isValid = false
@@ -717,7 +713,7 @@ export class Movement {
         let homeStartIndex = 52
         let homeStopIndex = 57
         let adjustedMoveBy = Math.abs((index + moveBy) - path.homeIndex)
-        console.log("Adjusted Home Index: " + adjustedMoveBy)
+        //console.log("Adjusted Home Index: " + adjustedMoveBy)
         if (adjustedMoveBy > 6) {
             path.remainderIndex = 0
             path.isValid = false
@@ -738,46 +734,50 @@ export class Movement {
     
         switch(path.pieceType){
             case Red: {
-                console.log("Moving red piece to index " + path.projectedStartIndex);
+                //console.log("Criteria Z1 Moving red piece to index " + path.projectedStartIndex);
                 path.projectedX = Red.StartX
                 path.projectedY = Red.StartY
                 path.lineTo(Red.StartX, Red.StartY)
                 path.projectedIndex = Red.StartIndex
                 path.remainderIndex = moveBy
-                console.log("Remainder " + moveBy);
+                path.projectedPieceState = PieceState.Active
+                //console.log("Remainder " + moveBy);
                 return path;
 
             }
             case Blue: {
-                console.log("Moving red piece to index " + path.projectedStartIndex);
+                //console.log("Criteria Z1 Moving blue piece to index " + path.projectedStartIndex);
                 path.projectedX = Blue.StartX
                 path.projectedY = Blue.StartY
                 path.lineTo(Blue.StartX, Blue.StartY)
                 path.projectedIndex = Blue.StartIndex
                 path.remainderIndex = moveBy
-                console.log("Remainder " + moveBy);
+                path.projectedPieceState = PieceState.Active
+                //console.log("Remainder " + moveBy);
                 return path;
 
             }
             case Yellow: {
-                console.log("Moving red piece to index " + path.projectedStartIndex);
+                //console.log("Criteria Z1 Moving yellow piece to index " + path.projectedStartIndex);
                 path.projectedX = Yellow.StartX
                 path.projectedY = Yellow.StartY
                 path.lineTo(Yellow.StartX, Yellow.StartY)
                 path.projectedIndex = Yellow.StartIndex
                 path.remainderIndex = moveBy
-                console.log("Remainder " + moveBy);
+                path.projectedPieceState = PieceState.Active
+                //console.log("Remainder " + moveBy);
                 return path;
 
             }
             case Green: {
-                console.log("Moving red piece to index " + path.projectedStartIndex);
+                //console.log("Criteria Z1 Moving green piece to index " + path.projectedStartIndex);
                 path.projectedX = Green.StartX
                 path.projectedY = Green.StartY
                 path.lineTo(Green.StartX, Green.StartY)
                 path.projectedIndex = Green.StartIndex
                 path.remainderIndex = moveBy
-                console.log("Remainder " + moveBy);
+                path.projectedPieceState = PieceState.Active
+                //console.log("Remainder " + moveBy);
                 return path;
             }
             default:

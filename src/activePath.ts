@@ -10,7 +10,7 @@ export class ActivePath extends Phaser.Curves.Path {
     projectedStartIndex: number;
     homeIndex: number;
     activePiece: Piece;
-    projectedPieceState: any
+    projectedPieceState: PieceState
     pieceType: any
     isValid: boolean
     constructor(scene: Phaser.Scene, piece: Piece){

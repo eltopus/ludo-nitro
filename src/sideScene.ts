@@ -33,8 +33,8 @@ export class SideScene extends Phaser.Scene {
     let rollDice = this.add.sprite(868, 500, 'rollDice')
     rollDice.setScale(0.2, 0.2)
     rollDice.setInteractive()
-    let die1 = new Die(this, 820, 360, 0, 'die1')
-    let die2 = new Die(this, 920, 360, 1, 'die2')
+    let die1 = new Die(this, 820, 360, -1, 'die1')
+    let die2 = new Die(this, 920, 360, -1, 'die2')
     
     this.dice = new Dice(this)
     this.dice.addDice(die1)
@@ -73,6 +73,14 @@ export class SideScene extends Phaser.Scene {
 
   }
 
-  update(time: number): void {}
+  update(time: number): void {
+    for (let die of this.dice.dice){
+      if (die.hasValue()){
+        die.alpha = 1
+      }else {
+        die.alpha = 0.5
+      }
+    }
+  }
 
 };

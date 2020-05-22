@@ -17,6 +17,20 @@ export class Dice {
             }
            
         })
+        this.scene.events.on('resetBothDice', (dieId1: string, dieId2:string) => {
+            for (let die of this.dice){
+                die.resetDieFrame(dieId1)
+                die.resetDieFrame(dieId2)
+            }
+           
+        })
+
+        this.scene.events.on('resetSingleDice', (dieId: string) => {
+            for (let die of this.dice){
+                die.resetDieFrame(dieId)
+            }
+           
+        })
     }
 
     addDice(die: Die): void {

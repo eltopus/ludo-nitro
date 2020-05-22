@@ -72,6 +72,17 @@ export class Player {
             piece.setDraggable()
         }
     }
+
+    hasActivePieces(): boolean {
+        
+        for (let piece of this.pieces) {
+            //console.log("pieceId: " + piece.pieceId + " pieceState: " + piece.pieceState)
+            if (piece.isActive()){
+                return true
+            }
+        }
+        return false;
+    }
     
 
 

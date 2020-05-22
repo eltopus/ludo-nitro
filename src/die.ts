@@ -8,7 +8,8 @@ export class Die extends Phaser.GameObjects.Sprite {
     constructor(scene: Phaser.Scene, x: number, y: number, frameIndex: number, texture: string){
         super(scene, x, y, texture, frameIndex);
         this.dieId = texture
-        this.frameIndex = frameIndex
+        this.dieFrame = -1
+     
         this.isSelected = false
         this.setInteractive();
         let config = {
@@ -27,11 +28,11 @@ export class Die extends Phaser.GameObjects.Sprite {
         this.scene.registry.set(this.dieId + "-selected", false)
         this.on('pointerdown', (pointer) => {
             if (this.isSelected){
-                this.alpha = 1
+                this.scale = 1
                 this.isSelected = false
                 this.scene.registry.set(this.dieId + "-selected", false)
             }else {
-                this.alpha = 0.5
+                this.scale = 0.8
                 this.isSelected = true
                 this.scene.registry.set(this.dieId + "-selected", true)
             }
@@ -49,6 +50,7 @@ export class Die extends Phaser.GameObjects.Sprite {
 
     roll(): void {
         this.alpha = 1
+        this.scale = 1
         this.setAngle(45)
         this.dieFrame = Phaser.Math.Between(0, 5)
         this.anims.play('roll', false)
@@ -71,6 +73,19 @@ export class Die extends Phaser.GameObjects.Sprite {
             default:
                 return 0;
         }
+    }
+
+    resetDieFrame(dieid: string): void {
+        if (this.dieId === this.dieId){
+            this.dieFrame = -1
+            this.isSelected = false
+            this.scene.registry.set(this.dieId, 0)
+        }
+        
+    }
+
+    hasValue(): boolean {
+        return (this.getFrameValue(this.dieFrame) > 0 && this.getFrameValue(this.dieFrame) < 7)
     }
 
 }

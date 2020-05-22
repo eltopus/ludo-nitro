@@ -37,22 +37,6 @@ export class Piece extends Phaser.GameObjects.Sprite {
     }
 
 
-    becomeActive(): void {
-        this.pieceState = PieceState.Active
-    }
-
-    becomeInActive(): void {
-        this.pieceState = PieceState.Inactive
-    }
-
-    beOnHomePath(): void {
-        this.pieceState = PieceState.OnHomePath
-    }
-
-    becomeExited(): void {
-        this.pieceState = PieceState.Exited
-    }
-
     move(moveby: number): void {
         let activePath= new ActivePath(this.scene, this)
         activePath = this.generatePath(moveby, this.movement, activePath)
@@ -208,6 +192,18 @@ export class Piece extends Phaser.GameObjects.Sprite {
 
       isMoving(): boolean {
         return this.moving
+      }
+
+      isActive(): boolean {
+        return this.pieceState === PieceState.Active
+      }
+
+      isNotActive(): boolean {
+        return this.pieceState === PieceState.Inactive
+      }
+
+      isOnHomePath(): boolean {
+        return this.pieceState === PieceState.OnHomePath
       }
 
 }
