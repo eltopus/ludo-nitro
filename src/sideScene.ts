@@ -5,6 +5,7 @@ import {Dice} from './dice'
 export class SideScene extends Phaser.Scene {
   die1Score: Phaser.GameObjects.Text;
   die2Score: Phaser.GameObjects.Text;
+  displayPlayerName: Phaser.GameObjects.Text;
   dice: Dice
 
   constructor() {
@@ -35,7 +36,7 @@ export class SideScene extends Phaser.Scene {
     let die1 = new Die(this, 820, 360, 0, 'die1')
     let die2 = new Die(this, 920, 360, 1, 'die2')
     
-    this.dice = new Dice()
+    this.dice = new Dice(this)
     this.dice.addDice(die1)
     this.dice.addDice(die2)
 
@@ -48,10 +49,8 @@ export class SideScene extends Phaser.Scene {
      this.die1Score = this.add.text(780, 200, "dieOne: 0")
      this.die2Score = this.add.text(880, 200, "dieTwo: 0")
 
+     this.displayPlayerName = this.add.text(750, 150, "CurrentPlayer: " + this.registry.get('currentPlayer'))
      this.registry.events.on('changedata', this.updateScore,  this)
-
-
-
   }
 
   updateScore(parent, key, data): void {
@@ -68,9 +67,12 @@ export class SideScene extends Phaser.Scene {
     if (key === 'die2-selected'){
       console.log("die2 selected: " + data)
     }
+    if (key === 'currentPlayer'){
+      this.displayPlayerName.setText("CurrentPlayer: " + data)
+    }
+
   }
 
-  
   update(time: number): void {}
 
 };

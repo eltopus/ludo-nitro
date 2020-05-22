@@ -29,6 +29,11 @@ export class Piece extends Phaser.GameObjects.Sprite {
         this.on('pointerdown', (pointer) => {
           this.scene.events.emit('pieceSelected', this.pieceId)
         });
+        
+    }
+
+    setDraggable(): void {
+      this.scene.input.setDraggable(this, true)
     }
 
 
@@ -177,12 +182,13 @@ export class Piece extends Phaser.GameObjects.Sprite {
           repeat: 0,
           yoyo: false
         }).on('complete', (tween, targets) => {
+          
+          this.moving = false
+          this.scene.events.emit('pieceMovementCompleted', this.pieceId, this.index)
           if (this.pieceState === PieceState.Exited){
             this.scene.events.emit('pieceExited', this.pieceId)
             console.log(this.x + ", " + this.y + ", " + this.index)
           }
-          this.moving = false
-          this.scene.events.emit('pieceMovementCompleted', this.pieceId, this.index)
         });
     }
 

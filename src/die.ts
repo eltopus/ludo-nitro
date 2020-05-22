@@ -44,11 +44,11 @@ export class Die extends Phaser.GameObjects.Sprite {
         this.frame = this.texture.frames[this.dieFrame];
         this.setAngle(180)
         this.scene.registry.set(this.dieId, this.getFrameValue(this.dieFrame))
+        this.scene.events.emit('dieRolledCompleted', this.dieId)
     }
 
     roll(): void {
         this.alpha = 1
-        this.scene.events.emit('dieSelected', this.dieId)
         this.setAngle(45)
         this.dieFrame = Phaser.Math.Between(0, 5)
         this.anims.play('roll', false)

@@ -6,10 +6,16 @@ import {Blue} from './pieceState'
 import {Green} from './pieceState'
 import {Yellow} from './pieceState'
 import {PieceFactory} from './pieceFactory'
+import {PlayerFactory} from './playerFactory'
 import {Player} from './player'
+import {Rule} from './rule'
+import {Draggable} from './draggable'
+
 
 export class GameScene extends Phaser.Scene {
   info: Phaser.GameObjects.Text;
+  currentPlayer: Player = null
+  rule: Rule;
 
   constructor() {
     super({
@@ -18,7 +24,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   init(/*params: any*/): void {
-    
+    this.rule = new Rule()
   }
 
   preload(): void {
@@ -54,46 +60,76 @@ export class GameScene extends Phaser.Scene {
     let yellowPieces = pieceFactory.createYellowPieces()
     let greenPieces = pieceFactory.createGreenPieces()
 
+    let playerNames = ["RedBlue", "YellowGreen"]
+    let playerFacory = new PlayerFactory(playerNames, this)
+    let players = playerFacory.createPlayers();
     
-    let player1 = new Player("PlayerOne", false, this)
-    player1.addPieces(redPieces);
-    player1.addPieces(bluePieces)
+    players[0].addPieces(redPieces);
+    players[0].addPieces(bluePieces)
+    players[1].addPieces(yellowPieces)
+    players[1].addPieces(greenPieces)
+
+    //players[0].setPieceDraggable()
+ 
+    this.rule.addPlayers(players)
+    this.currentPlayer = this.rule.getNextPlayer()
+    this.registry.set('currentPlayer', this.currentPlayer.playerName)
 
     let play = this.add.sprite(360, 360, 'play')
     play.setInteractive()
 
     play.on('pointerdown', (pointer) => {
-        
-        if (this.bothDiceSelected()) {
+        if (this.shouldPlayBothSelectedDice()) {
           let dieOneScore = this.registry.get('die1')
           let dieTwoScore = this.registry.get('die2')
-          let isMoved = player1.moveSelectedPiece(dieOneScore + dieTwoScore)
+          console.log("both dice selected " + dieOneScore + " " + dieTwoScore)
+          
+          let isMoved = this.currentPlayer.moveSelectedPiece(dieOneScore + dieTwoScore)
           if(isMoved) {
             //this.registry.set('die1', 0)
             //this.registry.set('die2', 0)
           }
         }else {
           let dieValue = this.selectedDieValue()
-          let isMoved = player1.moveSelectedPiece(dieValue)
+          console.log("One die selected " + dieValue)
+          let isMoved = this.currentPlayer.moveSelectedPiece(dieValue)
           if(isMoved) {
             //this.registry.set('die1', 0)
             //this.registry.set('die2', 0)
+           
           }
         }
     });
 
-    this.events.on('pieceMovementCompleted', this.evaluateRule, this);
-    
+    let draggable = new Draggable(24.1, 48.1, scene)
+    this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+      gameObject.x = dragX;
+      gameObject.y = dragY;
 
+    });
+    this.input.on('dragend', function (pointer, gameObject) {
+      draggable.configureDraggable(gameObject)
+    });
+
+    this.events.on('pieceMovementCompleted', this.evaluatePieceMovementCompletion, this);
+    this.events.on('dieRolledCompleted', this.evaluateDiceRollCompletion, this);
   }
 
-  evaluateRule(pieceId: string, pieceIndex: number): void {
-   console.log("Evaluating pieceId: " + pieceId + " pieceIndex: " + pieceIndex)
+  evaluatePieceMovementCompletion(pieceId: string, pieceIndex: number): void {
+   console.log("Evaluating piece completion rule pieceId: " + pieceId )
+   this.currentPlayer = this.rule.getNextPlayer()
+   this.registry.set('currentPlayer', this.currentPlayer.playerName)
     
   }
 
-  bothDiceSelected(): boolean {
-    return (this.registry.get('die1-selected') && this.registry.get('die2-selected'))
+  evaluateDiceRollCompletion(dieCount: number): void {
+    console.log("Evaluating dice roll completion rule:.... " + dieCount)
+   }
+
+  shouldPlayBothSelectedDice(): boolean {
+    // both dice seleted or none of the dice is selected
+    return (this.registry.get('die1-selected') && this.registry.get('die2-selected')) || 
+            (!this.registry.get('die1-selected') && !this.registry.get('die2-selected'))
   }
 
   selectedDieValue(): number {
@@ -109,9 +145,8 @@ export class GameScene extends Phaser.Scene {
 
 
   
-  update(time: number): void {
-    
+  update(time: number): void {}
 
-}
+  
 
 };

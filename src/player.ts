@@ -5,16 +5,14 @@ import {Green} from './pieceState'
 import {Yellow} from './pieceState'
 
 export class Player {
-    name: string
-    turn: boolean
+    playerName: string
     pieces: Array<Piece>
     scene: Phaser.Scene
     group: Phaser.Physics.Arcade.Group
     selectedPiece: Piece
 
-    constructor(name: string, turn: boolean, scene: Phaser.Scene) {
-        this.name = name
-        this.turn = turn
+    constructor(playerName: string, scene: Phaser.Scene) {
+        this.playerName = playerName
         this.scene = scene
         this.group =this.scene.physics.add.group({})
         this.scene.events.on('pieceSelected', this.pieceSelected, this);
@@ -67,6 +65,12 @@ export class Player {
             this.pieces.splice(indexOf, 1);
         }
         this.selectedPiece = null
+    }
+
+    setPieceDraggable(): void {
+        for (let piece of this.pieces) {
+            piece.setDraggable()
+        }
     }
     
 

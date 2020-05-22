@@ -1,9 +1,22 @@
 import {Die} from './die'
 export class Dice {
     dice: Array<Die>
+    scene: Phaser.Scene
+    diceRolledCount: number
 
-    constructor() {
+    constructor(scene: Phaser.Scene) {
         this.dice = new Array<Die>()
+        this.diceRolledCount = 0
+        this.scene = scene
+        this.scene.events.on('dieRolledCompleted', () => {
+            ++this.diceRolledCount
+            if (this.diceRolledCount > 1) {
+                 let gameScene = this.scene.scene.get('GameScene')
+                 gameScene.scene.scene.events.emit('dieRolledCompleted', this.diceRolledCount)
+                 this.diceRolledCount = 0
+            }
+           
+        })
     }
 
     addDice(die: Die): void {
