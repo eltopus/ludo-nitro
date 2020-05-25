@@ -17,17 +17,20 @@ export class Dice {
             }
            
         })
-        this.scene.events.on('resetBothDice', (dieId1: string, dieId2:string) => {
+        this.scene.events.on('resetBothDice', () => {
             for (let die of this.dice){
-                die.resetDieFrame(dieId1)
-                die.resetDieFrame(dieId2)
+                die.resetDieFrame()
+                die.resetDieFrame()
             }
            
         })
 
-        this.scene.events.on('resetSingleDice', (dieId: string) => {
+        this.scene.events.on('resetSingleDie', (dieId: string) => {
             for (let die of this.dice){
-                die.resetDieFrame(dieId)
+                if (die.dieId = dieId){
+                    die.resetDieFrame()
+                }
+                
             }
            
         })

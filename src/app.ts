@@ -1,6 +1,5 @@
 import "phaser";
-import MoveToPlugin from 'phaser3-rex-plugins/plugins/moveto-plugin.js';
-import PathFollowerPlugin from 'phaser3-rex-plugins/plugins/pathfollower-plugin.js';
+import UIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { GameScene } from "./gameScene";
 import {SideScene} from "./sideScene"
 
@@ -10,26 +9,24 @@ const config: Phaser.Types.Core.GameConfig = {
   height: 722,
   type: Phaser.AUTO,
   parent: "game",
+  dom: {
+    createContainer: true
+  },
   scene: [GameScene, SideScene],
+  plugins: {
+    scene: [{
+        key: 'rexUI',
+        plugin: UIPlugin,
+        mapping: 'rexUI'
+    }]
+  },
   physics: {
     default: "arcade",
     arcade: {
       debug: false
     }
   },
-  plugins: {
-    global: [{
-        key: 'rexMoveTo',
-        plugin: MoveToPlugin,
-        start: true
-    },
-    {
-      key: 'rexPathFollower',
-      plugin: PathFollowerPlugin,
-      start: true
-    }]
-  },
-  backgroundColor: "#18216D"
+  backgroundColor: "#18216D",
 };
 
 export class LudoNitro extends Phaser.Game {

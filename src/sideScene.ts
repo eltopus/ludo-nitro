@@ -1,6 +1,8 @@
 import "phaser";
 import {Die} from './die'
 import {Dice} from './dice'
+import { TextBox } from 'phaser3-rex-plugins/templates/ui/ui-components.js';
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 
 export class SideScene extends Phaser.Scene {
   die1Score: Phaser.GameObjects.Text;
@@ -22,10 +24,11 @@ export class SideScene extends Phaser.Scene {
     this.load.spritesheet('die1', "assets/dice.png", { frameWidth: 69, frameHeight: 69, endFrame: 5 })
     this.load.spritesheet('die2', "assets/dice.png", { frameWidth: 69, frameHeight: 69, endFrame: 5 })
     this.load.image('rollDice', '/assets/rollDice.png')
+    this.load.scenePlugin({ key: 'rexuiplugin', url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', sceneKey: 'rexUI'});
   }
 
   create(): void {
-    
+    this.cameras.main.setViewport(0, 0, 1030, 721);
     let graphics = this.add.graphics()
     graphics.lineStyle(4, 0xffffff, 1);
     graphics.strokeRoundedRect(723, 1, 300, 721, 32);
@@ -51,6 +54,14 @@ export class SideScene extends Phaser.Scene {
 
      this.displayPlayerName = this.add.text(750, 150, "CurrentPlayer: " + this.registry.get('currentPlayer'))
      this.registry.events.on('changedata', this.updateScore,  this)
+     
+    //const text = this.add.text(875, 100, 'Hello World', { fixedWidth: 150, fixedHeight: 36 })
+    
+     //text.setOrigin(0.5, 0.5)
+
+	  
+    
+
   }
 
   updateScore(parent, key, data): void {
@@ -82,5 +93,6 @@ export class SideScene extends Phaser.Scene {
       }
     }
   }
+
 
 };

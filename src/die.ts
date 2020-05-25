@@ -75,13 +75,10 @@ export class Die extends Phaser.GameObjects.Sprite {
         }
     }
 
-    resetDieFrame(dieid: string): void {
-        if (this.dieId === this.dieId){
-            this.dieFrame = -1
-            this.isSelected = false
-            this.scene.registry.set(this.dieId, 0)
-        }
-        
+    resetDieFrame(): void {
+        this.dieFrame = -1
+        this.isSelected = false
+        this.scene.registry.set(this.dieId, 0)
     }
 
     hasValue(): boolean {

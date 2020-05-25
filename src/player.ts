@@ -83,6 +83,23 @@ export class Player {
         }
         return false;
     }
+
+    hasExactlyOneActivePiece(): boolean {
+        let activePieceCount = 0;
+        for (let piece of this.pieces) {
+            if (piece.isActive()){
+                ++activePieceCount
+                if (activePieceCount > 1){
+                    break
+                }
+            }
+        }
+        return (activePieceCount === 1);
+    }
+
+    hasSelectedPiece(): boolean {
+        return this.selectedPiece !== null
+    }
     
 
 
