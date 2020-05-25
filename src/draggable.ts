@@ -15,17 +15,17 @@ export class Draggable {
         
 
         this.pathA1Range(piece)
+        this.pathC1Range(piece)
         this.pathA2Range(piece)
-        this.pathB1Range(piece)
         this.pathD1Range(piece)
         this.pathA3Range(piece)
-        this.pathC2Range(piece)
-        this.pathC1Range(piece)
-        this.pathC3Range(piece)
+        this.pathD2Range(piece)
+        this.pathB1Range(piece)
         this.pathD3Range(piece)
-        this.pathD4Range(piece)
-        this.pathC4Range(piece)
-        this.pathB4Range(piece)
+        this.pathB2Range(piece)
+        this.pathC2Range(piece)
+        this.pathB3Range(piece)
+        this.pathC3Range(piece)
         this.pathRedRange(piece)
         this.pathYellowRange(piece)
         this.pathBlueRange(piece)
@@ -93,7 +93,7 @@ export class Draggable {
         }
     }
 
-    pathB1Range(piece: Piece): void {
+    pathC1Range(piece: Piece): void {
         let magicalNum = 22.25
         let xMin = this.getNextCord(6) - magicalNum
         let xMax = this.getNextCord(6) + magicalNum
@@ -211,22 +211,13 @@ export class Draggable {
         }
     }
 
-    pathD2Range(piece: Piece): void {
-        let magicalNum = 23.5
-        //console.log((this.getNextCord(7) - magicalNum -2) + " " + (this.getNextCord(7) + magicalNum) + " " + 0 + " " + (this.getNextCord(0) + magicalNum))
-        if ((piece.x >= this.getNextCord(7)- magicalNum) && (piece.x <= this.getNextCord(7) + magicalNum)  && (piece.y >= 0 && piece.y <= (this.getNextCord(0) + magicalNum))){
-            //console.log("Detected x-------------------------: " + piece.x + " y: " + piece.y)
-            piece.x = this.getNextCord(7)
-            piece.y = this.getNextCord(0)
-            piece.index = 12
-        }
-    }
+
 
     pathA3Range(piece: Piece): void {
-        let magicalNum = 44.25
+        let magicalNum = 22.25
         let xMin = this.getNextCord(9) - magicalNum
         let xMax = this.getNextCord(14) + magicalNum
-        let yMin = 0
+        let yMin = this.getNextCord(6) - magicalNum
         let yMax = this.getNextCord(6) + magicalNum
        // console.log("PathA3 xMin: " + xMin + " xMax: " + xMax + " yMin: " + yMin + " yMax: " + yMax)
         if (piece.x >= xMin && piece.x <= xMax  && piece.y >= yMin && piece.y <= yMax){
@@ -273,7 +264,8 @@ export class Draggable {
         }
     }
 
-    pathC2Range(piece: Piece): void {
+
+    pathD2Range(piece: Piece): void {
         let magicalNum = 23.5
         //console.log((this.getNextCord(7) - magicalNum -2) + " " + (this.getNextCord(7) + magicalNum) + " " + 0 + " " + (this.getNextCord(0) + magicalNum))
         if ((piece.x >= this.getNextCord(14)- magicalNum) && (piece.x <= this.getNextCord(14) + magicalNum)  && (piece.y >= this.getNextCord(7) - magicalNum) && piece.y <= (this.getNextCord(7) + magicalNum)){
@@ -284,12 +276,12 @@ export class Draggable {
         }
     }
 
-    pathC1Range(piece: Piece): void {
+    pathB1Range(piece: Piece): void {
         let magicalNum = 22.25
         let xMin = this.getNextCord(9) - magicalNum
         let xMax = this.getNextCord(14) + magicalNum 
         let yMin = this.getNextCord(8) - magicalNum
-        let yMax = this.getNextCord(14) + magicalNum
+        let yMax = this.getNextCord(9) + magicalNum
         //console.log("PathC1 xMin: " + xMin + " xMax: " + xMax + " yMin: " + yMin + " yMax: " + yMax)
         if (piece.x >= xMin && piece.x <= xMax  && piece.y >= yMin && piece.y <= yMax){
             //console.log("Detected x-------------------------: " + piece.x + " y: " + piece.y)
@@ -336,7 +328,7 @@ export class Draggable {
         }
     }
 
-    pathC3Range(piece: Piece): void {
+    pathD3Range(piece: Piece): void {
         let magicalNum = 22.25
         let xMin = this.getNextCord(8) - magicalNum
         let xMax = this.getNextCord(8) + magicalNum
@@ -388,7 +380,7 @@ export class Draggable {
         }
     }
 
-    pathD3Range(piece: Piece): void {
+    pathB2Range(piece: Piece): void {
         let magicalNum = 23.5
         //console.log((this.getNextCord(7) - magicalNum -2) + " " + (this.getNextCord(7) + magicalNum) + " " + 0 + " " + (this.getNextCord(0) + magicalNum))
         if ((piece.x >= this.getNextCord(7)- magicalNum) && (piece.x <= this.getNextCord(7) + magicalNum)  && (piece.y >= this.getNextCord(14) - magicalNum) && piece.y <= (this.getNextCord(14) + magicalNum)){
@@ -399,7 +391,7 @@ export class Draggable {
         }
     }
 
-    pathD4Range(piece: Piece): void {
+    pathC2Range(piece: Piece): void {
         let magicalNum = 22.25
         let xMin = this.getNextCord(6) - magicalNum
         let xMax = this.getNextCord(6) + magicalNum
@@ -451,7 +443,7 @@ export class Draggable {
         }
     }
 
-    pathC4Range(piece: Piece): void {
+    pathB3Range(piece: Piece): void {
         let magicalNum = 44.25
         let xMin = 0
         let xMax = this.getNextCord(5) + magicalNum
@@ -502,7 +494,7 @@ export class Draggable {
         }
     }
 
-    pathB4Range(piece: Piece): void {
+    pathC3Range(piece: Piece): void {
         let magicalNum = 23.5
         //console.log((this.getNextCord(7) - magicalNum -2) + " " + (this.getNextCord(7) + magicalNum) + " " + 0 + " " + (this.getNextCord(0) + magicalNum))
         if ((piece.x >= 0) && (piece.x <= this.getNextCord(0) + magicalNum)  && (piece.y >= this.getNextCord(7) - magicalNum && piece.y <= (this.getNextCord(7) + magicalNum))){
