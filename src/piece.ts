@@ -198,13 +198,8 @@ export class Piece extends Phaser.GameObjects.Sprite {
         return this.pieceState === PieceState.Active
       }
 
-      isInActive(): boolean {
-        return this.pieceState !== PieceState.Active
-      }
-
-
       isNotActive(): boolean {
-        return this.pieceState === PieceState.Inactive
+        return this.pieceState !== PieceState.Active
       }
 
       isOnHomePath(): boolean {

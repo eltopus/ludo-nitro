@@ -84,6 +84,16 @@ export class Player {
         return false;
     }
 
+    hasNoActivePieces(): boolean {
+        
+        for (let piece of this.pieces) {
+            if (piece.isActive()){
+                return false
+            }
+        }
+        return true;
+    }
+
     hasExactlyOneActivePiece(): boolean {
         let activePieceCount = 0;
         for (let piece of this.pieces) {
@@ -99,6 +109,14 @@ export class Player {
 
     hasSelectedPiece(): boolean {
         return this.selectedPiece !== null
+    }
+
+    selectedPieceIsActive(): boolean {
+        return this.selectedPiece.isActive()
+    }
+
+    selectedPieceIsNotActive(): boolean {
+        return this.selectedPiece.isNotActive()
     }
     
 

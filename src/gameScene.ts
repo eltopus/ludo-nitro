@@ -99,34 +99,46 @@ export class GameScene extends Phaser.Scene {
     play.on('pointerdown', (pointer) => {
 
       if (this.currentPlayer.hasSelectedPiece()) {
+        // Handle both dice play
           if (this.rule.shouldPlayBothDice()) {
             if (this.rule.evaluateIfDieValueSixShouldBeConsumed()){
-              let dieValue = this.rule.consumeDieWithValueSixReturnTheOtherValue()
-              console.log("Should play remaining die value: " + dieValue)
-              let isMoved = this.currentPlayer.moveSelectedPiece(dieValue)
+              this.playBothDiceButConsumeSix()
             }else {
-              let dieOneScore = this.registry.get('die1')
-              let dieTwoScore = this.registry.get('die2')
-              //console.log("Should play both dice " + dieOneScore + " " + dieTwoScore)
-              this.scene.get('SideScene').events.emit('resetBothDice')
-              let isMoved = this.currentPlayer.moveSelectedPiece(dieOneScore + dieTwoScore)
+              this.playBothDice()
             }
-           
           }else {
-         
-            if (this.rule.evaluateIfDieValueSixShouldBeConsumed()){
-              this.rule.consumeDieWithValueSixLeaveTheOtherValue()
-              let dieValue = this.nonZeroDieValue()
-              //console.log("Should play remaining die value: " + dieValue)
-              let isMoved = this.currentPlayer.moveSelectedPiece(dieValue)
-
+            // handles split dice play cases
+            if (this.currentPlayer.selectedPieceIsActive()){
+              // handles active pieces
+              if (this.dieIsSelected()){
+                if (this.currentPlayer.selectedPieceIsActive()){
+                 this.playSelectedDie()
+                }else {
+                  console.log("Handle selected piece is not active")
+                }
+                
+              }else {
+                console.log("Please select a die...")
+              }
             }else {
-              let selectedDieId = this.selectedDieId();
-              let dieValue = this.selectedDieValue()
-              //console.log("Should play " + selectedDieId + " with value: " + dieValue)
-              let isMoved = this.currentPlayer.moveSelectedPiece(dieValue)
-              this.scene.get('SideScene').events.emit('resetSingleDice', selectedDieId)
-           
+              // handles non active pieces
+              if (this.dieIsSelected()){
+                if (this.rule.atLeastOneSixIsRolled()){
+                  if (this.rule.anyOfTheSelectedDiceHasValueSix()){
+                    console.log("piece not active, six rolled, die value six is selected")
+                    this.playConsumeSix()
+                  }else {
+                    // ignore die selection and play both dice
+                    console.log("piece not active, six rolled, die value six is NOT selected")
+                    console.log("Selected die value cannot be applied to selected piece")
+                  }
+                
+                }else {
+                  console.log("Handles no six is rolled and selected piece is NOT active")
+                }
+              }else {
+                console.log("Please select a die...")
+              }
             }
             
           }
@@ -205,6 +217,55 @@ export class GameScene extends Phaser.Scene {
     return null
   }
 
+  dieIsSelected(): boolean {
+    return (this.registry.get('die1-selected')) || (this.registry.get('die2-selected'))
+  }
+
+  playBothDice(): void {
+    let dieOneScore = this.registry.get('die1')
+    let dieTwoScore = this.registry.get('die2')
+    console.log("Should play both dice " + dieOneScore + " " + dieTwoScore)
+    this.scene.get('SideScene').events.emit('resetBothDice')
+    let isMoved = this.currentPlayer.moveSelectedPiece(dieOneScore + dieTwoScore)
+    if (!isMoved) {
+        console.log("PlayBothDice: Value must always be true else theres a problem! " + isMoved)
+    }
+  }
+
+  playBothDiceButConsumeSix(): void {
+    let dieValue = this.rule.consumeDieWithValueSixReturnTheOtherValue()
+    console.log("Should consume six and play remaining value: " + dieValue)
+    let isMoved = this.currentPlayer.moveSelectedPiece(dieValue)
+    if (!isMoved) {
+      console.log("PlayBothDiceConsumeSix: Value must always be true else theres a problem! " + isMoved)
+    }
+  }
+
+  playSelectedDie(): void {
+    let selectedDieId = this.selectedDieId();
+    let dieValue = this.selectedDieValue()
+    console.log("Should play " + selectedDieId + " with value: " + dieValue)
+    let isMoved = this.currentPlayer.moveSelectedPiece(dieValue)
+    if (!isMoved) {
+      console.log("PlaySelectedDie: Value must always be true else theres a problem! " + isMoved)
+    }
+    this.scene.get('SideScene').events.emit('resetSingleDie', selectedDieId)
+  }
+
+  playConsumeSix(): void {
+    let selectedDieId = this.rule.consumeDieWithValueSixAndReturnPieceId()
+    if (selectedDieId != null) {
+      let isMoved = this.currentPlayer.moveSelectedPiece(0)
+      this.scene.get('SideScene').events.emit('resetSingleDie', selectedDieId)
+      if (!isMoved) {
+        console.log("PlayConsumeSix: Value must always be true else theres a problem! " + isMoved)
+      }
+    }else {
+      console.log("Piece id is null.. Should never happen")
+    }
+    
+
+  }
   
   update(time: number): void {
     

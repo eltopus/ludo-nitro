@@ -248,7 +248,7 @@ export class Movement {
             //console.log("index: " + index + " Meets B1 criteria because it is " +  startIndex + " <= " + stopIndex);
         
             if ((index + moveBy) > stopIndex){
-                console.log("Movement index " + (index + moveBy) + " is >= " + stopIndex);
+                //console.log("Movement index " + (index + moveBy) + " is >= " + stopIndex);
                 let adjustedMoveBy = (stopIndex - index)
                 let x_start1 = (x - (this.grid_offset * adjustedMoveBy))
                 if (adjustedMoveBy > 0) {

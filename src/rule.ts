@@ -20,7 +20,7 @@ export class Rule {
         this.currentPlayer = this.players.pop()
         this.players.unshift(this.currentPlayer)
         this.scene.registry.set('currentPlayer', this.currentPlayer.playerName)
-        this.scene.scene.get('SideScene').events.emit('resetBothDice', 'die1', 'die2')
+        this.scene.scene.get('SideScene').events.emit('resetBothDice')
         return this.currentPlayer
     }
 
@@ -41,14 +41,56 @@ export class Rule {
     }
 
     evaluateIfDieValueSixShouldBeConsumed(): boolean {
-        return (this.currentPlayer.selectedPiece.isInActive())
+        return (this.currentPlayer.selectedPiece.isNotActive())
+    }
+
+    evaluateNonActivePiecePlay(): boolean {
+        if (this.atLeastOneSixIsRolled()){
+            return true
+        }
+        return false
     }
 
     shouldPlayBothDice(): boolean {
-        // both dice seleted or none of the dice is selected
-        return (this.scene.registry.get('die1-selected') && this.scene.registry.get('die2-selected')) || 
-                (!this.scene.registry.get('die1-selected') && !this.scene.registry.get('die2-selected')) ||
-                this.currentPlayer.hasExactlyOneActivePiece()
+
+        if (this.currentPlayer.hasNoActivePieces() && !this.doubleSixIsRolled()) {
+            console.log("Player has no active piece. Play both dice")
+                return true
+        }
+        if (this.currentPlayer.hasExactlyOneActivePiece() && this.currentPlayer.selectedPieceIsActive()) {
+            console.log("Player has exactly one active piece which is also the selected piece. Play both dice")
+                return true
+        }
+
+        if (this.currentPlayer.hasActivePieces() && 
+                this.currentPlayer.selectedPieceIsNotActive() && 
+                this.atLeastOneSixIsRolled() && 
+                this.bothDiceSelected()) {
+            console.log("Player has active pieces selected piece is NOT active, six is rolled and both dice are selected. Play both dice")
+                return true
+        }
+
+        if (this.currentPlayer.hasActivePieces() &&
+            this.currentPlayer.selectedPieceIsActive() &&
+            this.bothDiceSelected())  {
+                console.log("Player has active pieces and both dice are selected. Play both dice")
+                return true
+        }
+        if (this.hasExactlyOneUnspentDie() && this.currentPlayer.selectedPieceIsActive())  {
+            console.log("Player has one unspent die. Play both dice")
+            return true
+        }
+        return false
+    }
+
+    hasExactlyOneUnspentDie(): boolean {
+        if (this.scene.registry.get('die1') <= 0 && this.scene.registry.get('die2') > 0) {
+            return true
+        }
+        if (this.scene.registry.get('die2') <= 0 && this.scene.registry.get('die1') > 0) {
+            return true
+        }
+        return false
     }
 
     
@@ -80,4 +122,28 @@ export class Rule {
         }
         return false
     }
+
+    consumeDieWithValueSixAndReturnPieceId(): string {
+        if (this.scene.registry.get('die1') === 6){
+            this.scene.scene.get('SideScene').events.emit('resetSingleDie', 'die1')
+            return "die1"
+        }else if (this.scene.registry.get('die2') === 6){
+            this.scene.scene.get('SideScene').events.emit('resetSingleDie', 'die2')
+            return "die2"
+        }
+        return null
+    }
+
+    bothDiceSelected(): boolean {
+        return this.scene.registry.get('die1-selected') && this.scene.registry.get('die2-selected')
+    }
+
+    anyOfTheSelectedDiceHasValueSix(): boolean {
+        return this.scene.registry.get('die1-selected') && this.scene.registry.get('die1') === 6 || this.scene.registry.get('die2-selected') && this.scene.registry.get('die2') === 6
+    }
+
+    doubleSixIsRolled(): boolean {
+        return this.scene.registry.get('die1') === 6 && this.scene.registry.get('die2') === 6
+    }
+
 }

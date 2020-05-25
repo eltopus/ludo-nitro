@@ -1,14 +1,17 @@
+import {SideSceneEmitter} from './sideSceneEmmiter'
 export class Die extends Phaser.GameObjects.Sprite {
     frameIndex: number
     dieId: string
     rng = new Phaser.Math.RandomDataGenerator()
     dieFrame: number
     isSelected: boolean
+    emitter: SideSceneEmitter
 
     constructor(scene: Phaser.Scene, x: number, y: number, frameIndex: number, texture: string){
         super(scene, x, y, texture, frameIndex);
         this.dieId = texture
         this.dieFrame = -1
+        this.emitter = new SideSceneEmitter(scene)
      
         this.isSelected = false
         this.setInteractive();
@@ -45,14 +48,15 @@ export class Die extends Phaser.GameObjects.Sprite {
         this.frame = this.texture.frames[this.dieFrame];
         this.setAngle(180)
         this.scene.registry.set(this.dieId, this.getFrameValue(this.dieFrame))
-        this.scene.events.emit('dieRolledCompleted', this.dieId)
+        this.emitter.emmitDieRollCompleted(this.dieId)
     }
 
     roll(): void {
         this.alpha = 1
         this.scale = 1
         this.setAngle(45)
-        this.dieFrame = Phaser.Math.Between(0, 5)
+        //this.dieFrame = Phaser.Math.Between(0, 5)
+        this.dieFrame = 2
         this.anims.play('roll', false)
     }
 
@@ -79,6 +83,7 @@ export class Die extends Phaser.GameObjects.Sprite {
         this.dieFrame = -1
         this.isSelected = false
         this.scene.registry.set(this.dieId, 0)
+        this.scene.registry.set(this.dieId + "-selected", false)
     }
 
     hasValue(): boolean {

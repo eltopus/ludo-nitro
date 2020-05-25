@@ -73,10 +73,10 @@ export class SideScene extends Phaser.Scene {
       this.die2Score.setText("dieTwo: " + data)
     }
     if (key === 'die1-selected'){
-      console.log("die1 selected: " + data)
+      //console.log("die1 selected: " + data)
     }
     if (key === 'die2-selected'){
-      console.log("die2 selected: " + data)
+      //console.log("die2 selected: " + data)
     }
     if (key === 'currentPlayer'){
       this.displayPlayerName.setText("CurrentPlayer: " + data)
