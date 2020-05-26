@@ -4,12 +4,12 @@ export class SideSceneEmitter {
         this.scene = scene
     }
 
-    emmitDiceRollCompleted(diceRolledCount: number): void {
-        this.scene.scene.get('GameScene').events.emit('dieRolledCompleted', diceRolledCount)
+    emmitDiceRollCompleted(diceRollValue: number): void {
+        this.scene.scene.get('GameScene').events.emit('dieRolledCompleted', diceRollValue)
     }
 
-    emmitDieRollCompleted(dieId: string): void {
-        this.scene.events.emit('dieRolledCompleted', dieId)
+    emmitDieRollCompleted(dieId: string, dieValue: number): void {
+        this.scene.events.emit('dieRolledCompleted', dieId, dieValue)
     }
 
     emmitDieSelection(dieId: string): void {

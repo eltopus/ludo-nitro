@@ -4,18 +4,22 @@ export class Dice {
     dice: Array<Die>
     scene: Phaser.Scene
     diceRolledCount: number
+    diceRollValue: number
     emitter: SideSceneEmitter
 
     constructor(scene: Phaser.Scene) {
         this.dice = new Array<Die>()
         this.diceRolledCount = 0
+        this.diceRollValue = 0
         this.scene = scene
         this.emitter = new SideSceneEmitter(scene)
-        this.scene.events.on('dieRolledCompleted', () => {
+        this.scene.events.on('dieRolledCompleted', (dieId: string, dieValue: number) => {
             ++this.diceRolledCount
+            this.diceRollValue += dieValue
             if (this.diceRolledCount > 1) {
-                 this.emitter.emmitDiceRollCompleted(this.diceRolledCount)
+                 this.emitter.emmitDiceRollCompleted(this.diceRollValue)
                  this.diceRolledCount = 0
+                 this.diceRollValue = 0
             }
            
         })

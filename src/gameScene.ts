@@ -187,6 +187,11 @@ export class GameScene extends Phaser.Scene {
             let piecePath  = this.currentPlayer.selectedPiece.generatePath(dieValue)
             if (this.isVadidPath(piecePath)){
               console.log(this.interpreteActivePath(piecePath) + " is valid!")
+              this.scene.get('SideScene').events.emit('resetSingleDie', selectedDieId)
+              let isMoved = this.currentPlayer.moveSelectedPieceByPath(piecePath)
+              if (!isMoved) {
+                console.log("PlayBothDice: Value must always be true else theres a problem! " + isMoved)
+              }
             }else{
               console.log(this.interpreteActivePath(piecePath) + " is NOT valid!")
             }
@@ -226,7 +231,13 @@ export class GameScene extends Phaser.Scene {
     console.log("Evaluating piece completion rule pieceId: " + pieceId )
     this.paths = this.rule.evaluatePieceMovementCompletion()
     if (this.paths.length === 0) {
-      this.currentPlayer = this.rule.getNextPlayer()
+      if (this.rule.rolledDoubleSix){
+        console.log("Stay on current player because of prior double six")
+        this.rule.rolledDoubleSix = false
+      }else {
+        this.currentPlayer = this.rule.getNextPlayer()
+      }
+      
     }else {
       console.log("Evaluate Game is true after first play. Stay on player: " + this.currentPlayer.playerName)
       for (let path of this.paths) {
@@ -236,7 +247,12 @@ export class GameScene extends Phaser.Scene {
   
   }
 
-  evaluateDiceRollCompletion(dieCount: number): void {
+  evaluateDiceRollCompletion(diceRollValue: number): void {
+    
+    if (diceRollValue === 12){
+      console.log("doublesix roll set: " + diceRollValue)
+      this.rule.rolledDoubleSix = true
+    }
     this.paths = this.rule.evaluateDiceRollCompletion()
     if (this.paths.length === 0) {
       this.currentPlayer = this.rule.getNextPlayer()

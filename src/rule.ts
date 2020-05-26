@@ -5,10 +5,12 @@ export class Rule {
     players: Array<Player>
     currentPlayer: Player
     scene: Phaser.Scene
+    rolledDoubleSix: boolean
     
     constructor(scene: Phaser.Scene) {
         this.players = Array<Player>()
         this.scene = scene
+        this.rolledDoubleSix = false
 
     }
 
@@ -80,7 +82,7 @@ export class Rule {
             console.log("Player has active pieces and both dice are selected. Play both dice")
             return true
         }
-        if (this.hasExactlyOneUnspentDie() && this.currentPlayer.selectedPieceIsActive())  {
+        if (this.hasExactlyOneUnspentDie() && !this.atLeastOneSixIsRolled())  {
             console.log("Player has one unspent die. Play both dice")
             return true
         }
