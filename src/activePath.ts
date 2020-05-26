@@ -13,6 +13,7 @@ export class ActivePath extends Phaser.Curves.Path {
     projectedPieceState: PieceState
     pieceType: any
     isValid: boolean
+    moveBy: number
     constructor(scene: Phaser.Scene, piece: Piece){
         super(piece.x, piece.y)
         this.scene = scene;

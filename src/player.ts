@@ -3,6 +3,7 @@ import {Red} from './pieceState'
 import {Blue} from './pieceState'
 import {Green} from './pieceState'
 import {Yellow} from './pieceState'
+import {ActivePath} from './activePath'
 
 export class Player {
     playerName: string
@@ -53,6 +54,15 @@ export class Player {
         }
     }
 
+    moveSelectedPieceByPath(path: ActivePath): boolean {
+        if (this.selectedPiece != null && !this.selectedPiece.isMoving()) {
+            this.selectedPiece.moveByPath(path)
+            return true;
+        }else {
+            return false
+        }
+    }
+
     destroyPiece(pieceId: string): void {
         let indexOf = -1
         for (let piece of this.pieces) {
@@ -74,9 +84,16 @@ export class Player {
     }
 
     hasActivePieces(): boolean {
-        
         for (let piece of this.pieces) {
-            //console.log("pieceId: " + piece.pieceId + " pieceState: " + piece.pieceState)
+            if (piece.isActive() || piece.isOnHomePath()){
+                return true
+            }
+        }
+        return false;
+    }
+
+    hasJustActivePieces(): boolean {
+        for (let piece of this.pieces) {
             if (piece.isActive()){
                 return true
             }
@@ -84,14 +101,35 @@ export class Player {
         return false;
     }
 
-    hasNoActivePieces(): boolean {
-        
+    hasInActivePieces(): boolean {
         for (let piece of this.pieces) {
-            if (piece.isActive()){
+            if (piece.isNotActive()){
+                return true
+            }
+        }
+        return false;
+    }
+
+    hasNoActivePieces(): boolean {
+        for (let piece of this.pieces) {
+            if (piece.isActive() || piece.isOnHomePath()){
                 return false
             }
         }
         return true;
+    }
+
+    hasExactlyOneActiveAndAtLeastOneHomePiece(): boolean {
+        let activePieceCount = 0;
+        for (let piece of this.pieces) {
+            if (piece.isActive() || piece.isOnHomePath()){
+                ++activePieceCount
+                if (activePieceCount > 1){
+                    break
+                }
+            }
+        }
+        return (activePieceCount > 1);
     }
 
     hasExactlyOneActivePiece(): boolean {
@@ -118,6 +156,26 @@ export class Player {
     selectedPieceIsNotActive(): boolean {
         return this.selectedPiece.isNotActive()
     }
+
+    hasHomePieces(): boolean {
+        for (let piece of this.pieces) {
+            if (piece.isOnHomePath()){
+                return true;
+            }
+        }
+        return false
+    }
+
+    getFirstActivePiece(): Piece {
+        for (let piece of this.pieces) {
+            if (piece.isActive()){
+                return piece
+            }
+        }
+        return null
+    }
+
+
     
 
 

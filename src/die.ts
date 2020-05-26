@@ -51,12 +51,16 @@ export class Die extends Phaser.GameObjects.Sprite {
         this.emitter.emmitDieRollCompleted(this.dieId)
     }
 
-    roll(): void {
+    roll(value: number): void {
         this.alpha = 1
         this.scale = 1
         this.setAngle(45)
-        //this.dieFrame = Phaser.Math.Between(0, 5)
-        this.dieFrame = 2
+        let setFrame = this.getFrameFromValue(value)
+        if (setFrame >= 0){
+            this.dieFrame = setFrame
+        }else {
+            this.dieFrame = Phaser.Math.Between(0, 5)
+        }
         this.anims.play('roll', false)
     }
 
@@ -78,6 +82,26 @@ export class Die extends Phaser.GameObjects.Sprite {
                 return 0;
         }
     }
+
+    getFrameFromValue(value: number): number {
+        switch(value) {
+            case 4:
+                return 0
+            case 5:
+                return 1
+            case 6:
+                return 2
+            case 2:
+                return 3
+            case 3:
+                return 4
+            case 1:
+                return 5
+            default:
+                return -1;
+        }
+    }
+
 
     resetDieFrame(): void {
         this.dieFrame = -1

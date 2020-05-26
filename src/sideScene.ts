@@ -1,6 +1,7 @@
 import "phaser";
 import {Die} from './die'
 import {Dice} from './dice'
+import {SideSceneEmitter} from './sideSceneEmmiter'
 import { TextBox } from 'phaser3-rex-plugins/templates/ui/ui-components.js';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 
@@ -8,6 +9,7 @@ export class SideScene extends Phaser.Scene {
   die1Score: Phaser.GameObjects.Text;
   die2Score: Phaser.GameObjects.Text;
   displayPlayerName: Phaser.GameObjects.Text;
+  emitter: SideSceneEmitter
   dice: Dice
 
   constructor() {
@@ -17,7 +19,7 @@ export class SideScene extends Phaser.Scene {
   }
 
   init(/*params: any*/): void {
-    
+    this.emitter = new SideSceneEmitter(this)
   }
 
   preload(): void {
@@ -46,7 +48,11 @@ export class SideScene extends Phaser.Scene {
      
 
      rollDice.on('pointerdown', (pointer) => {
-        this.dice.rollDice()
+       let value1 =  Phaser.Math.Between(1, 6)
+       let value2 =  Phaser.Math.Between(1, 6)
+       value1 = 5
+       value2 = 2
+       this.emitter.emmitDiceRoll(value1, value2)
      });
 
      this.die1Score = this.add.text(780, 200, "dieOne: 0")

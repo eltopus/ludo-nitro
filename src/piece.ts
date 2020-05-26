@@ -38,8 +38,8 @@ export class Piece extends Phaser.GameObjects.Sprite {
 
 
     move(moveby: number): void {
-        let activePath= new ActivePath(this.scene, this)
-        activePath = this.generatePath(moveby, this.movement, activePath)
+        
+        let activePath = this.generatePath(moveby)
         if (activePath != null) {
           if (activePath.isValid) {
             this.movePieceAlong(activePath, this.scene)
@@ -51,103 +51,109 @@ export class Piece extends Phaser.GameObjects.Sprite {
         }else {
           console.log("Path return null value")
         }
-
     }
 
-    generatePath(moveBy: number, movement: Movement, path: ActivePath): ActivePath {
-    
-        let function_id = this.getPathFunctionId(movement, this.index)
-        path = this.callPathFunction(movement, function_id, moveBy, this.index, this.x, this.y, path)
+    moveByPath(path: ActivePath): void {
+      this.movePieceAlong(path, this.scene)
+      path.updatePiece();
+    }
+
+    generatePath(moveBy: number): ActivePath {
+        let path = new ActivePath(this.scene, this)
+        path.moveBy = moveBy
+        let function_id = this.getPathFunctionId(this.index)
+        path = this.callPathFunction(function_id, moveBy, this.index, this.x, this.y, path)
         if (path.remainderIndex === 0) {
           return path;
         }else {
           do {
-            function_id = this.getPathFunctionId(movement, path.projectedIndex)
-            path = this.callPathFunction(movement, function_id, path.remainderIndex, path.projectedIndex, path.projectedX, path.projectedY, path)
+            function_id = this.getPathFunctionId(path.projectedIndex)
+            path = this.callPathFunction(function_id, path.remainderIndex, path.projectedIndex, path.projectedX, path.projectedY, path)
           }while(path.remainderIndex > 0)
         }
         return path;
-      }
-    
-      getPathFunctionId(movement: Movement, index: number): string {
-        return movement.getPathFunctionId(index);
-      }
+    }
 
-      callPathFunction(movement:Movement, funct_id:string, moveby:number, index:number, x:number, y:number, path:ActivePath): ActivePath {
-        switch(funct_id) {
-          case "Z1": {
-            return movement.generatePathZ1(path, moveby)
-            break;
-          }
-          case "A1": {
-            return movement.generatePathA1(moveby, index,x, y, path)
-            break;
-          }
-          case "A2": {
-            return movement.generatePathA2(moveby, index,x, y, path)
-            break;
-          }
-          case "A3": {
-            return movement.generatePathA3(moveby, index,x, y, path)
-            break;
-          }
-          case "B1": {
-            return movement.generatePathB1(moveby, index,x, y, path)
-            break;
-          }
-          case "B2": {
-            return movement.generatePathB2(moveby, index,x, y, path)
-            break;
-          }
-          case "B3": {
-            return movement.generatePathB3(moveby, index,x, y, path)
-            break;
-          }
-          case "C1": {
-            return movement.generatePathC1(moveby, index,x, y, path)
-            break;
-          }
-          case "C2": {
-            return movement.generatePathC2(moveby, index,x, y, path)
-            break;
-          }
-          case "C3": {
-            return movement.generatePathC3(moveby, index,x, y, path)
-            break;
-          }
-          case "D1": {
-            return movement.generatePathD1(moveby, index,x, y, path)
-            break;
-          }
-          case "D2": {
-            return movement.generatePathD2(moveby, index,x, y, path)
-            break;
-          }
-          case "D3": {
-            return movement.generatePathD3(moveby, index,x, y, path)
-            break;
-          }
-          case "A4": {
-            return movement.generatePathA4(moveby, index,x, y, path)
-            break;
-          }
-          case "D4": {
-            return movement.generatePathD4(moveby, index,x, y, path)
-            break;
-          }
-          case "B4": {
-            return movement.generatePathB4(moveby, index,x, y, path)
-            break;
-          }
-          case "C4": {
-            return movement.generatePathC4(moveby, index,x, y, path)
-            break;
-          }
-          default:
-            break;
+    
+    getPathFunctionId(index: number): string {
+        return this.movement.getPathFunctionId(index);
+    }
+
+    callPathFunction(funct_id:string, moveby:number, index:number, x:number, y:number, path:ActivePath): ActivePath {
+      switch(funct_id) {
+        case "Z1": {
+          return this.movement.generatePathZ1(path, moveby)
+          break;
         }
-        return null;
+        case "A1": {
+          return this.movement.generatePathA1(moveby, index,x, y, path)
+          break;
+        }
+        case "A2": {
+          return this.movement.generatePathA2(moveby, index,x, y, path)
+          break;
+        }
+        case "A3": {
+          return this.movement.generatePathA3(moveby, index,x, y, path)
+          break;
+        }
+        case "B1": {
+          return this.movement.generatePathB1(moveby, index,x, y, path)
+          break;
+        }
+        case "B2": {
+          return this.movement.generatePathB2(moveby, index,x, y, path)
+          break;
+        }
+        case "B3": {
+          return this.movement.generatePathB3(moveby, index,x, y, path)
+          break;
+        }
+        case "C1": {
+          return this.movement.generatePathC1(moveby, index,x, y, path)
+          break;
+        }
+        case "C2": {
+          return this.movement.generatePathC2(moveby, index,x, y, path)
+          break;
+        }
+        case "C3": {
+          return this.movement.generatePathC3(moveby, index,x, y, path)
+          break;
+        }
+        case "D1": {
+          return this.movement.generatePathD1(moveby, index,x, y, path)
+          break;
+        }
+        case "D2": {
+          return this.movement.generatePathD2(moveby, index,x, y, path)
+          break;
+        }
+        case "D3": {
+          return this.movement.generatePathD3(moveby, index,x, y, path)
+          break;
+        }
+        case "A4": {
+          return this.movement.generatePathA4(moveby, index,x, y, path)
+          break;
+        }
+        case "D4": {
+          return this.movement.generatePathD4(moveby, index,x, y, path)
+          break;
+        }
+        case "B4": {
+          return this.movement.generatePathB4(moveby, index,x, y, path)
+          break;
+        }
+        case "C4": {
+          return this.movement.generatePathC4(moveby, index,x, y, path)
+          break;
+        }
+        default:
+          break;
       }
+      return null;
+    }
 
       movePieceAlong(path: ActivePath, scene: Phaser.Scene): void {
         let config = {
@@ -199,7 +205,7 @@ export class Piece extends Phaser.GameObjects.Sprite {
       }
 
       isNotActive(): boolean {
-        return this.pieceState !== PieceState.Active
+        return this.pieceState === PieceState.Inactive
       }
 
       isOnHomePath(): boolean {
@@ -221,6 +227,25 @@ export class Piece extends Phaser.GameObjects.Sprite {
       becomeExited(): void {
         this.pieceState = PieceState.Exited
       }
+
+      showPieceState(): string {
+        switch(this.pieceState){
+            case PieceState.Active: {
+                return "Active"
+            }
+            case PieceState.Inactive: {
+                return "Inactive"
+            }
+            case PieceState.OnHomePath: {
+                return "OnHomePath"
+            }
+            case PieceState.Exited: {
+                return "Exited"
+            }
+            default:
+                return "UNKNOWN"
+        }
+    }
 
 
 }

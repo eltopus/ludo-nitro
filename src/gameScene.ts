@@ -5,12 +5,14 @@ import {Player} from './player'
 import {Rule} from './rule'
 import {Draggable} from './draggable'
 import { TextBox, TextArea } from 'phaser3-rex-plugins/templates/ui/ui-components.js';
+import { ActivePath } from "./activePath";
 
 
 export class GameScene extends Phaser.Scene {
   info: Phaser.GameObjects.Text;
   currentPlayer: Player = null
   rule: Rule;
+  paths: Array<ActivePath> = null
 
   constructor() {
     super({
@@ -96,56 +98,114 @@ export class GameScene extends Phaser.Scene {
     let play = this.add.sprite(868, 600, 'play')
     play.setInteractive()
 
+    // play.on('pointerdown', (pointer) => {
+
+    //   if (this.currentPlayer.hasSelectedPiece()) {
+    //     // Handle both dice play
+    //       if (this.rule.shouldPlayBothDice()) 
+    //       {
+    //         if (this.rule.evaluateIfDieValueSixShouldBeConsumed())
+    //         {
+    //           this.playBothDiceButConsumeSix()
+    //         } 
+    //         else {
+    //           this.playBothDice()
+    //         } //this.rule.evaluateIfDieValueSixShouldBeConsumed()
+    //       } 
+    //       else 
+    //       {
+    //         // handles split dice play cases
+    //         if (this.currentPlayer.selectedPieceIsActive())
+    //         {
+    //           // handles active pieces
+    //           if (this.dieIsSelected())
+    //           {
+    //             if (this.currentPlayer.selectedPieceIsActive())
+    //             {
+    //              this.playSelectedDie()
+    //             }
+    //             else 
+    //             {
+    //               console.log("Handle selected piece is not active")
+    //             } // end this.currentPlayer.selectedPieceIsActive()
+                
+    //           }
+    //           else 
+    //           {
+    //             console.log("Please select a die...")
+    //           }
+    //         } // end this.currentPlayer.selectedPieceIsActive()
+    //         else 
+    //         {
+    //           // handles non active pieces
+    //           if (this.dieIsSelected())
+    //           {
+    //             if (this.rule.atLeastOneSixIsRolled())
+    //             {
+    //               if (this.rule.anyOfTheSelectedDiceHasValueSix())
+    //               {
+    //                 console.log("piece not active, six rolled, die value six is selected")
+    //                 this.playConsumeSix()
+    //               }
+    //               else 
+    //               {
+    //                 console.log("piece not active, six rolled, die value six is NOT selected")
+    //                 console.log("Selected die value cannot be applied to selected piece")
+    //               }
+                
+    //             }
+    //             else 
+    //             {
+    //               console.log("Handles no six is rolled and selected piece is NOT active")
+    //               console.log("Selected die value cannot be applied to selected piece")
+    //             }
+    //           }
+    //           else 
+    //           {
+    //             console.log("Please select a die...")
+    //           }
+    //         } //end this.currentPlayer.selectedPieceIsActive() 
+            
+    //       } //end this.rule.shouldPlayBothDice()
+    //     }
+    //     else
+    //     {
+    //       console.log("Please select a piece...")
+    //     } // end this.currentPlayer.hasSelectedPiece()
+    // });
+
     play.on('pointerdown', (pointer) => {
 
       if (this.currentPlayer.hasSelectedPiece()) {
-        // Handle both dice play
-          if (this.rule.shouldPlayBothDice()) {
-            if (this.rule.evaluateIfDieValueSixShouldBeConsumed()){
-              this.playBothDiceButConsumeSix()
-            }else {
-              this.playBothDice()
-            }
-          }else {
-            // handles split dice play cases
-            if (this.currentPlayer.selectedPieceIsActive()){
-              // handles active pieces
-              if (this.dieIsSelected()){
-                if (this.currentPlayer.selectedPieceIsActive()){
-                 this.playSelectedDie()
-                }else {
-                  console.log("Handle selected piece is not active")
-                }
-                
-              }else {
-                console.log("Please select a die...")
-              }
-            }else {
-              // handles non active pieces
-              if (this.dieIsSelected()){
-                if (this.rule.atLeastOneSixIsRolled()){
-                  if (this.rule.anyOfTheSelectedDiceHasValueSix()){
-                    console.log("piece not active, six rolled, die value six is selected")
-                    this.playConsumeSix()
-                  }else {
-                    // ignore die selection and play both dice
-                    console.log("piece not active, six rolled, die value six is NOT selected")
-                    console.log("Selected die value cannot be applied to selected piece")
-                  }
-                
-                }else {
-                  console.log("Handles no six is rolled and selected piece is NOT active")
-                }
-              }else {
-                console.log("Please select a die...")
-              }
+        if (this.paths.length > 1){
+          // die selection needed
+          // what if both dice selected?
+          if (this.dieIsSelected()){
+            let selectedDieId = this.selectedDieId();
+            let dieValue = this.selectedDieValue()
+            //console.log("PlaySelectedDie: Should play " + selectedDieId + " with value: " + dieValue)
+            let piecePath  = this.currentPlayer.selectedPiece.generatePath(dieValue)
+            if (this.isVadidPath(piecePath)){
+              console.log(this.interpreteActivePath(piecePath) + " is valid!")
+            }else{
+              console.log(this.interpreteActivePath(piecePath) + " is NOT valid!")
             }
             
+            //this.scene.get('SideScene').events.emit('resetSingleDie', selectedDieId)
+
+          }else {
+            console.log("Please select die...")
           }
-        }else{
-          console.log("Please select a piece...")
+        }else {
+          // no die selection needed
         }
+
+      }else {
+        console.log("Please select piece...")
+      }
+       
     });
+
 
     let draggable = new Draggable(24.1, 48.1, this)
     this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
@@ -162,23 +222,29 @@ export class GameScene extends Phaser.Scene {
   }
 
   evaluatePieceMovementCompletion(pieceId: string, pieceIndex: number): void {
-   //console.log("Evaluating piece completion rule pieceId: " + pieceId )
-   if (this.rule.evaluatePieceMovementCompletion()){
-    console.log("Stay on current player...")
-   }else {
-     this.currentPlayer = this.rule.getNextPlayer()
-   }
-   
- 
-    
+
+    console.log("Evaluating piece completion rule pieceId: " + pieceId )
+    this.paths = this.rule.evaluatePieceMovementCompletion()
+    if (this.paths.length === 0) {
+      this.currentPlayer = this.rule.getNextPlayer()
+    }else {
+      console.log("Evaluate Game is true after first play. Stay on player: " + this.currentPlayer.playerName)
+      for (let path of this.paths) {
+        console.log(this.interpreteActivePath(path))
+      }
+    }
+  
   }
 
   evaluateDiceRollCompletion(dieCount: number): void {
-    if (this.rule.evaluateDiceRollCompletion()){
-     // console.log("Evaluate Game is true. Stay on player: " + this.currentPlayer.playerName)
-    }else {
+    this.paths = this.rule.evaluateDiceRollCompletion()
+    if (this.paths.length === 0) {
       this.currentPlayer = this.rule.getNextPlayer()
-      //console.log("Evaluate Game is false. Move to next player: " + this.currentPlayer.playerName)
+    }else {
+      console.log("Evaluate Game is true. Stay on player: " + this.currentPlayer.playerName)
+      for (let path of this.paths) {
+        console.log(this.interpreteActivePath(path))
+      }
     }
   }
 
@@ -224,12 +290,18 @@ export class GameScene extends Phaser.Scene {
   playBothDice(): void {
     let dieOneScore = this.registry.get('die1')
     let dieTwoScore = this.registry.get('die2')
-    console.log("Should play both dice " + dieOneScore + " " + dieTwoScore)
-    this.scene.get('SideScene').events.emit('resetBothDice')
-    let isMoved = this.currentPlayer.moveSelectedPiece(dieOneScore + dieTwoScore)
-    if (!isMoved) {
+    let validPath = this.currentPlayer.selectedPiece.generatePath(dieOneScore + dieTwoScore)
+    if (validPath !== null && validPath.isValid){
+      console.log("Should play both dice " + dieOneScore + " " + dieTwoScore)
+      this.scene.get('SideScene').events.emit('resetBothDice')
+      let isMoved = this.currentPlayer.moveSelectedPieceByPath(validPath)
+      if (!isMoved) {
         console.log("PlayBothDice: Value must always be true else theres a problem! " + isMoved)
+      }
+    }else {
+      console.log("Selected die value: " + (dieOneScore + dieTwoScore) + " cannot be applied to selected piece")
     }
+    
   }
 
   playBothDiceButConsumeSix(): void {
@@ -244,7 +316,7 @@ export class GameScene extends Phaser.Scene {
   playSelectedDie(): void {
     let selectedDieId = this.selectedDieId();
     let dieValue = this.selectedDieValue()
-    console.log("Should play " + selectedDieId + " with value: " + dieValue)
+    console.log("PlaySelectedDie: Should play " + selectedDieId + " with value: " + dieValue)
     let isMoved = this.currentPlayer.moveSelectedPiece(dieValue)
     if (!isMoved) {
       console.log("PlaySelectedDie: Value must always be true else theres a problem! " + isMoved)
@@ -265,6 +337,19 @@ export class GameScene extends Phaser.Scene {
     }
     
 
+  }
+
+  interpreteActivePath(path: ActivePath): string {
+    return "Play " + path.moveBy + " on " + path.activePiece.pieceId + " with state: " + path.activePiece.showPieceState()
+  }
+
+  isVadidPath(path: ActivePath) {
+    for (let p of this.paths){
+      if (this.interpreteActivePath(p) == this.interpreteActivePath(path)){
+        return true
+      }
+    }
+    return false
   }
   
   update(time: number): void {

@@ -20,16 +20,15 @@ export class Dice {
            
         })
         this.scene.events.on('resetBothDice', () => {
-            console.log("resetting both dice...")
+            //console.log("resetting both dice...")
             for (let die of this.dice){
                 die.resetDieFrame()
                 die.resetDieFrame()
             }
-           
-        })
+        });
 
         this.scene.events.on('resetSingleDie', (dieId: string) => {
-            console.log("resetting single die: " + dieId)
+            //console.log("resetting single die: " + dieId)
             for (let die of this.dice){
                 if (die.dieId === dieId){
                     die.resetDieFrame()
@@ -38,6 +37,10 @@ export class Dice {
                 
             }
            
+        });
+
+        this.scene.events.on('rollDice', (value1: number, value2: number) => {
+           this.rollDice(value1, value2)
         })
     }
 
@@ -45,10 +48,9 @@ export class Dice {
         this.dice.push(die)
     }
 
-    rollDice(): void {
-        for (let die of this.dice) {
-            die.roll()
-        }
+    rollDice(value1: number, value2: number): void {
+        this.dice[0].roll(value1)
+        this.dice[1].roll(value2)
     }
 
 

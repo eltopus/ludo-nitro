@@ -16,5 +16,9 @@ export class SideSceneEmitter {
         this.scene.scene.get('GameScene').events.emit('dieSelection', dieId)
     }
 
+    emmitDiceRoll(value1: number, value2: number): void {
+        this.scene.events.emit('rollDice', value1, value2)
+    }
+
 }
 

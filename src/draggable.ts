@@ -728,10 +728,10 @@ export class Draggable {
             piece.becomeHomeBound()
         }
 
-        if (piece.index >= 57 || 
-            piece.index >= 63 || 
-            piece.index >= 69 || 
-            piece.index >= 75  ) {
+        if (piece.index === 57 || 
+            piece.index === 63 || 
+            piece.index === 69 || 
+            piece.index === 75  ) {
             piece.becomeExited()
         }
 
