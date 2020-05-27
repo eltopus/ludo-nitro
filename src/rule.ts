@@ -25,6 +25,7 @@ export class Rule {
         this.players.unshift(this.currentPlayer)
         this.scene.registry.set('currentPlayer', this.currentPlayer.playerName)
         this.scene.scene.get('SideScene').events.emit('resetBothDice')
+        this.currentPlayer.bringPiecesToTop()
         return this.currentPlayer
     }
 
@@ -163,10 +164,7 @@ export class Rule {
         return piece.isActive() || this.homePieceCanUseOneOrMoreDice(piece) || this.atLeastOneSixIsRolled()
     }
 
-    interpreteActivePath(path: ActivePath): string {
-        return "Play " + path.moveBy + " on " + path.activePiece.pieceId
-    }
-
+    
     arrayIntersection(a1: Array<ActivePath>, a2: Array<ActivePath>): Array<ActivePath> {
         return a1.filter((n)=> {
             return a2.indexOf(n) !== -1
@@ -369,7 +367,22 @@ export class Rule {
         else {
             return false
         }
-
     }
 
+    getAllPiecesAtIndex(index: number): Array<Piece> {
+        let pieces = []
+        for (let player of this.players) {
+            if (player !== this.currentPlayer){
+                pieces = player.pieces.filter((piece)=> {
+                    return piece.index === index
+                });
+            }
+        }
+        return pieces
+    }
+
+    handlePeckingSituation(currentPlayerPieceId: string, opposingPlayerPiece: Piece): void {
+        this.scene.events.emit('pieceExited', currentPlayerPieceId)
+        opposingPlayerPiece.moveBackHome()
+    }
 }

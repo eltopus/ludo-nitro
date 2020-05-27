@@ -34,4 +34,8 @@ export class ActivePath extends Phaser.Curves.Path {
         this.activePiece.index = this.projectedIndex;
         this.activePiece.pieceState = this.projectedPieceState;
     }
+
+    pathToString(): string {
+        return "Play " + this.moveBy + " on " + this.activePiece.pieceId + " with state: " + this.activePiece.showPieceState()
+    }
 }

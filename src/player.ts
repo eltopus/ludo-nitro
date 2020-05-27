@@ -54,15 +54,6 @@ export class Player {
         }
     }
 
-    moveSelectedPieceByPath(path: ActivePath): boolean {
-        if (this.selectedPiece != null && !this.selectedPiece.isMoving()) {
-            this.selectedPiece.moveByPath(path)
-            return true;
-        }else {
-            return false
-        }
-    }
-
     destroyPiece(pieceId: string): void {
         let indexOf = -1
         for (let piece of this.pieces) {
@@ -183,5 +174,29 @@ export class Player {
         }
         return null
     }
+
+    doesNotBelong(piece: Piece): boolean {
+        return this.group.contains(piece) === false
+    }
+
+    bringPiecesToTop(): void {
+        this.group.getChildren().forEach((child) => {
+            this.scene.children.bringToTop(child)
+        })
+    }
+
+    hasNoPiecesLeft(): boolean {
+        let count = 0
+        for (let piece of this.pieces) {
+            if (piece.isActive() || piece.isNotActive() || piece.isOnHomePath()){
+                ++ count
+                if (count > 0){
+                    break
+                }
+            }
+        }
+        return count === 0
+    }
+
 
 }

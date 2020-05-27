@@ -13,9 +13,13 @@ export class Piece extends Phaser.GameObjects.Sprite {
     movement: Movement
     pieceId: string
     moving: boolean
+    homeX: number
+    homeY: number
     
     constructor(scene: Phaser.Scene, x: number, y: number, index: number, homeIndex: number, startIndex: number, pieceType: any, texture: string){
         super(scene, x, y, texture);
+        this.homeX = x
+        this.homeY = y
         this.pieceId = texture
         this.index = index;
         this.homeIndex = homeIndex;
@@ -40,28 +44,20 @@ export class Piece extends Phaser.GameObjects.Sprite {
     move(moveby: number): void {
       
         if (!this.isActive() && moveby >= 6){
-          console.log("Before MoveBy: " + moveby)
           moveby -= 6
-          console.log("After MoveBy: " + moveby)
-
         }
         let activePath = this.generatePath(moveby)
         if (activePath != null) {
           if (activePath.isValid) {
+            this.scene.children.bringToTop(this)
             this.movePieceAlong(activePath, this.scene)
             activePath.updatePiece();
           }else {
             console.log("Path cannot be applied because it is not valid")
           }
-          
         }else {
           console.log("Path return null value")
         }
-    }
-
-    moveByPath(path: ActivePath): void {
-      this.movePieceAlong(path, this.scene)
-      path.updatePiece();
     }
 
     generatePath(moveby: number): ActivePath {
@@ -80,7 +76,6 @@ export class Piece extends Phaser.GameObjects.Sprite {
         return path;
     }
 
-    
     getPathFunctionId(index: number): string {
         return this.movement.getPathFunctionId(index);
     }
@@ -251,6 +246,12 @@ export class Piece extends Phaser.GameObjects.Sprite {
             default:
                 return "UNKNOWN"
         }
+    }
+
+    moveBackHome(): void {
+      this.index = -1
+      this.becomeInActive()
+      this.movePieceTo(this.homeX, this.homeY)
     }
 
 

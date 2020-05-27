@@ -7,7 +7,6 @@ import {Draggable} from './draggable'
 import { TextBox, TextArea } from 'phaser3-rex-plugins/templates/ui/ui-components.js';
 import { ActivePath } from "./activePath";
 
-
 export class GameScene extends Phaser.Scene {
   info: Phaser.GameObjects.Text;
   currentPlayer: Player = null
@@ -94,11 +93,10 @@ export class GameScene extends Phaser.Scene {
     let play = this.add.sprite(868, 600, 'play')
     play.setInteractive()
 
-  
     play.on('pointerdown', (pointer) => {
 
       if (this.currentPlayer.hasSelectedPiece()) {
-        if (this.paths.length > 1){
+        if (this.paths.length > 0){
           // die selection needed
           // what if both dice selected?
           if (this.singleDieIsSelected()){
@@ -118,9 +116,7 @@ export class GameScene extends Phaser.Scene {
         }else {
           // no die selection needed
           console.log("Path's lenght is 0")
-          
         }
-
       }else {
         console.log("Please select piece...")
       } 
@@ -141,7 +137,19 @@ export class GameScene extends Phaser.Scene {
   }
 
   evaluatePieceMovementCompletion(pieceId: string, pieceIndex: number): void {
-    console.log("Evaluating piece completion rule pieceId: " + pieceId )
+    //console.log("Evaluating piece movement completion pieceId: " + pieceId )
+    let opposingPieces = this.rule.getAllPiecesAtIndex(pieceIndex)
+    for (let oppossingPiece of opposingPieces){
+      console.log("Opposing index: " + oppossingPiece.pieceId)
+      this.rule.handlePeckingSituation(pieceId, oppossingPiece)
+      break
+    }
+
+    // check if player wins
+    if (this.currentPlayer.hasNoPiecesLeft()){
+      alert(this.currentPlayer.playerName + " wins!!!")
+    }
+    
     this.paths = this.rule.evaluatePieceMovementCompletion()
     if (this.paths.length === 0) {
       if (this.rule.rolledDoubleSix){
@@ -153,7 +161,7 @@ export class GameScene extends Phaser.Scene {
     }else {
       console.log("Evaluate Game is true after first play. Stay on player: " + this.currentPlayer.playerName)
       for (let path of this.paths) {
-        console.log(this.interpreteActivePath(path))
+        console.log(path.pathToString())
       }
     }
   }
@@ -169,19 +177,19 @@ export class GameScene extends Phaser.Scene {
     }else {
       console.log("Evaluate Game is true. Stay on player: " + this.currentPlayer.playerName)
       for (let path of this.paths) {
-        console.log(this.interpreteActivePath(path))
+        console.log(path.pathToString())
       }
     }
   }
 
   update(time: number): void {}
 
-  singleDieIsSelected(): any {
+  singleDieIsSelected(): boolean {
     return (this.registry.get('die1-selected') && !this.registry.get('die2-selected')) || 
            (!this.registry.get('die1-selected') && this.registry.get('die2-selected'))
   }
 
-  bothDiceSelected(): any {
+  bothDiceSelected(): boolean {
     return (this.registry.get('die1-selected') && this.registry.get('die2-selected'))
   }
 
@@ -208,13 +216,9 @@ export class GameScene extends Phaser.Scene {
   }
 
 
-  interpreteActivePath(path: ActivePath): string {
-    return "Play " + path.moveBy + " on " + path.activePiece.pieceId + " with state: " + path.activePiece.showPieceState()
-  }
-
-  isVadidPath(path: ActivePath) {
-    for (let p of this.paths){
-      if (this.interpreteActivePath(p) == this.interpreteActivePath(path)){
+  isVadidPath(activePath: ActivePath) {
+    for (let path of this.paths){
+      if (path.pathToString() === activePath.pathToString()){
         return true
       }
     }
@@ -224,15 +228,17 @@ export class GameScene extends Phaser.Scene {
   playDiceValue(dieValue: number, diceIds: Array<string>): void {
     let piecePath  = this.currentPlayer.selectedPiece.generatePath(dieValue)
     if (this.isVadidPath(piecePath)){
-      console.log(this.interpreteActivePath(piecePath) + " is valid!")
+      console.log(piecePath.pathToString() + " is valid!")
       diceIds.forEach(id => {
         this.scene.get('SideScene').events.emit('resetSingleDie', id)
       });
       let isMoved = this.currentPlayer.moveSelectedPiece(dieValue)
+      if (isMoved){
+
+      }
     }else{
-      console.log(this.interpreteActivePath(piecePath) + " is NOT valid!")
+      console.log(piecePath.pathToString() + " is NOT valid!")
     }   
   }
- 
-  
+
 };
