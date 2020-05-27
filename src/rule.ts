@@ -53,83 +53,51 @@ export class Rule {
 
 
     shouldPlayBothDice(): boolean {
-        if (this.currentPlayer.hasNoActivePieces() && !this.doubleSixIsRolled()) {
-            console.log("Player has no active piece. Play both dice")
+        if (this.currentPlayer.allPiecesAreInactive()){
+            console.log("All pieces are inactive...")
+            return true
+        }
+        // player has no active piece and no six is rolled
+        if (!this.currentPlayer.hasJustActivePieces() && !this.atLeastOneSixIsRolled() && !this.doubleSixIsRolled()) {
+            console.log("Player has no active piece and no six is rolled Play both dice")
             return true
         }
 
-        if (this.currentPlayer.hasExactlyOneActivePiece() && !this.currentPlayer.hasHomePieces() && !this.atLeastOneSixIsRolled()){
-            console.log("Player has exactly one active piece and NO six is rolled. Play both dice")
+        if (!this.currentPlayer.hasActivePieces() && !this.atLeastOneSixIsRolled() && !this.doubleSixIsRolled()) {
+            console.log("Player has no active piece and no six is rolled Play both dice")
             return true
         }
 
-        if (this.currentPlayer.hasExactlyOneActiveAndAtLeastOneHomePiece() && !this.homePiecesCanUseOneOrMoreDice()) {
-            console.log("Player has exactly one active piece which is also the selected piece. Play both dice")
+        if (this.currentPlayer.hasExactlyOneActivePiece() && !this.currentPlayer.hasHomePieces() && !this.atLeastOneSixIsRolled() && !this.doubleSixIsRolled()){
+            console.log("Player has exactly one active piece and no six is rolled. Play both dice")
+            return true
+
+        }
+
+        if (this.currentPlayer.hasExactlyOneActivePiece() && this.currentPlayer.hasHomePieces() && !this.homePiecesCanUseOneOrMoreDice() && !this.atLeastOneSixIsRolled() && !this.doubleSixIsRolled()){
+            console.log("Player has exactly one active piece and home piece. Home piece cannot use dice and no six is rolled. Play both dice")
+            return true
+
+        }
+
+        if (this.currentPlayer.hasHomePieces() && !this.homePiecesCanUseOneOrMoreDice() && !this.currentPlayer.hasJustActivePieces() && this.currentPlayer.hasInActivePieces() && !this.atLeastOneSixIsRolled() && !this.doubleSixIsRolled()){
+            console.log("Player has home pieces but none can use any of the dice values. Play Both dice")
             return true
         }
 
-        if (this.currentPlayer.hasActivePieces() && 
-                this.currentPlayer.selectedPieceIsNotActive() && 
-                this.atLeastOneSixIsRolled() && 
-                this.bothDiceSelected()) {
-            console.log("Player has active pieces selected piece is NOT active, six is rolled and both dice are selected. Play both dice")
+        if (this.currentPlayer.hasExactlyOneActivePiece() && this.currentPlayer.hasInActivePieces() && !this.atLeastOneSixIsRolled() && this.doubleSixIsRolled()){
+            console.log("Player has exactly one active piece and no inactive piece(s). No six or bouble six is rolled Play Both dice")
             return true
         }
 
-        if (this.currentPlayer.hasActivePieces() &&
-            this.currentPlayer.selectedPieceIsActive() &&
-            this.bothDiceSelected())  {
-            console.log("Player has active pieces and both dice are selected. Play both dice")
-            return true
-        }
-        if (this.hasExactlyOneUnspentDie() && !this.atLeastOneSixIsRolled())  {
-            console.log("Player has one unspent die. Play both dice")
+        if (this.currentPlayer.hasExactlyOneActivePiece() && !this.currentPlayer.hasInActivePieces() && !this.homePiecesCanUseOneOrMoreDice() && !this.canPutPieceOnHomePath()){
+            console.log("Player has exactly one active piece and no inactive piece(s) and no home piece that can use dice Play Both dice: ")
             return true
         }
 
-        if (!this.homePiecesCanUseOneOrMoreDice() && this.currentPlayer.hasJustActivePieces() && !this.atLeastOneSixIsRolled()){
-            console.log("Player has home pieces that can NOT use one or more dice")
-            return true
-        }
+        
         return false
     }
-
-    generateActivePathsForEachAndBothDice(): Array<ActivePath> {
-        let dieOneScore = this.scene.registry.get('die1')
-        let dieTwoScore = this.scene.registry.get('die2')
-        let validPaths = new Array<ActivePath>()
-
-        for (let piece of this.currentPlayer.pieces) {
-            if (dieOneScore > 0){
-                if ( this.eligibleForActivePathGeneration(piece)) {
-                    let validDie1Path = piece.generatePath(dieOneScore)
-                    if (validDie1Path !== null && validDie1Path.isValid){
-                        validPaths.push(validDie1Path)
-                    }
-                }
-            }
-            if (dieTwoScore > 0){
-                if (this.eligibleForActivePathGeneration(piece)) {
-                    let validDie2Path = piece.generatePath(dieTwoScore)
-                    if (validDie2Path !== null && validDie2Path.isValid) {
-                        validPaths.push(validDie2Path)
-                    }
-                }
-            
-            }
-
-            if (dieOneScore > 0 && dieTwoScore > 0) {
-                if (this.eligibleForActivePathGeneration(piece)) {
-                    let validBothDicePath = piece.generatePath(dieOneScore + dieTwoScore)
-                    if (validBothDicePath !== null && validBothDicePath.isValid) {
-                        validPaths.push(validBothDicePath)
-                    }
-                }
-            }
-        }
-        return this.analyzeValidPaths(validPaths)
-    }
-
 
     homePiecesCanUseOneOrMoreDice(): boolean {
         let validPaths = new Array<ActivePath>()
@@ -195,49 +163,6 @@ export class Rule {
         return piece.isActive() || this.homePieceCanUseOneOrMoreDice(piece) || this.atLeastOneSixIsRolled()
     }
 
-    analyzeValidPaths(paths: Array<ActivePath>): Array<ActivePath> {
-        // when player has exactly one active piece and one or more home path pieces
-        // need to remove paths from active piece that can make home path pieces unplayable
-        if (this.currentPlayer.hasExactlyOneActivePiece()){
-            let onlyActivePiece = this.currentPlayer.getFirstActivePiece() // should not be null
-            let activePieveMovebys = []
-            let nonActivePieveMovebys = []
-            for (let path of paths){
-                if (onlyActivePiece.pieceId === path.activePiece.pieceId) {
-                    activePieveMovebys.push(path.moveBy)
-                }else {
-                    nonActivePieveMovebys.push(path.moveBy)
-                }
-            }
-            activePieveMovebys = activePieveMovebys.filter((mb)=> {
-                return (mb >= 1 && mb <=6)
-            })
-            nonActivePieveMovebys = this.arrayIntersection(activePieveMovebys, nonActivePieveMovebys)
-            console.log(activePieveMovebys)
-            console.log(nonActivePieveMovebys)
-
-
-            if (activePieveMovebys.toString() === nonActivePieveMovebys.toString()) {
-                console.log("Identical. Removing nothing...")
-                return paths
-            }else {
-                let indexofPathToBeRemove = null
-                for (let m of activePieveMovebys){
-                    if (nonActivePieveMovebys.includes(m)){
-                        console.log("remove: " + m)
-                        indexofPathToBeRemove = m
-                        break;
-
-                    }
-                }
-                return this.removePathByInactivePiecesWithoutDieValueSix(this.removePathByMoveby(indexofPathToBeRemove, onlyActivePiece.pieceId, paths))
-            }
-            
-        }else {
-            return this.removePathByInactivePiecesWithoutDieValueSix(paths)
-        }
-    }
-
     interpreteActivePath(path: ActivePath): string {
         return "Play " + path.moveBy + " on " + path.activePiece.pieceId
     }
@@ -259,51 +184,13 @@ export class Rule {
         
     }
 
-    removePathByInactivePiecesWithoutDieValueSix(paths: Array<ActivePath>): Array<ActivePath> {
-        return paths.filter((path) => {
-            return (!path.activePiece.isActive() && path.moveBy === 6) || 
-            (!path.activePiece.isActive() && path.moveBy > 6) ||
-            path.activePiece.isActive() || 
-            path.activePiece.isOnHomePath()
-        }) 
-    }
-
-    evaluateIfDieValueSixShouldBeConsumed(): boolean {
-        return (this.currentPlayer.selectedPiece.isNotActive())
-    }
 
     bothDiceSelected(): boolean {
         return this.scene.registry.get('die1-selected') && this.scene.registry.get('die2-selected')
     }
 
-    anyOfTheSelectedDiceHasValueSix(): boolean {
-        return this.scene.registry.get('die1-selected') && this.scene.registry.get('die1') === 6 || this.scene.registry.get('die2-selected') && this.scene.registry.get('die2') === 6
-    }
-
     doubleSixIsRolled(): boolean {
         return this.scene.registry.get('die1') === 6 && this.scene.registry.get('die2') === 6
-    }
-
-    consumeDieWithValueSixLeaveTheOtherValue(): boolean {
-        if (this.scene.registry.get('die1') === 6){
-            this.scene.scene.get('SideScene').events.emit('resetSingleDie', 'die1')
-            return true
-        }else if (this.scene.registry.get('die2') === 6){
-            this.scene.scene.get('SideScene').events.emit('resetSingleDie', 'die2')
-            return true
-        }
-        return false
-    }
-
-    consumeDieWithValueSixAndReturnPieceId(): string {
-        if (this.scene.registry.get('die1') === 6){
-            this.scene.scene.get('SideScene').events.emit('resetSingleDie', 'die1')
-            return "die1"
-        }else if (this.scene.registry.get('die2') === 6){
-            this.scene.scene.get('SideScene').events.emit('resetSingleDie', 'die2')
-            return "die2"
-        }
-        return null
     }
 
     hasExactlyOneUnspentDie(): boolean {
@@ -317,32 +204,14 @@ export class Rule {
     }
 
     
-    hasAtLeastOneNonZeroDieValue(): boolean {
-        return (this.scene.registry.get('die1') > 0 || this.scene.registry.get('die2') > 0)
-    }
 
-    consumeDieWithValueSixReturnTheOtherValue(): number {
-        let otherDieValue =0
-        if (this.scene.registry.get('die1') === 6){
-            otherDieValue = this.scene.registry.get('die2')
-            this.scene.scene.get('SideScene').events.emit('resetBothDice')
-            return otherDieValue
-        }else if (this.scene.registry.get('die2') === 6){
-            otherDieValue = this.scene.registry.get('die1')
-            this.scene.scene.get('SideScene').events.emit('resetBothDice')
-            return otherDieValue
-        }
-        return otherDieValue
-    }
-
-
+   
     generateActivePathsForBothDice(): Array<ActivePath> {
         let dieOneScore = this.scene.registry.get('die1')
         let dieTwoScore = this.scene.registry.get('die2')
         let validPaths = new Array<ActivePath>()
-
         for (let piece of this.currentPlayer.pieces) {
-            if (dieOneScore > 0 && dieTwoScore > 0) {
+            if (dieOneScore > 0 || dieTwoScore > 0) {
                 if (this.eligibleForActivePathGeneration(piece)) {
                     let validBothDicePath = piece.generatePath(dieOneScore + dieTwoScore)
                     if (validBothDicePath !== null && validBothDicePath.isValid) {
@@ -353,6 +222,109 @@ export class Rule {
 
         }
         return this.analyzeValidPaths(validPaths)
+    }
+
+    generateActivePathsForEachAndBothDice(): Array<ActivePath> {
+        let dieOneScore = this.scene.registry.get('die1')
+        let dieTwoScore = this.scene.registry.get('die2')
+        let validPaths = new Array<ActivePath>()
+
+        for (let piece of this.currentPlayer.pieces) {
+            if (dieOneScore > 0){
+                if ( this.eligibleForActivePathGeneration(piece)) {
+                    let validDie1Path = piece.generatePath(dieOneScore)
+                    if (validDie1Path !== null && validDie1Path.isValid){
+                        validPaths.push(validDie1Path)
+                    }
+                }
+            }
+            if (dieTwoScore > 0){
+                if (this.eligibleForActivePathGeneration(piece)) {
+                    let validDie2Path = piece.generatePath(dieTwoScore)
+                    if (validDie2Path !== null && validDie2Path.isValid) {
+                        validPaths.push(validDie2Path)
+                    }
+                }
+            
+            }
+
+            if (dieOneScore > 0 && dieTwoScore > 0) {
+                if (this.eligibleForActivePathGeneration(piece)) {
+                    let validBothDicePath = piece.generatePath(dieOneScore + dieTwoScore)
+                    if (validBothDicePath !== null && validBothDicePath.isValid) {
+                        validPaths.push(validBothDicePath)
+                    }
+                }
+            }
+        }
+        return this.analyzeValidPaths(validPaths)
+    }
+
+    analyzeValidPaths(paths: Array<ActivePath>): Array<ActivePath> {
+        // when player has exactly one active piece and one or more home path pieces
+        // need to remove paths from active piece that can make home path pieces unplayable
+        if (this.currentPlayer.hasExactlyOneActivePiece()){
+            let onlyActivePiece = this.currentPlayer.getFirstActivePiece() // should not be null
+            let activePieveMovebys = []
+            let nonActivePieveMovebys = []
+            for (let path of paths){
+                if (onlyActivePiece.pieceId === path.activePiece.pieceId) {
+                    activePieveMovebys.push(path.moveBy)
+                }else {
+                    nonActivePieveMovebys.push(path.moveBy)
+                }
+            }
+            activePieveMovebys = activePieveMovebys.filter((mb)=> {
+                return (mb >= 1 && mb <=6)
+            })
+            nonActivePieveMovebys = this.arrayIntersection(activePieveMovebys, nonActivePieveMovebys)
+            //console.log(activePieveMovebys)
+            //console.log(nonActivePieveMovebys)
+
+
+            if (activePieveMovebys.toString() === nonActivePieveMovebys.toString()) {
+                console.log("Identical. Removing nothing...")
+                return this.removePathByInactivePiecesWithoutDieValueSix(paths)
+            }else {
+                let indexofPathToBeRemove = null
+                for (let m of activePieveMovebys){
+                    if (nonActivePieveMovebys.includes(m)){
+                        console.log("remove: " + m)
+                        indexofPathToBeRemove = m
+                        break;
+
+                    }
+                }
+                return (this.removePathByInactivePiecesWithoutDieValueSix(this.removePathByMoveby(indexofPathToBeRemove, onlyActivePiece.pieceId, paths)))
+            }
+            
+        }else {
+            return (this.removePathByInactivePiecesWithoutDieValueSix(paths))
+        }
+    }
+
+    removePathByInactivePiecesWithoutDieValueSix(paths: Array<ActivePath>): Array<ActivePath> {
+        return paths.filter((path) => {
+            return (!path.activePiece.isActive() && path.moveBy === 6) || 
+            (!path.activePiece.isActive() && path.moveBy > 6) ||
+            path.activePiece.isActive() || 
+            path.activePiece.isOnHomePath()
+        }) 
+    }
+
+    convertSixValuePlayOnInActivePiecesToZeroPlay(paths: Array<ActivePath>): Array<ActivePath> {
+        paths.map((path) => {
+            if (!path.activePiece.isActive() && path.moveBy === 6){
+                path.moveBy = 0
+                return path
+            }
+            else if (!path.activePiece.isActive() && path.moveBy > 6){
+                path.moveBy = path.moveBy - 6
+            }else {
+                return path
+            }
+        });
+        return paths 
     }
 
     
@@ -369,6 +341,35 @@ export class Rule {
             return true
         }
         return false
+    }
+
+    canPutPieceOnHomePath(): boolean {
+        for (let piece of this.currentPlayer.pieces) {
+            if (piece.isActive() && this.validateDieCanPutPieceOnHomePath(piece)){
+                return true
+            }
+        }
+        return false
+    }
+
+    validateDieCanPutPieceOnHomePath(piece: Piece): boolean {
+        let dieValue1 = this.scene.registry.get('die1')
+        let dieValue2 = this.scene.registry.get('die2')
+        if (dieValue1 > 0) {
+            let path = piece.generatePath(dieValue1)
+            if (path !== null && path.isValid && path.projectedIndex > piece.homeIndex){
+                return true
+            }
+        }else if (dieValue2 > 0) {
+            let path = piece.generatePath(dieValue2)
+            if (path !== null && path.isValid && path.projectedIndex > piece.homeIndex){
+                return true
+            }
+        }
+        else {
+            return false
+        }
+
     }
 
 }

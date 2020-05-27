@@ -38,7 +38,13 @@ export class Piece extends Phaser.GameObjects.Sprite {
 
 
     move(moveby: number): void {
-        
+      
+        if (!this.isActive() && moveby >= 6){
+          console.log("Before MoveBy: " + moveby)
+          moveby -= 6
+          console.log("After MoveBy: " + moveby)
+
+        }
         let activePath = this.generatePath(moveby)
         if (activePath != null) {
           if (activePath.isValid) {
@@ -58,11 +64,11 @@ export class Piece extends Phaser.GameObjects.Sprite {
       path.updatePiece();
     }
 
-    generatePath(moveBy: number): ActivePath {
+    generatePath(moveby: number): ActivePath {
         let path = new ActivePath(this.scene, this)
-        path.moveBy = moveBy
+        path.moveBy = moveby
         let function_id = this.getPathFunctionId(this.index)
-        path = this.callPathFunction(function_id, moveBy, this.index, this.x, this.y, path)
+        path = this.callPathFunction(function_id, moveby, this.index, this.x, this.y, path)
         if (path.remainderIndex === 0) {
           return path;
         }else {

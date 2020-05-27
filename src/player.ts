@@ -132,6 +132,15 @@ export class Player {
         return (activePieceCount > 1);
     }
 
+    allPiecesAreInactive(): boolean {
+        for (let piece of this.pieces) {
+            if (!piece.isNotActive()){
+                return false
+            }
+        }
+        return true;
+    }
+
     hasExactlyOneActivePiece(): boolean {
         let activePieceCount = 0;
         for (let piece of this.pieces) {
@@ -174,9 +183,5 @@ export class Player {
         }
         return null
     }
-
-
-    
-
 
 }

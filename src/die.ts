@@ -60,6 +60,7 @@ export class Die extends Phaser.GameObjects.Sprite {
             this.dieFrame = setFrame
         }else {
             this.dieFrame = Phaser.Math.Between(0, 5)
+            
         }
         this.anims.play('roll', false)
     }
@@ -112,6 +113,12 @@ export class Die extends Phaser.GameObjects.Sprite {
 
     hasValue(): boolean {
         return (this.getFrameValue(this.dieFrame) > 0 && this.getFrameValue(this.dieFrame) < 7)
+    }
+
+    select(): void {
+        this.scale = 0.8
+        this.isSelected = true
+        this.scene.registry.set(this.dieId + "-selected", true)
     }
 
 }
