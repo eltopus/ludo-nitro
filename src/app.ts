@@ -5,10 +5,16 @@ import {SideScene} from "./sideScene"
 
 const config: Phaser.Types.Core.GameConfig = {
   title: "LudoNitro",
-  width: 1027,
-  height: 722,
+  scale: {
+     parent: "game",
+     width: 1027,
+     height: 722,
+     //mode: Phaser.Scale.FIT,
+     //autoCenter: Phaser.Scale.CENTER_BOTH
+  },
+ 
   type: Phaser.AUTO,
-  parent: "game",
+  
   dom: {
     createContainer: true
   },

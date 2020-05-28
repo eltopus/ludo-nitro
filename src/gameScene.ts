@@ -7,6 +7,10 @@ import {Rule} from './rule'
 import {Draggable} from './draggable'
 import {TextBox} from 'phaser3-rex-plugins/templates/ui/ui-components.js';
 import {ActivePath} from "./activePath"
+import {Ludo} from './persistence/ludo'
+import {PPlayer} from './persistence/ludo'
+import {PPiece} from './persistence/ludo'
+import {PDie} from './persistence/ludo'
 
 export class GameScene extends Phaser.Scene {
   info: Phaser.GameObjects.Text;
@@ -43,6 +47,7 @@ export class GameScene extends Phaser.Scene {
     this.load.image("green3", "assets/green.png");
     this.load.image("green4", "assets/green.png");
     this.load.image('play', '/assets/play.png')
+    this.load.image('save', '/assets/save.png')
     
   }
 
@@ -76,11 +81,11 @@ export class GameScene extends Phaser.Scene {
     let greenPieces = pieceFactory.createGreenPieces()
 
     let userPlayerNames = ["RedBlue"]
-    let userPlayerFactory = new UserPlayerFactory(userPlayerNames, this)
+    let userPlayerFactory = new AIPlayerFactory(userPlayerNames, this)
     let userPlayers = userPlayerFactory.createPlayers();
 
     let aiPlayerNames = ["YellowGreen"]
-    let aiPlayerFactory = new UserPlayerFactory(aiPlayerNames, this)
+    let aiPlayerFactory = new AIPlayerFactory(aiPlayerNames, this)
     let aiPlayers = aiPlayerFactory.createPlayers();
     
     
@@ -102,6 +107,44 @@ export class GameScene extends Phaser.Scene {
 
     let play = this.add.sprite(868, 600, 'play')
     play.setInteractive()
+
+    let save = this.add.sprite(868, 50, 'save')
+    save.setInteractive()
+
+    save.on('pointerdown', (pointer) => {
+      
+      let ludo = new Ludo()
+      for (let player of this.rule.players){
+        let pplayer = new PPlayer()
+        pplayer.playerName = player.playerName
+        for (let piece of player.pieces){
+          let ppiece = new PPiece()
+          ppiece.pieceId = piece.pieceId
+          ppiece.index = piece.index
+          ppiece.x = piece.x
+          ppiece.y = piece.y
+          ppiece.pieceState = piece.showPieceState()
+          ppiece.pieceType = piece.showPieceType()
+          pplayer.pieces.push(ppiece)
+        }
+        ludo.players.push(pplayer)
+      }
+
+      let pdie1 = new PDie()
+      pdie1.dieId = 'die1'
+      pdie1.dieValue = this.registry.get('die1')
+      pdie1.selected = this.registry.get('die1-selected')
+      ludo.dice.push(pdie1)
+      let pdie2 = new PDie()
+      pdie2.dieId = 'die1'
+      pdie2.dieValue = this.registry.get('die2')
+      pdie2.selected = this.registry.get('die2-selected')
+      ludo.dice.push(pdie2) 
+      
+      console.log(JSON.stringify(ludo, null, 2))
+    })
+
+
 
     play.on('pointerdown', (pointer) => {
 

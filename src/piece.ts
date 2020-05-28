@@ -3,6 +3,10 @@ import {Movement} from './movement'
 import {ActivePath} from './activePath'
 import PathFollower from 'phaser3-rex-plugins/plugins/pathfollower.js';
 import MoveTo from 'phaser3-rex-plugins/plugins/moveto.js';
+import {Red} from './pieceState'
+import {Blue} from './pieceState'
+import {Green} from './pieceState'
+import {Yellow} from './pieceState'
 
 export class Piece extends Phaser.GameObjects.Sprite {
     index: number
@@ -252,6 +256,25 @@ export class Piece extends Phaser.GameObjects.Sprite {
                 return "UNKNOWN"
         }
     }
+
+    showPieceType(): string {
+      switch(this.pieceType){
+          case Red: {
+              return "Red"
+          }
+          case Blue: {
+              return "Blue"
+          }
+          case Green: {
+              return "Green"
+          }
+          case Yellow: {
+              return "Yellow"
+          }
+          default:
+              return "UNKNOWN"
+      }
+  }
 
     moveBackHome(): void {
       this.index = -1

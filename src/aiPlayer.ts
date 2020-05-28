@@ -202,7 +202,7 @@ export class AIPlayer implements Player {
     playerRollDice(): void {
         let value1 =  Phaser.Math.Between(1, 6)
         let value2 =  Phaser.Math.Between(1, 6)
-        //value1 = 6
+        //value1 = 1
         //value2 = 1
         setTimeout(()=> {
             this.scene.scene.get('SideScene').events.emit('rollDice', value1, value2)
@@ -221,7 +221,6 @@ export class AIPlayer implements Player {
             let chosenPath = activePaths[randPathIndex]
             let chosenPiece = chosenPath.activePiece
             this.determineDieId(chosenPath)
-            console.log(chosenPath)
             chosenPiece.move(chosenPath.moveBy)
         }, 1000);
         
@@ -241,7 +240,7 @@ export class AIPlayer implements Player {
                 //this.scene.registry.set('die1', 0)
                 this.scene.scene.get('SideScene').events.emit('resetSingleDie', 'die1')
             }
-            if (path.moveBy === dieTwoValue){
+            else if (path.moveBy === dieTwoValue){
                 //this.scene.registry.set('die2', 0)
                 this.scene.scene.get('SideScene').events.emit('resetSingleDie', 'die2')
             }
