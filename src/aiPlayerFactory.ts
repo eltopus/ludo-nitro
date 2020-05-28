@@ -1,5 +1,6 @@
 import {Player} from './player'
-export class PlayerFactory {
+import {AIPlayer} from './aiplayer'
+export class AIPlayerFactory {
     playerNames: Array<string>
     scene: Phaser.Scene
     constructor(playerNames: Array<string>, scene: Phaser.Scene) {
@@ -10,12 +11,11 @@ export class PlayerFactory {
     createPlayers(): Array<Player> {
         let players = new Array<Player>()
         for (let playerName of this.playerNames) {
-            let player = new Player(playerName, this.scene)
+            let player = new AIPlayer(playerName, this.scene)
             players.push(player)
         }
         return players
     }
-
 }
 
 

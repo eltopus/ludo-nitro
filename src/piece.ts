@@ -40,6 +40,10 @@ export class Piece extends Phaser.GameObjects.Sprite {
       this.scene.input.setDraggable(this, true)
     }
 
+    moveByPath(path: ActivePath): void {
+      this.movePieceAlong(path, this.scene)
+      path.updatePiece();
+    }
 
     move(moveby: number): void {
       
@@ -171,6 +175,7 @@ export class Piece extends Phaser.GameObjects.Sprite {
           ease: 'Linear',
           duration: 1000,
           repeat: 0,
+          //completeDelay: 5,
           yoyo: false
         }).on('complete', (tween, targets) => {
           

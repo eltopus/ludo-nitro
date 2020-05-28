@@ -1,11 +1,12 @@
 import "phaser";
 import {PieceFactory} from './pieceFactory'
-import {PlayerFactory} from './playerFactory'
+import {UserPlayerFactory} from './userPlayerFactory'
+import {AIPlayerFactory} from './aiPlayerFactory'
 import {Player} from './player'
 import {Rule} from './rule'
 import {Draggable} from './draggable'
-import { TextBox, TextArea } from 'phaser3-rex-plugins/templates/ui/ui-components.js';
-import { ActivePath } from "./activePath";
+import {TextBox} from 'phaser3-rex-plugins/templates/ui/ui-components.js';
+import {ActivePath} from "./activePath"
 
 export class GameScene extends Phaser.Scene {
   info: Phaser.GameObjects.Text;
@@ -74,21 +75,30 @@ export class GameScene extends Phaser.Scene {
     let yellowPieces = pieceFactory.createYellowPieces()
     let greenPieces = pieceFactory.createGreenPieces()
 
-    let playerNames = ["RedBlue", "YellowGreen"]
-    let playerFacory = new PlayerFactory(playerNames, this)
-    let players = playerFacory.createPlayers();
-    
-    players[0].addPieces(redPieces);
-    players[0].addPieces(bluePieces)
-    players[1].addPieces(yellowPieces)
-    players[1].addPieces(greenPieces)
+    let userPlayerNames = ["RedBlue"]
+    let userPlayerFactory = new UserPlayerFactory(userPlayerNames, this)
+    let userPlayers = userPlayerFactory.createPlayers();
 
-    players[0].setPieceDraggable()
-    players[1].setPieceDraggable()
+    let aiPlayerNames = ["YellowGreen"]
+    let aiPlayerFactory = new UserPlayerFactory(aiPlayerNames, this)
+    let aiPlayers = aiPlayerFactory.createPlayers();
+    
+    
+    userPlayers[0].addPieces(redPieces);
+    userPlayers[0].addPieces(bluePieces)
+
+    aiPlayers[0].addPieces(yellowPieces)
+    aiPlayers[0].addPieces(greenPieces)
+
+    userPlayers[0].setPieceDraggable()
+    aiPlayers[0].setPieceDraggable()
  
-    this.rule.addPlayers(players)
+    this.rule.addPlayers(userPlayers)
+    this.rule.addPlayers(aiPlayers)
+
     this.currentPlayer = this.rule.getNextPlayer()
     this.registry.set('currentPlayer', this.currentPlayer.playerName)
+    this.currentPlayer.playerRollDice()
 
     let play = this.add.sprite(868, 600, 'play')
     play.setInteractive()
@@ -100,13 +110,13 @@ export class GameScene extends Phaser.Scene {
           // die selection needed
           // what if both dice selected?
           if (this.singleDieIsSelected()){
-            console.log("Single Die selected....")
+            //console.log("Single Die selected....")
             let selectedDieId = this.getSelectedSingleDieId()
             let dieValue = this.getSelectedDieValue(selectedDieId)
             this.playDiceValue(dieValue, selectedDieId)
 
           }else if (this.bothDiceSelected()) {
-            console.log("Both Dice selected....")
+            //console.log("Both Dice selected....")
             let selectedDieIds = this.getSelectedBothDiceIds()
             let dieValue = this.getSelectedDieValue(selectedDieIds)
             this.playDiceValue(dieValue, selectedDieIds)
@@ -140,7 +150,7 @@ export class GameScene extends Phaser.Scene {
     //console.log("Evaluating piece movement completion pieceId: " + pieceId )
     let opposingPieces = this.rule.getAllPiecesAtIndex(pieceIndex)
     for (let oppossingPiece of opposingPieces){
-      console.log("Opposing index: " + oppossingPiece.pieceId)
+      //console.log("Opposing index: " + oppossingPiece.pieceId)
       this.rule.handlePeckingSituation(pieceId, oppossingPiece)
       break
     }
@@ -153,32 +163,37 @@ export class GameScene extends Phaser.Scene {
     this.paths = this.rule.evaluatePieceMovementCompletion()
     if (this.paths.length === 0) {
       if (this.rule.rolledDoubleSix){
-        console.log("Stay on current player because of prior double six")
-        this.rule.rolledDoubleSix = false
+        //console.log("Stay on current player because of prior double six")
+        //this.rule.rolledDoubleSix = false
+        //this.currentPlayer.playerPlayDice(this.paths)
       }else {
         this.currentPlayer = this.rule.getNextPlayer()
+        this.currentPlayer.playerRollDice()
       }
     }else {
       console.log("Evaluate Game is true after first play. Stay on player: " + this.currentPlayer.playerName)
       for (let path of this.paths) {
-        console.log(path.pathToString())
+        //console.log(path.pathToString())
       }
+      this.currentPlayer.playerPlayDice(this.paths)
     }
   }
 
   evaluateDiceRollCompletion(diceRollValue: number): void {
     if (diceRollValue === 12){
-      console.log("doublesix roll set: " + diceRollValue)
-      this.rule.rolledDoubleSix = true
+      //console.log("doublesix roll set: " + diceRollValue)
+      //this.rule.rolledDoubleSix = true
     }
     this.paths = this.rule.evaluateDiceRollCompletion()
     if (this.paths.length === 0) {
       this.currentPlayer = this.rule.getNextPlayer()
+      this.currentPlayer.playerRollDice()
     }else {
       console.log("Evaluate Game is true. Stay on player: " + this.currentPlayer.playerName)
       for (let path of this.paths) {
-        console.log(path.pathToString())
+        //console.log(path.pathToString())
       }
+      this.currentPlayer.playerPlayDice(this.paths)
     }
   }
 
@@ -214,7 +229,6 @@ export class GameScene extends Phaser.Scene {
     })
     return value
   }
-
 
   isVadidPath(activePath: ActivePath) {
     for (let path of this.paths){

@@ -50,8 +50,8 @@ export class SideScene extends Phaser.Scene {
      rollDice.on('pointerdown', (pointer) => {
        let value1 =  Phaser.Math.Between(1, 6)
        let value2 =  Phaser.Math.Between(1, 6)
-       value1 = 3
-       value2 = 1
+       //value1 = 3
+       //value2 = 2
        this.emitter.emmitDiceRoll(value1, value2)
      });
 
@@ -64,9 +64,6 @@ export class SideScene extends Phaser.Scene {
     //const text = this.add.text(875, 100, 'Hello World', { fixedWidth: 150, fixedHeight: 36 })
     
      //text.setOrigin(0.5, 0.5)
-
-	  
-    
 
   }
 
@@ -99,6 +96,5 @@ export class SideScene extends Phaser.Scene {
       }
     }
   }
-
 
 };
