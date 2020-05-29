@@ -27,6 +27,11 @@ export class UserPlayer implements Player {
         this.group.addMultiple(pieces)
     }
 
+    addPiece(piece: Piece): void {
+        this.pieces.push(piece)
+        this.group.add(piece)
+    }
+
     pieceSelected(pieceId: string): void {
         for (let piece of this.pieces) {
             if (piece.pieceId === pieceId && this.group.contains(piece)){
@@ -57,13 +62,14 @@ export class UserPlayer implements Player {
         for (let piece of this.pieces) {
             if (piece.pieceId === pieceId) {
                 indexOf = this.pieces.indexOf(piece)
-                piece.destroy()
+                piece.setVisible(false)
+                if (indexOf >= 0) {
+                    console.log("Removing piece: " + pieceId)
+                    this.pieces.splice(indexOf, 1);
+                    break
+                }
             }
         }
-        if (indexOf >= 0) {
-            this.pieces.splice(indexOf, 1);
-        }
-        this.selectedPiece = null
     }
 
     setPieceDraggable(): void {
@@ -135,6 +141,7 @@ export class UserPlayer implements Player {
         for (let piece of this.pieces) {
             if (piece.isActive()){
                 ++activePieceCount
+                console.log("count: " + activePieceCount + " pieceId: " + piece.pieceId)
                 if (activePieceCount > 1){
                     break
                 }

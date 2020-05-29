@@ -1,9 +1,10 @@
 import {Player} from './player'
 import {UserPlayer} from './userplayer'
-export class UserPlayerFactory {
+import {PlayerFactory} from './PlayerFactory'
+export class UserPlayerFactory implements PlayerFactory {
     playerNames: Array<string>
     scene: Phaser.Scene
-    constructor(playerNames: Array<string>, scene: Phaser.Scene) {
+    constructor(scene: Phaser.Scene, playerNames?: Array<string>) {
         this.playerNames = playerNames
         this.scene = scene
     }
@@ -15,6 +16,10 @@ export class UserPlayerFactory {
             players.push(player)
         }
         return players
+    }
+
+    createPlayer(playerName: string): Player {
+      return new UserPlayer(playerName, this.scene)
     }
 
 }

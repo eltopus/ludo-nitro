@@ -22,4 +22,5 @@ export interface Player {
     playerRollDice(): void
     hasNoActivePieces(): boolean
     playerPlayDice(activePath: Array<ActivePath>): void
+    addPiece(piece: Piece): void
 }

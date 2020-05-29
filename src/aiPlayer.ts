@@ -1,6 +1,7 @@
 import {Piece} from './piece'
 import {Player} from './player'
 import {ActivePath} from "./activePath"
+import {PPlayer} from './persistence/ludo'
 
 
 export class AIPlayer implements Player {
@@ -25,6 +26,11 @@ export class AIPlayer implements Player {
             this.pieces.push(piece)
         }
         this.group.addMultiple(pieces)
+    }
+
+    addPiece(piece: Piece): void {
+        this.pieces.push(piece)
+        this.group.add(piece)
     }
 
     pieceSelected(pieceId: string): void {
@@ -60,13 +66,10 @@ export class AIPlayer implements Player {
                 if (indexOf >= 0) {
                     console.log("Removing piece: " + pieceId)
                     this.pieces.splice(indexOf, 1);
-                    //piece.destroy()
                     break
                 }
             }
         }
-        
-        //this.selectedPiece = null
     }
 
     setPieceDraggable(): void {

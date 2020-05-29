@@ -7,6 +7,7 @@ import {Red} from './pieceState'
 import {Blue} from './pieceState'
 import {Green} from './pieceState'
 import {Yellow} from './pieceState'
+import {PPiece} from './persistence/ludo'
 
 export class Piece extends Phaser.GameObjects.Sprite {
     index: number
@@ -20,10 +21,10 @@ export class Piece extends Phaser.GameObjects.Sprite {
     homeX: number
     homeY: number
     
-    constructor(scene: Phaser.Scene, x: number, y: number, index: number, homeIndex: number, startIndex: number, pieceType: any, texture: string){
+    constructor(scene: Phaser.Scene, x: number, y: number, homeX: number, homeY: number, index: number, homeIndex: number, startIndex: number, pieceType: any, texture: string){
         super(scene, x, y, texture);
-        this.homeX = x
-        this.homeY = y
+        this.homeX = homeX
+        this.homeY = homeY
         this.pieceId = texture
         this.index = index;
         this.homeIndex = homeIndex;
@@ -228,6 +229,7 @@ export class Piece extends Phaser.GameObjects.Sprite {
 
       becomeInActive(): void {
         this.pieceState = PieceState.Inactive
+        this.index = -1
       }
 
       becomeHomeBound(): void {
@@ -257,6 +259,25 @@ export class Piece extends Phaser.GameObjects.Sprite {
         }
     }
 
+    getPieceState(state: string): any {
+      switch(state) {
+          case "Inactive": {
+              return PieceState.Inactive
+          }
+          case "Active": {
+              return PieceState.Active
+          }
+          case "OnHomePath": {
+              return PieceState.OnHomePath
+          }
+          case "Exited": {
+              return PieceState.Exited
+          }
+          default:
+              return PieceState.Inactive
+      }
+    }
+
     showPieceType(): string {
       switch(this.pieceType){
           case Red: {
@@ -276,11 +297,37 @@ export class Piece extends Phaser.GameObjects.Sprite {
       }
   }
 
+  getPieceType(pieceType: string): any {
+    switch(pieceType){
+        case "Red": {
+            return Red
+        }
+        case "Blue": {
+            return Blue
+        }
+        case "Green": {
+            return Green
+        }
+        case "Yellow": {
+            return Yellow
+        }
+        default:
+            return null
+    }
+}
+
     moveBackHome(): void {
       this.index = -1
       this.becomeInActive()
       this.movePieceTo(this.homeX, this.homeY)
     }
 
-
+    updatePiece(config: PPiece): void {
+      if (this.pieceId === config.pieceId) {
+        this.x = config.x
+        this.y = config.y
+        this.index = config.index
+        this.pieceState = this.getPieceState(config.pieceState)
+      }
+    }
 }

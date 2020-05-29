@@ -52,7 +52,7 @@ export class Rule {
     }
 
     shouldPlayBothDice(): boolean {
-        if (this.currentPlayer.allPiecesAreInactive()){
+        if (this.currentPlayer.allPiecesAreInactive() && !this.doubleSixIsRolled()){
             console.log("All pieces are inactive...")
             return true
         }
@@ -358,5 +358,13 @@ export class Rule {
     handlePeckingSituation(currentPlayerPieceId: string, opposingPlayerPiece: Piece): void {
         this.scene.events.emit('pieceExited', currentPlayerPieceId)
         opposingPlayerPiece.moveBackHome()
+    }
+
+    getPlayerOrder(): Array<string> {
+        let playerOrder = []
+        for (let player of this.players) {
+            playerOrder.push(player.playerName)
+        }
+        return playerOrder
     }
 }

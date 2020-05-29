@@ -11,12 +11,15 @@ import {Ludo} from './persistence/ludo'
 import {PPlayer} from './persistence/ludo'
 import {PPiece} from './persistence/ludo'
 import {PDie} from './persistence/ludo'
+import {LoadJson} from './loadJson'
 
 export class GameScene extends Phaser.Scene {
   info: Phaser.GameObjects.Text;
   currentPlayer: Player = null
   rule: Rule;
   paths: Array<ActivePath> = null
+  sendOnce = true
+  ludo: LoadJson
 
   constructor() {
     super({
@@ -48,6 +51,8 @@ export class GameScene extends Phaser.Scene {
     this.load.image("green4", "assets/green.png");
     this.load.image('play', '/assets/play.png')
     this.load.image('save', '/assets/save.png')
+    this.load.image('flick', '/assets/flick.png')
+    this.load.json('data', '/assets/ludo.json')
     
   }
 
@@ -73,33 +78,52 @@ export class GameScene extends Phaser.Scene {
 
     this.cameras.main.setViewport(0, 0, 1020, 721);
     this.add.image(361, 361, 'board')  
-
-    let pieceFactory = new PieceFactory(this, null)
-    let redPieces = pieceFactory.createRedPieces()
-    let bluePieces = pieceFactory.createBluePieces()
-    let yellowPieces = pieceFactory.createYellowPieces()
-    let greenPieces = pieceFactory.createGreenPieces()
-
-    let userPlayerNames = ["RedBlue"]
-    let userPlayerFactory = new AIPlayerFactory(userPlayerNames, this)
-    let userPlayers = userPlayerFactory.createPlayers();
-
-    let aiPlayerNames = ["YellowGreen"]
-    let aiPlayerFactory = new AIPlayerFactory(aiPlayerNames, this)
-    let aiPlayers = aiPlayerFactory.createPlayers();
+    let ludoGame = new LoadJson(this)
+    this.ludo = ludoGame
+    let players = ludoGame.loadGame(false)
+    this.rule.addPlayers(players)
+    for (let die of ludoGame.data.dice){
+      if (die.dieId === "die1"){
+        this.registry.set('die1', die.dieValue)
+      }
+      if (die.dieId === "die2"){
+        this.registry.set('die2', die.dieValue)
+      }
+    }
+    this.scene.get('SideScene').events.emit('setBothDice', this.ludo.data.dice)
     
+    // let pieceFactory = new PieceFactory(this, null)
+    // let redPieces = pieceFactory.createRedPieces()
+    // let bluePieces = pieceFactory.createBluePieces()
+    // let yellowPieces = pieceFactory.createYellowPieces()
+    // let greenPieces = pieceFactory.createGreenPieces()
+
+    // let rdname = ["RedPlayer"]
+    // let uf1 = new UserPlayerFactory(this, rdname)
+    // let p1 = uf1.createPlayers();
+
+    // let bname = ["BluePlayer"]
+    // let uf2 = new UserPlayerFactory(this, bname)
+    // let p2 = uf2.createPlayers();
+
+    // let yname = ["YellowPlayer"]
+    // let uf3 = new UserPlayerFactory(this, yname)
+    // let p3 = uf3.createPlayers();
+
+    // let gname = ["GreenPlayer"]
+    // let uf4 = new UserPlayerFactory(this, gname)
+    // let p4 = uf4.createPlayers();
     
-    userPlayers[0].addPieces(redPieces);
-    userPlayers[0].addPieces(bluePieces)
-
-    aiPlayers[0].addPieces(yellowPieces)
-    aiPlayers[0].addPieces(greenPieces)
-
-    userPlayers[0].setPieceDraggable()
-    aiPlayers[0].setPieceDraggable()
- 
-    this.rule.addPlayers(userPlayers)
-    this.rule.addPlayers(aiPlayers)
+    // p1[0].addPieces(redPieces)
+    // p2[0].addPieces(bluePieces)
+    // p3[0].addPieces(yellowPieces)
+    // p4[0].addPieces(greenPieces)
+  
+    
+    // this.rule.addPlayers(p1)
+    // this.rule.addPlayers(p2)
+    // this.rule.addPlayers(p3)
+    // this.rule.addPlayers(p4)
 
     this.currentPlayer = this.rule.getNextPlayer()
     this.registry.set('currentPlayer', this.currentPlayer.playerName)
@@ -108,13 +132,23 @@ export class GameScene extends Phaser.Scene {
     let play = this.add.sprite(868, 600, 'play')
     play.setInteractive()
 
-    let save = this.add.sprite(868, 50, 'save')
+    let flick = this.add.sprite(950, 50, 'flick')
+    flick.setInteractive()
+
+    let save = this.add.sprite(800, 50, 'save')
     save.setInteractive()
+
+    flick.on('pointerdown', (pointer) => {
+      this.scene.get('SideScene').events.emit('setBothDice', ludoGame.data.dice)
+    })
 
     save.on('pointerdown', (pointer) => {
       
       let ludo = new Ludo()
+      let pplayers = new Array<PPlayer>()
+      
       for (let player of this.rule.players){
+        console.log(player)
         let pplayer = new PPlayer()
         pplayer.playerName = player.playerName
         for (let piece of player.pieces){
@@ -127,8 +161,14 @@ export class GameScene extends Phaser.Scene {
           ppiece.pieceType = piece.showPieceType()
           pplayer.pieces.push(ppiece)
         }
-        ludo.players.push(pplayer)
+        pplayers.push(pplayer)
       }
+
+      let currentPlayer = pplayers.reverse().pop()
+      for (let p of pplayers){
+        ludo.players.push(p)
+      }
+      ludo.players.unshift(currentPlayer)
 
       let pdie1 = new PDie()
       pdie1.dieId = 'die1'
@@ -136,11 +176,10 @@ export class GameScene extends Phaser.Scene {
       pdie1.selected = this.registry.get('die1-selected')
       ludo.dice.push(pdie1)
       let pdie2 = new PDie()
-      pdie2.dieId = 'die1'
+      pdie2.dieId = 'die2'
       pdie2.dieValue = this.registry.get('die2')
       pdie2.selected = this.registry.get('die2-selected')
       ludo.dice.push(pdie2) 
-      
       console.log(JSON.stringify(ludo, null, 2))
     })
 
@@ -150,8 +189,6 @@ export class GameScene extends Phaser.Scene {
 
       if (this.currentPlayer.hasSelectedPiece()) {
         if (this.paths.length > 0){
-          // die selection needed
-          // what if both dice selected?
           if (this.singleDieIsSelected()){
             //console.log("Single Die selected....")
             let selectedDieId = this.getSelectedSingleDieId()
@@ -216,7 +253,7 @@ export class GameScene extends Phaser.Scene {
     }else {
       console.log("Evaluate Game is true after first play. Stay on player: " + this.currentPlayer.playerName)
       for (let path of this.paths) {
-        //console.log(path.pathToString())
+        console.log(path.pathToString())
       }
       this.currentPlayer.playerPlayDice(this.paths)
     }
@@ -234,13 +271,15 @@ export class GameScene extends Phaser.Scene {
     }else {
       console.log("Evaluate Game is true. Stay on player: " + this.currentPlayer.playerName)
       for (let path of this.paths) {
-        //console.log(path.pathToString())
+        console.log(path.pathToString())
       }
       this.currentPlayer.playerPlayDice(this.paths)
     }
   }
 
-  update(time: number): void {}
+  update(time: number): void {
+    
+  }
 
   singleDieIsSelected(): boolean {
     return (this.registry.get('die1-selected') && !this.registry.get('die2-selected')) || 

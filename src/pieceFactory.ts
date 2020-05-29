@@ -20,7 +20,7 @@ export class PieceFactory {
                     "hx": 144.35,
                     "hy": 96.25,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 },
                 {
                     "id": "red2",
@@ -29,7 +29,7 @@ export class PieceFactory {
                     "hx": 144.35,
                     "hy": 192.45,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 },
                 {
                     "id": "red3",
@@ -38,7 +38,7 @@ export class PieceFactory {
                     "hx": 96.25,
                     "hy": 144.35,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 },
                 {
                     "id": "red4",
@@ -47,7 +47,7 @@ export class PieceFactory {
                     "hx": 192.45,
                     "hy": 144.35,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 }
             ]
 
@@ -63,7 +63,7 @@ export class PieceFactory {
                     "hx": 529.15,
                     "hy": 144.35,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 },
                 {
                     "id": "blue2",
@@ -72,7 +72,7 @@ export class PieceFactory {
                     "hx": 625.35,
                     "hy": 144.35,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 },
                 {
                     "id": "blue3",
@@ -81,7 +81,7 @@ export class PieceFactory {
                     "hx": 577.25,
                     "hy": 192.45,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 },
                 {
                     "id": "blue4",
@@ -90,7 +90,7 @@ export class PieceFactory {
                     "hx": 577.25,
                     "hy": 96.25,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 }
             ]
 
@@ -106,7 +106,7 @@ export class PieceFactory {
                     "hx": 577.25,
                     "hy": 529.15,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 },
                 {
                     "id": "yellow2",
@@ -115,7 +115,7 @@ export class PieceFactory {
                     "hx": 577.25,
                     "hy": 625.35,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 },
                 {
                     "id": "yellow3",
@@ -124,7 +124,7 @@ export class PieceFactory {
                     "hx": 529.15,
                     "hy": 577.25,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 },
                 {
                     "id": "yellow4",
@@ -133,7 +133,7 @@ export class PieceFactory {
                     "hx": 625.35,
                     "hy": 577.25,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 }
             ]
 
@@ -149,7 +149,7 @@ export class PieceFactory {
                     "hx": 192.45,
                     "hy": 577.25,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 },
                 {
                     "id": "green2",
@@ -158,7 +158,7 @@ export class PieceFactory {
                     "hx": 96.25,
                     "hy": 577.25,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 },
                 {
                     "id": "green3",
@@ -167,7 +167,7 @@ export class PieceFactory {
                     "hx": 144.35,
                     "hy": 529.15,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 },
                 {
                     "id": "green4",
@@ -176,7 +176,7 @@ export class PieceFactory {
                     "hx": 144.35,
                     "hy": 625.35,
                     "index": -1,
-                    "state": "inactive"
+                    "state": "Inactive"
                 }
             ]
 
@@ -193,12 +193,24 @@ export class PieceFactory {
         let startIndex = redConfig.sIndex
 
         redConfig.pieces.forEach((piece) => {
-            let redPiece = new Piece(this.scene, piece.x, piece.y, piece.index, homeIndex, startIndex, Red, piece.id);
+            let redPiece = new Piece(this.scene, piece.x, piece.y, piece.x, piece.y, piece.index, homeIndex, startIndex, Red, piece.id);
             redPieces.push(redPiece);
         }) 
 
         return redPieces;
     }
+
+    createRedPiece(pieceId: string): Piece {
+        let configs = this.pieceConfig.red
+        let redPieceConfig = configs.pieces.filter((piece) => {
+            return piece.id === pieceId
+        }) 
+        let homeIndex = configs.hIndex
+        let startIndex = configs.sIndex
+        let homeX = redPieceConfig[0].hx, homeY = redPieceConfig[0].hy
+        return new Piece(this.scene, 0, 0, homeX, homeY, -1, homeIndex, startIndex, Red, pieceId);
+    }
+
 
     createBluePieces(): Array<Piece> {
         let bluePieces = new Array<Piece>()
@@ -207,11 +219,24 @@ export class PieceFactory {
         let startIndex = blueConfig.sIndex
 
         blueConfig.pieces.forEach((piece) => {
-            let bluePiece = new Piece(this.scene, piece.x, piece.y, piece.index, homeIndex, startIndex, Blue, piece.id);
+            let bluePiece = new Piece(this.scene, piece.x, piece.y, piece.x, piece.y, piece.index, homeIndex, startIndex, Blue, piece.id);
             bluePieces.push(bluePiece);
         })
         return bluePieces;
     }
+
+    createBluePiece(pieceId: string): Piece {
+        let configs = this.pieceConfig.blue
+        let bluePieceConfig = configs.pieces.filter((piece) => {
+            return piece.id === pieceId
+        }) 
+        let homeIndex = configs.hIndex
+        let startIndex = configs.sIndex
+        let homeX = bluePieceConfig[0].hx, homeY = bluePieceConfig[0].hy
+        return new Piece(this.scene, 0, 0, homeX, homeY, -1, homeIndex, startIndex, Blue, pieceId);
+       
+    }
+    
 
     createYellowPieces(): Array<Piece> {
         let yellowPieces = new Array<Piece>()
@@ -220,10 +245,22 @@ export class PieceFactory {
         let startIndex = yellowConfig .sIndex
 
         yellowConfig .pieces.forEach((piece) => {
-            let yellowPiece = new Piece(this.scene, piece.x, piece.y, piece.index, homeIndex, startIndex, Yellow, piece.id);
+            let yellowPiece = new Piece(this.scene, piece.x, piece.y, piece.x, piece.y, piece.index, homeIndex, startIndex, Yellow, piece.id);
             yellowPieces.push(yellowPiece);
         })
         return yellowPieces;
+    }
+
+    createYellowPiece(pieceId: string): Piece {
+        let configs = this.pieceConfig.yellow
+        let yellowPieceConfig = configs.pieces.filter((piece) => {
+            return piece.id === pieceId
+        }) 
+        let homeIndex = configs.hIndex
+        let startIndex = configs.sIndex
+        let homeX = yellowPieceConfig[0].hx, homeY = yellowPieceConfig[0].hy
+        return new Piece(this.scene, 0, 0, homeX, homeY, -1, homeIndex, startIndex, Yellow, pieceId);
+       
     }
 
     createGreenPieces(): Array<Piece> {
@@ -233,11 +270,23 @@ export class PieceFactory {
         let startIndex = greenConfig.sIndex
 
         greenConfig.pieces.forEach((piece) => {
-            let greenPiece = new Piece(this.scene, piece.x, piece.y, piece.index, homeIndex, startIndex, Green, piece.id);
+            let greenPiece = new Piece(this.scene, piece.x, piece.y, piece.x, piece.y, piece.index, homeIndex, startIndex, Green, piece.id);
             greenPieces.push(greenPiece);
         })
 
         return greenPieces;
+    }
+
+    createGreenPiece(pieceId: string): Piece {
+        let configs = this.pieceConfig.green
+        let greenPieceConfig = configs.pieces.filter((piece) => {
+            return piece.id === pieceId
+        })
+        let homeIndex = configs.hIndex
+        let startIndex = configs.sIndex
+        let homeX = greenPieceConfig[0].hx, homeY = greenPieceConfig[0].hy
+        return new Piece(this.scene, 0, 0, homeX, homeY, -1, homeIndex, startIndex, Green, pieceId);
+       
     }
 
     getPieceState(state: string): any {

@@ -1,4 +1,5 @@
 import {SideSceneEmitter} from './sideSceneEmmiter'
+import {PDie} from './persistence/ludo'
 export class Die extends Phaser.GameObjects.Sprite {
     frameIndex: number
     dieId: string
@@ -41,6 +42,7 @@ export class Die extends Phaser.GameObjects.Sprite {
             }
             
          });
+
 
     }
 
@@ -119,6 +121,15 @@ export class Die extends Phaser.GameObjects.Sprite {
         this.scale = 0.8
         this.isSelected = true
         this.scene.registry.set(this.dieId + "-selected", true)
+    }
+
+    updateDie(die: PDie): void {
+        this.dieFrame = this.getFrameFromValue(die.dieValue)
+        console.log(this.dieFrame)
+        this.frame = this.texture.frames[this.dieFrame];
+        this.isSelected = die.selected
+        this.scene.registry.set(this.dieId, die.dieValue)
+        this.scene.registry.set(this.dieId + "-selected", die.selected)
     }
 
 }

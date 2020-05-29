@@ -30,7 +30,10 @@ export class Draggable {
         this.pathYellowRange(piece)
         this.pathBlueRange(piece)
         this.pathGreenRange(piece)
-
+        this.pathHomeRedRange(piece)
+        this.pathHomeBlueRange(piece)
+        this.pathHomeYellowRange(piece)
+        this.pathHomeGreenRange(piece)
         this.configurePiece(piece)
 
 
@@ -715,6 +718,56 @@ export class Draggable {
         }
     }
 
+    pathHomeRedRange(piece: Piece): void {
+        let xMin = this.getNextCord(0)
+        let xMax = this.getNextCord(5)
+        let yMin = this.getNextCord(0)
+        let yMax = this.getNextCord(5)
+        if (piece.x >= xMin && piece.x <= xMax  && piece.y >= yMin && piece.y <= yMax){
+            piece.x = piece.homeX
+            piece.y = piece.homeY
+            piece.index = -1
+        }
+    }
+
+    pathHomeBlueRange(piece: Piece): void {
+        let xMin = this.getNextCord(9)
+        let xMax = this.getNextCord(14)
+        let yMin = this.getNextCord(0)
+        let yMax = this.getNextCord(5)
+        if (piece.x >= xMin && piece.x <= xMax  && piece.y >= yMin && piece.y <= yMax){
+            piece.x = piece.homeX
+            piece.y = piece.homeY
+            piece.index = -1
+        }
+
+    }
+
+    pathHomeGreenRange(piece: Piece): void {
+        let xMin = this.getNextCord(0)
+        let xMax = this.getNextCord(5)
+        let yMin = this.getNextCord(9)
+        let yMax = this.getNextCord(14)
+        if (piece.x >= xMin && piece.x <= xMax  && piece.y >= yMin && piece.y <= yMax){
+            piece.x = piece.homeX
+            piece.y = piece.homeY
+            piece.index = -1
+        }
+    }
+
+
+    pathHomeYellowRange(piece: Piece): void {
+        let xMin = this.getNextCord(9)
+        let xMax = this.getNextCord(14)
+        let yMin = this.getNextCord(9)
+        let yMax = this.getNextCord(14)
+        if (piece.x >= xMin && piece.x <= xMax  && piece.y >= yMin && piece.y <= yMax){
+            piece.x = piece.homeX
+            piece.y = piece.homeY
+            piece.index = -1
+        }
+
+    }
 
     configurePiece(piece: Piece){
         if (piece.index >= 0 && piece.index <=51) {

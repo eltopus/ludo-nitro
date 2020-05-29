@@ -1,5 +1,6 @@
 import {Die} from './die'
 import {SideSceneEmitter} from './sideSceneEmmiter'
+import {PDie} from './persistence/ludo'
 export class Dice {
     dice: Array<Die>
     scene: Phaser.Scene
@@ -28,6 +29,28 @@ export class Dice {
             for (let die of this.dice){
                 die.resetDieFrame()
                 die.resetDieFrame()
+            }
+        });
+
+        this.scene.events.on('setBothDice', (ddice: Array<PDie>) => {
+            console.log(ddice)
+            for (let ddie of ddice){
+                if (ddie.dieId === "die1"){
+                    this.scene.registry.set('die1', ddie.dieValue)
+                    for (let die of this.dice){
+                        if (die.dieId === 'die1'){
+                            die.updateDie(ddie)
+                        }
+                    }
+                }
+                if (ddie.dieId === "die2"){
+                    this.scene.registry.set('die2', ddie.dieValue)
+                    for (let die of this.dice){
+                        if (die.dieId === 'die2'){
+                            die.updateDie(ddie)
+                        }
+                    }
+                }
             }
         });
 

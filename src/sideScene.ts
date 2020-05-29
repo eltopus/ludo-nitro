@@ -38,20 +38,18 @@ export class SideScene extends Phaser.Scene {
     let rollDice = this.add.sprite(868, 500, 'rollDice')
     rollDice.setScale(0.2, 0.2)
     rollDice.setInteractive()
-    let die1 = new Die(this, 820, 360, -1, 'die1')
-    let die2 = new Die(this, 920, 360, -1, 'die2')
+    let die1 = new Die(this, 820, 360, 0, 'die1')
+    let die2 = new Die(this, 920, 360, 0, 'die2')
     
     this.dice = new Dice(this)
     this.dice.addDice(die1)
     this.dice.addDice(die2)
 
-     
-
      rollDice.on('pointerdown', (pointer) => {
        let value1 =  Phaser.Math.Between(1, 6)
        let value2 =  Phaser.Math.Between(1, 6)
-       //value1 = 3
-       //value2 = 2
+       //value1 = 6
+       //value2 = 6
        this.emitter.emmitDiceRoll(value1, value2)
      });
 
