@@ -38,30 +38,41 @@ export class SideScene extends Phaser.Scene {
     let rollDice = this.add.sprite(868, 500, 'rollDice')
     rollDice.setScale(0.2, 0.2)
     rollDice.setInteractive()
-    let die1 = new Die(this, 820, 360, 0, 'die1')
-    let die2 = new Die(this, 920, 360, 0, 'die2')
+    let data = this.cache.json.get('data');
+    let dieFrame1 = 0
+    let dieFrame2 = 0
+  
+    let die1 = new Die(this, 820, 360, dieFrame1, 'die1')
+    let die2 = new Die(this, 920, 360, dieFrame2, 'die2')
     
     this.dice = new Dice(this)
+    
     this.dice.addDice(die1)
     this.dice.addDice(die2)
-
+    
+  
      rollDice.on('pointerdown', (pointer) => {
        let value1 =  Phaser.Math.Between(1, 6)
        let value2 =  Phaser.Math.Between(1, 6)
-       //value1 = 6
-       //value2 = 6
+       value1 = 3
+       value2 = 2
        this.emitter.emmitDiceRoll(value1, value2)
      });
 
+    
      this.die1Score = this.add.text(780, 200, "dieOne: 0")
      this.die2Score = this.add.text(880, 200, "dieTwo: 0")
 
      this.displayPlayerName = this.add.text(750, 150, "CurrentPlayer: " + this.registry.get('currentPlayer'))
      this.registry.events.on('changedata', this.updateScore,  this)
      
-    //const text = this.add.text(875, 100, 'Hello World', { fixedWidth: 150, fixedHeight: 36 })
-    
-     //text.setOrigin(0.5, 0.5)
+
+    if (data){
+      this.dice.setDieValue(data.dice)
+    }
+    //console.log("dieOne: " + this.registry.get('die1'))
+    //console.log("dieOne: " + this.registry.get('die2'))
+
 
   }
 

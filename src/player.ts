@@ -3,6 +3,7 @@ import {ActivePath} from "./activePath"
 export interface Player {
     playerName: string
     pieces: Array<Piece>
+    exitedPieces: Array<Piece>
     scene: Phaser.Scene
     group: Phaser.Physics.Arcade.Group
     selectedPiece: Piece

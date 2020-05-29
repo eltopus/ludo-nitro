@@ -573,7 +573,7 @@ export class Movement {
                 path.projectedIndex = newIndex;
                 path.remainderIndex = 0
                 if (newIndex == stopIndex) {
-                    console.log("Piece is exited........................... ");
+                    //console.log("Piece is exited........................... ");
                     path.projectedPieceState = PieceState.Exited
                 }
                 return path;

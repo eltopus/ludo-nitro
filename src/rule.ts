@@ -51,34 +51,158 @@ export class Rule {
         }
     }
 
-    shouldPlayBothDice(): boolean {
+    shouldPlayBothDice2(): boolean {
+        console.log(this.currentPlayer.hasHomePieces() + " " +
+        !this.homePiecesCanUseOneOrMoreDice()  + " " +
+        !this.currentPlayer.hasJustActivePieces()  + " " + 
+        this.currentPlayer.hasInActivePieces()   + " " + 
+        !this.atLeastOneSixIsRolled()  + " " +
+        !this.doubleSixIsRolled())
         if (this.currentPlayer.allPiecesAreInactive() && !this.doubleSixIsRolled()){
             console.log("All pieces are inactive...")
             return true
         }
-        if (this.currentPlayer.hasNoActivePieces() && !this.atLeastOneSixIsRolled() && !this.doubleSixIsRolled()) {
-            console.log("Player has no active piece and no six is rolled Play both dice")
+        if (this.currentPlayer.hasNoActivePieces() && 
+            !this.atLeastOneSixIsRolled() && 
+            !this.doubleSixIsRolled()) {
+            console.log("A1 Play both")
             return true
         }
-        if (this.currentPlayer.hasExactlyOneActivePiece() && !this.currentPlayer.hasHomePieces() && !this.atLeastOneSixIsRolled() && !this.doubleSixIsRolled()){
-            console.log("Player has exactly one active piece and no six is rolled. Play both dice")
+        if (this.currentPlayer.hasExactlyOneActivePiece() && 
+            !this.currentPlayer.hasHomePieces() && 
+            !this.homePiecesCanUseOneOrMoreDice() && 
+            !this.atLeastOneSixIsRolled() && 
+            !this.doubleSixIsRolled()){
+            console.log("A2 Play both")
             return true
         }
-        if (this.currentPlayer.hasExactlyOneActivePiece() && this.currentPlayer.hasHomePieces() && !this.homePiecesCanUseOneOrMoreDice() && !this.atLeastOneSixIsRolled() && !this.doubleSixIsRolled()){
-            console.log("Player has exactly one active piece and home piece. Home piece cannot use dice and no six is rolled. Play both dice")
+        if (this.currentPlayer.hasExactlyOneActivePiece() && 
+            this.currentPlayer.hasHomePieces() && 
+            !this.homePiecesCanUseOneOrMoreDice() && 
+            !this.atLeastOneSixIsRolled() && 
+            !this.doubleSixIsRolled() &&
+            !this.canPutPieceOnHomePath()){
+            console.log("A3 Play both")
             return true
         }
-        if (this.currentPlayer.hasHomePieces() && !this.homePiecesCanUseOneOrMoreDice() && !this.currentPlayer.hasJustActivePieces() && this.currentPlayer.hasInActivePieces() && !this.atLeastOneSixIsRolled() && !this.doubleSixIsRolled()){
-            console.log("Player has home pieces but none can use any of the dice values. Play Both dice")
+        if (this.currentPlayer.hasExactlyOneActivePiece() &&
+            this.currentPlayer.hasHomePieces() &&
+            !this.homePiecesCanUseOneOrMoreDice() &&
+            !this.activePieceCanUseOneOrMoreDice() &&
+            !this.canPutPieceOnHomePath() &&
+            !this.atLeastOneSixIsRolled() &&
+            !this.doubleSixIsRolled()){
+                console.log("A4 Play both")
+                return true
+            }
+        if (this.currentPlayer.hasHomePieces() && 
+            !this.homePiecesCanUseOneOrMoreDice() && 
+            !this.currentPlayer.hasJustActivePieces() && 
+            this.currentPlayer.hasInActivePieces() && 
+            !this.atLeastOneSixIsRolled() && 
+            !this.doubleSixIsRolled()){
+            console.log("A5 Play both")
             return true
         }
-        if (this.currentPlayer.hasExactlyOneActivePiece() && this.currentPlayer.hasInActivePieces() && !this.atLeastOneSixIsRolled() && this.doubleSixIsRolled()){
-            console.log("Player has exactly one active piece and no inactive piece(s). No six or bouble six is rolled Play Both dice")
+        if (this.currentPlayer.hasExactlyOneActivePiece() && 
+            this.currentPlayer.hasInActivePieces() && 
+            !this.atLeastOneSixIsRolled() && 
+            this.doubleSixIsRolled()){
+            console.log("A6 Play both")
             return true
         }
-        if (this.currentPlayer.hasExactlyOneActivePiece() && !this.currentPlayer.hasInActivePieces() && !this.homePiecesCanUseOneOrMoreDice() && !this.canPutPieceOnHomePath()){
-            console.log("Player has exactly one active piece and no inactive piece(s) and no home piece that can use dice Play Both dice: ")
+        if (this.currentPlayer.hasExactlyOneActivePiece() && 
+            !this.currentPlayer.hasInActivePieces() && 
+            !this.homePiecesCanUseOneOrMoreDice() && 
+            !this.canPutPieceOnHomePath()){
+            console.log("A7 Bplay both")
             return true
+        }
+        return false
+    }
+
+    shouldPlayBothDice(): boolean {
+
+        if (this.currentPlayer.allPiecesAreInactive() && !this.doubleSixIsRolled()){
+            console.log("A1 plath both")
+            return true
+        }else {
+            if (this.currentPlayer.hasActivePieces()){
+                if (this.currentPlayer.hasExactlyOneActivePiece()){
+                    if (this.atLeastOneSixIsRolled() || this.doubleSixIsRolled()){
+                        
+                        if (this.currentPlayer.hasInActivePieces()){
+                            
+                            if (this.currentPlayer.hasHomePieces()){
+                                if (this.homePiecesCanUseOneOrMoreDice()){
+                                    
+                                    return false
+                                }else {
+                                    console.log("I2 Play both")
+                                    return true
+                                }
+
+                            }else {
+
+                            }
+                        }else {
+                            if (this.homePiecesCanUseOneOrMoreDice()){
+                                console.log("R2 split dice")
+                                return false
+                            }else {
+                                console.log("G2 Play both")
+                                return true
+                            }
+                        }
+
+                    }else {
+                        if (this.activePieceCanUseOneOrMoreDice()){
+                            if (this.canPutPieceOnHomePath()){
+                                console.log("D2 split dice")
+                                return false
+                            }else {
+                                if (this.homePiecesCanUseOneOrMoreDice()){
+                                    console.log("F2 split dice")
+                                    return false
+                                }else {
+                                    console.log("E2 Play both")
+                                    return true
+                                }
+                               
+                            }
+                        }else {
+                            console.log("A2 plath both")
+                            return true
+                        }
+                    }
+
+                }else {
+                   
+                }
+
+            }else {
+                if (this.currentPlayer.hasHomePieces()){
+                    if (this.homePiecesCanUseOneOrMoreDice()){
+                        if (this.currentPlayer.hasInActivePieces()){
+                            if (this.atLeastOneSixIsRolled() || this.doubleSixIsRolled()){
+                                console.log("K2 split dice")
+                                return false
+                            }else {
+                                console.log("P2 Play both")
+                                return true
+                            }
+                        }
+                    }else {
+                        console.log("N2 Play both")
+                        return true
+                    }
+
+                }else{
+                    console.log("L2 Play both")
+                   return true
+                }
+               
+            }
         }
         return false
     }
@@ -140,8 +264,32 @@ export class Rule {
         return validPaths.length > 0
     }
 
+    activePieceCanUseOneOrMoreDice(): boolean {
+        let piece = this.currentPlayer.getFirstActivePiece()
+        let validPaths = new Array<ActivePath>()
+        let dieOneScore = this.scene.registry.get('die1')
+        let dieTwoScore = this.scene.registry.get('die2')
+        if (dieOneScore > 0){
+            if (piece.isActive()) {
+                let validDie1Path = piece.generatePath(dieOneScore)
+                if (validDie1Path !== null && validDie1Path.isValid){
+                    validPaths.push(validDie1Path)
+                }
+            }
+        }
+        if (dieTwoScore > 0){
+            if (piece.isActive()) {
+                let validDie2Path = piece.generatePath(dieTwoScore)
+                if (validDie2Path !== null && validDie2Path.isValid) {
+                    validPaths.push(validDie2Path)
+                }
+            }
+        }
+        return validPaths.length > 0
+    }
+
     eligibleForActivePathGeneration(piece: Piece): boolean {
-        return piece.isActive() || this.homePieceCanUseOneOrMoreDice(piece) || this.atLeastOneSixIsRolled()
+        return (piece.isActive() || this.homePieceCanUseOneOrMoreDice(piece) || this.atLeastOneSixIsRolled()) && !piece.isExited()
     }
 
     arrayIntersection(a1: Array<ActivePath>, a2: Array<ActivePath>): Array<ActivePath> {
@@ -247,10 +395,9 @@ export class Rule {
                 return (mb >= 1 && mb <=6)
             })
             nonActivePieveMovebys = this.arrayIntersection(activePieveMovebys, nonActivePieveMovebys)
-            //console.log(activePieveMovebys)
-            //console.log(nonActivePieveMovebys)
+            
             if (activePieveMovebys.toString() === nonActivePieveMovebys.toString()) {
-                //console.log("Identical. Removing nothing...")
+                console.log("Identical. Removing nothing...")
                 if (this.pathContainsDoubleSixValue(paths)){
                     return this.removePathByInactivePiecesWithoutDieValueSix(paths)
                 }else {
@@ -266,7 +413,7 @@ export class Rule {
                         break;
                     }
                 }
-                return (this.removePathByInactivePiecesWithoutDieValueSix(this.removePathByMoveby(indexofPathToBeRemove, onlyActivePiece.pieceId, paths)))
+                return this.removePathByInactivePiecesWithoutDieValueSix(this.removePathByMoveby(indexofPathToBeRemove, onlyActivePiece.pieceId, paths))
             }
             
         }else {
@@ -282,6 +429,7 @@ export class Rule {
             path.activePiece.isOnHomePath()
         }) 
     }
+
 
     removeSixValuePathFromActivePiece(paths: Array<ActivePath>): Array<ActivePath> {
         return paths.filter((path) => {
@@ -327,29 +475,32 @@ export class Rule {
     validateDieCanPutPieceOnHomePath(piece: Piece): boolean {
         let dieValue1 = this.scene.registry.get('die1')
         let dieValue2 = this.scene.registry.get('die2')
+        let cond1 = false
+        let cond2 = false
         if (dieValue1 > 0) {
             let path = piece.generatePath(dieValue1)
             if (path !== null && path.isValid && path.projectedIndex > piece.homeIndex){
-                return true
+                cond1 = true
             }
-        }else if (dieValue2 > 0) {
+        }
+        if (dieValue2 > 0) {
             let path = piece.generatePath(dieValue2)
             if (path !== null && path.isValid && path.projectedIndex > piece.homeIndex){
-                return true
+                cond2 = true
             }
         }
-        else {
-            return false
-        }
+        return cond1 && cond2
     }
 
     getAllPiecesAtIndex(index: number): Array<Piece> {
         let pieces = []
         for (let player of this.players) {
             if (player !== this.currentPlayer){
-                pieces = player.pieces.filter((piece)=> {
-                    return piece.index === index
-                });
+                for (let piece of player.pieces){
+                    if (piece.index === index){
+                        pieces.push(piece)
+                    }
+                }
             }
         }
         return pieces

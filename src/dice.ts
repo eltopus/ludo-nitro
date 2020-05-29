@@ -32,28 +32,6 @@ export class Dice {
             }
         });
 
-        this.scene.events.on('setBothDice', (ddice: Array<PDie>) => {
-            console.log(ddice)
-            for (let ddie of ddice){
-                if (ddie.dieId === "die1"){
-                    this.scene.registry.set('die1', ddie.dieValue)
-                    for (let die of this.dice){
-                        if (die.dieId === 'die1'){
-                            die.updateDie(ddie)
-                        }
-                    }
-                }
-                if (ddie.dieId === "die2"){
-                    this.scene.registry.set('die2', ddie.dieValue)
-                    for (let die of this.dice){
-                        if (die.dieId === 'die2'){
-                            die.updateDie(ddie)
-                        }
-                    }
-                }
-            }
-        });
-
         this.scene.events.on('resetSingleDie', (dieId: string) => {
             //console.log("resetting single die: " + dieId)
             for (let die of this.dice){
@@ -103,4 +81,28 @@ export class Dice {
                 return 0;
         }
     }
+
+    setDieValue(ddice: Array<PDie>): void {
+        for (let ddie of ddice){
+            if (ddie.dieId === "die1"){
+                //this.scene.registry.set('die1', ddie.dieValue)
+                for (let die of this.dice){
+                    if (die.dieId === 'die1'){
+                        die.updateDie(ddie)
+                        break
+                    }
+                }
+            }
+            if (ddie.dieId === "die2"){
+                //this.scene.registry.set('die2', ddie.dieValue)
+                for (let die of this.dice){
+                    if (die.dieId === 'die2'){
+                        die.updateDie(ddie)
+                        break
+                    }
+                }
+            }
+        }
+    }
+    
 }

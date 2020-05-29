@@ -28,7 +28,7 @@ export class Die extends Phaser.GameObjects.Sprite {
         this.scene.add.existing(this)        
         this.on('animationcomplete', this.animComplete, this);
         //this.tint = 0x808080;
-        this.scene.registry.set(this.dieId, this.getFrameValue(-1))
+        //this.scene.registry.set(this.dieId, this.getFrameValue(-1))
         this.scene.registry.set(this.dieId + "-selected", false)
         this.on('pointerdown', (pointer) => {
             if (this.isSelected){
@@ -42,7 +42,6 @@ export class Die extends Phaser.GameObjects.Sprite {
             }
             
          });
-
 
     }
 
@@ -125,11 +124,16 @@ export class Die extends Phaser.GameObjects.Sprite {
 
     updateDie(die: PDie): void {
         this.dieFrame = this.getFrameFromValue(die.dieValue)
-        console.log(this.dieFrame)
-        this.frame = this.texture.frames[this.dieFrame];
-        this.isSelected = die.selected
-        this.scene.registry.set(this.dieId, die.dieValue)
-        this.scene.registry.set(this.dieId + "-selected", die.selected)
+        if (die.dieValue === 0){
+            this.scene.registry.set(this.dieId, 0)
+            this.isSelected = die.selected
+            this.scene.registry.set(this.dieId + "-selected", die.selected)
+        }else {
+            this.frame = this.texture.frames[this.dieFrame];
+            this.isSelected = die.selected
+            this.scene.registry.set(this.dieId, die.dieValue)
+            this.scene.registry.set(this.dieId + "-selected", die.selected)
+        }
     }
 
 }

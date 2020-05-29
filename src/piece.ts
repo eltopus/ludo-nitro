@@ -215,7 +215,15 @@ export class Piece extends Phaser.GameObjects.Sprite {
         return this.pieceState === PieceState.Active
       }
 
+      isExited(): boolean {
+        return this.pieceState === PieceState.Exited
+      }
+
       isNotActive(): boolean {
+        return this.pieceState === PieceState.Inactive
+      }
+
+      isInActive(): boolean {
         return this.pieceState === PieceState.Inactive
       }
 
@@ -328,6 +336,10 @@ export class Piece extends Phaser.GameObjects.Sprite {
         this.y = config.y
         this.index = config.index
         this.pieceState = this.getPieceState(config.pieceState)
+        if (this.isExited()){
+          this.setVisible(false)
+        }
+        
       }
     }
 }

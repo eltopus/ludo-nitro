@@ -57,6 +57,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
+    let loadGame = true
+    let loadAi = false
+    let aiMode = false
+    let playerMode = 2
 
     let conf = {
       text: this.add.text(800, 100, 'This is the test')
@@ -78,58 +82,7 @@ export class GameScene extends Phaser.Scene {
 
     this.cameras.main.setViewport(0, 0, 1020, 721);
     this.add.image(361, 361, 'board')  
-    let ludoGame = new LoadJson(this)
-    this.ludo = ludoGame
-    let players = ludoGame.loadGame(false)
-    this.rule.addPlayers(players)
-    for (let die of ludoGame.data.dice){
-      if (die.dieId === "die1"){
-        this.registry.set('die1', die.dieValue)
-      }
-      if (die.dieId === "die2"){
-        this.registry.set('die2', die.dieValue)
-      }
-    }
-    this.scene.get('SideScene').events.emit('setBothDice', this.ludo.data.dice)
-    
-    // let pieceFactory = new PieceFactory(this, null)
-    // let redPieces = pieceFactory.createRedPieces()
-    // let bluePieces = pieceFactory.createBluePieces()
-    // let yellowPieces = pieceFactory.createYellowPieces()
-    // let greenPieces = pieceFactory.createGreenPieces()
-
-    // let rdname = ["RedPlayer"]
-    // let uf1 = new UserPlayerFactory(this, rdname)
-    // let p1 = uf1.createPlayers();
-
-    // let bname = ["BluePlayer"]
-    // let uf2 = new UserPlayerFactory(this, bname)
-    // let p2 = uf2.createPlayers();
-
-    // let yname = ["YellowPlayer"]
-    // let uf3 = new UserPlayerFactory(this, yname)
-    // let p3 = uf3.createPlayers();
-
-    // let gname = ["GreenPlayer"]
-    // let uf4 = new UserPlayerFactory(this, gname)
-    // let p4 = uf4.createPlayers();
-    
-    // p1[0].addPieces(redPieces)
-    // p2[0].addPieces(bluePieces)
-    // p3[0].addPieces(yellowPieces)
-    // p4[0].addPieces(greenPieces)
-  
-    
-    // this.rule.addPlayers(p1)
-    // this.rule.addPlayers(p2)
-    // this.rule.addPlayers(p3)
-    // this.rule.addPlayers(p4)
-
-    this.currentPlayer = this.rule.getNextPlayer()
-    this.registry.set('currentPlayer', this.currentPlayer.playerName)
-    this.currentPlayer.playerRollDice()
-
-    let play = this.add.sprite(868, 600, 'play')
+     let play = this.add.sprite(868, 600, 'play')
     play.setInteractive()
 
     let flick = this.add.sprite(950, 50, 'flick')
@@ -138,20 +91,133 @@ export class GameScene extends Phaser.Scene {
     let save = this.add.sprite(800, 50, 'save')
     save.setInteractive()
 
+    
+
+    if (!loadGame){
+      let pieceFactory = new PieceFactory(this, null)
+      let redPieces = pieceFactory.createRedPieces()
+      let bluePieces = pieceFactory.createBluePieces()
+      let yellowPieces = pieceFactory.createYellowPieces()
+      let greenPieces = pieceFactory.createGreenPieces()
+
+      if (playerMode=== 2){
+        let rdname = ["RedBlue"]
+        let bname = ["GreenYellow"]
+        let p1 = null , p2 = null
+        if (aiMode){
+          let uf1 = new AIPlayerFactory(this, rdname)
+          p1 = uf1.createPlayers();
+          let uf2 = new AIPlayerFactory(this, bname)
+          p2 = uf2.createPlayers();
+        
+        }else {
+          let uf1 = new UserPlayerFactory(this, rdname)
+          p1 = uf1.createPlayers();
+          let uf2 = new UserPlayerFactory(this, bname)
+          p2 = uf2.createPlayers();
+        }
+        p1[0].addPieces(redPieces)
+        p1[0].addPieces(bluePieces)
+        p2[0].addPieces(yellowPieces)
+        p2[0].addPieces(greenPieces)
+        p1[0].setPieceDraggable()
+        p2[0].setPieceDraggable()
+        this.rule.addPlayers(p1)
+        this.rule.addPlayers(p2)
+      }else {
+        let rdname = ["RedPlayer"]
+        let bname = ["BluePlayer"]
+        let yname = ["YellowPlayer"]
+        let gname = ["GreenPlayer"]
+        let p1 = null, p2 = null, p3 = null, p4 = null
+        if (aiMode){
+          let uf1 = new AIPlayerFactory(this, rdname)
+          p1 = uf1.createPlayers();
+          let uf2 = new AIPlayerFactory(this, bname)
+          p2 = uf2.createPlayers();
+          let uf3 = new AIPlayerFactory(this, yname)
+          p3 = uf3.createPlayers();
+          let uf4 = new AIPlayerFactory(this, gname)
+          p4 = uf4.createPlayers();
+
+        }else {
+          let uf1 = new UserPlayerFactory(this, rdname)
+          p1 = uf1.createPlayers();
+          let uf2 = new UserPlayerFactory(this, bname)
+          p2 = uf2.createPlayers();
+          let uf3 = new UserPlayerFactory(this, yname)
+          p3 = uf3.createPlayers();
+          let uf4 = new UserPlayerFactory(this, gname)
+          p4 = uf4.createPlayers();
+        }
+        
+        p1[0].addPieces(redPieces)
+        p2[0].addPieces(bluePieces)
+        p3[0].addPieces(yellowPieces)
+        p4[0].addPieces(greenPieces)
+
+        p1[0].setPieceDraggable()
+        p2[0].setPieceDraggable()
+        p3[0].setPieceDraggable()
+        p4[0].setPieceDraggable()
+      
+        this.rule.addPlayers(p1)
+        this.rule.addPlayers(p2)
+        this.rule.addPlayers(p3)
+        this.rule.addPlayers(p4)
+      }
+
+      
+      this.currentPlayer = this.rule.getNextPlayer()
+      this.registry.set('currentPlayer', this.currentPlayer.playerName)
+      this.currentPlayer.playerRollDice()
+    }else {
+      let ludoGame = new LoadJson(this)
+      this.ludo = ludoGame
+      let players = ludoGame.loadGame(loadAi)
+      this.rule.addPlayers(players)
+      for (let die of ludoGame.data.dice) {
+        if (die.dieId === "die1"){
+          this.registry.set('die1', die.dieValue)
+        }
+        if (die.dieId === "die2"){
+          this.registry.set('die2', die.dieValue)
+        }
+       
+      }
+      for (let player of this.rule.players){
+        player.setPieceDraggable()
+      }
+      this.currentPlayer = this.rule.getNextPlayer()
+      this.registry.set('currentPlayer', this.currentPlayer.playerName)
+      this.paths = this.rule.evaluateDiceRollCompletion()
+      for (let path of this.paths) {
+        console.log(path.pathToString())
+      }
+      this.currentPlayer.playerRollDice()
+    }
+    
     flick.on('pointerdown', (pointer) => {
-      this.scene.get('SideScene').events.emit('setBothDice', ludoGame.data.dice)
     })
 
     save.on('pointerdown', (pointer) => {
-      
       let ludo = new Ludo()
       let pplayers = new Array<PPlayer>()
-      
       for (let player of this.rule.players){
         console.log(player)
         let pplayer = new PPlayer()
         pplayer.playerName = player.playerName
         for (let piece of player.pieces){
+          let ppiece = new PPiece()
+          ppiece.pieceId = piece.pieceId
+          ppiece.index = piece.index
+          ppiece.x = piece.x
+          ppiece.y = piece.y
+          ppiece.pieceState = piece.showPieceState()
+          ppiece.pieceType = piece.showPieceType()
+          pplayer.pieces.push(ppiece)
+        }
+        for (let piece of player.exitedPieces){
           let ppiece = new PPiece()
           ppiece.pieceId = piece.pieceId
           ppiece.index = piece.index
@@ -183,10 +249,7 @@ export class GameScene extends Phaser.Scene {
       console.log(JSON.stringify(ludo, null, 2))
     })
 
-
-
     play.on('pointerdown', (pointer) => {
-
       if (this.currentPlayer.hasSelectedPiece()) {
         if (this.paths.length > 0){
           if (this.singleDieIsSelected()){
@@ -224,13 +287,18 @@ export class GameScene extends Phaser.Scene {
 
     this.events.on('pieceMovementCompleted', this.evaluatePieceMovementCompletion, this);
     this.events.on('dieRolledCompleted', this.evaluateDiceRollCompletion, this);
+
   }
 
   evaluatePieceMovementCompletion(pieceId: string, pieceIndex: number): void {
-    //console.log("Evaluating piece movement completion pieceId: " + pieceId )
+    for (let player of this.rule.players){
+      for (let piece of player.pieces){
+        //console.log("pieceId: " + piece.pieceId + " pieceIndex: " + piece.index + " state: " + piece.showPieceState())
+      }
+    }
     let opposingPieces = this.rule.getAllPiecesAtIndex(pieceIndex)
     for (let oppossingPiece of opposingPieces){
-      //console.log("Opposing index: " + oppossingPiece.pieceId)
+      console.log("Opposing index: " + oppossingPiece.pieceId)
       this.rule.handlePeckingSituation(pieceId, oppossingPiece)
       break
     }

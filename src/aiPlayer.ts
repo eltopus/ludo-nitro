@@ -7,6 +7,7 @@ import {PPlayer} from './persistence/ludo'
 export class AIPlayer implements Player {
     playerName: string
     pieces: Array<Piece>
+    exitedPieces: Array<Piece>
     scene: Phaser.Scene
     group: Phaser.Physics.Arcade.Group
     selectedPiece: Piece
@@ -19,6 +20,7 @@ export class AIPlayer implements Player {
         this.scene.events.on('pieceExited', this.destroyPiece, this);
         this.selectedPiece = null
         this.pieces = new Array<Piece>()
+        this.exitedPieces = new Array<Piece>()
     }
 
     addPieces(pieces: Array<Piece>): void {
@@ -63,6 +65,7 @@ export class AIPlayer implements Player {
             if (piece.pieceId === pieceId) {
                 indexOf = this.pieces.indexOf(piece)
                 piece.setVisible(false)
+                this.exitedPieces.push(piece)
                 if (indexOf >= 0) {
                     console.log("Removing piece: " + pieceId)
                     this.pieces.splice(indexOf, 1);
@@ -80,7 +83,7 @@ export class AIPlayer implements Player {
 
     hasActivePieces(): boolean {
         for (let piece of this.pieces) {
-            if (piece.isActive() || piece.isOnHomePath()){
+            if (piece.isActive()){
                 return true
             }
         }
@@ -98,7 +101,7 @@ export class AIPlayer implements Player {
 
     hasInActivePieces(): boolean {
         for (let piece of this.pieces) {
-            if (piece.isNotActive()){
+            if (piece.isInActive()){
                 return true
             }
         }
@@ -107,7 +110,7 @@ export class AIPlayer implements Player {
 
     hasNoActivePieces(): boolean {
         for (let piece of this.pieces) {
-            if (piece.isActive() || piece.isOnHomePath()){
+            if (piece.isActive()){
                 return false
             }
         }
