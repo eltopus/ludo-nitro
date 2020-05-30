@@ -20,8 +20,9 @@ export class Piece extends Phaser.GameObjects.Sprite {
     moving: boolean
     homeX: number
     homeY: number
+    homeStartIndex: number
     
-    constructor(scene: Phaser.Scene, x: number, y: number, homeX: number, homeY: number, index: number, homeIndex: number, startIndex: number, pieceType: any, texture: string){
+    constructor(scene: Phaser.Scene, x: number, y: number, homeX: number, homeY: number, index: number, homeIndex: number, startIndex: number, pieceType: any, texture: string, homeStartIndex: number){
         super(scene, x, y, texture);
         this.homeX = homeX
         this.homeY = homeY
@@ -32,6 +33,7 @@ export class Piece extends Phaser.GameObjects.Sprite {
         this.pieceState = PieceState.Inactive
         this.pieceType = pieceType
         this.startIndex = startIndex
+        this.homeStartIndex = homeStartIndex
         this.movement = new Movement(24.1, 48.1, scene);
         this.moving = false
         this.setInteractive()
@@ -220,7 +222,7 @@ export class Piece extends Phaser.GameObjects.Sprite {
       }
 
       isNotActive(): boolean {
-        return this.pieceState === PieceState.Inactive
+        return this.pieceState !== PieceState.Inactive
       }
 
       isInActive(): boolean {

@@ -132,7 +132,7 @@ export class UserPlayer implements Player {
 
     allPiecesAreInactive(): boolean {
         for (let piece of this.pieces) {
-            if (!piece.isNotActive()){
+            if (piece.isNotActive()){
                 return false
             }
         }
@@ -150,6 +150,19 @@ export class UserPlayer implements Player {
             }
         }
         return (activePieceCount === 1);
+    }
+
+    hasExactlyOneInactivePiece(): boolean {
+        let inactivePieceCount = 0;
+        for (let piece of this.pieces) {
+            if (piece.isInActive()){
+                ++inactivePieceCount
+                if (inactivePieceCount > 1){
+                    break
+                }
+            }
+        }
+        return (inactivePieceCount === 1);
     }
 
     hasSelectedPiece(): boolean {
@@ -195,7 +208,7 @@ export class UserPlayer implements Player {
     hasNoPiecesLeft(): boolean {
         let count = 0
         for (let piece of this.pieces) {
-            if (piece.isActive() || piece.isNotActive() || piece.isOnHomePath()){
+            if (piece.isActive() || piece.isInActive() || piece.isOnHomePath()){
                 ++ count
                 if (count > 0){
                     break

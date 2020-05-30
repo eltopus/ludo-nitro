@@ -11,6 +11,7 @@ export class PieceFactory {
     pieceConfig = {
         "red": {
             "hIndex": 51,
+            "dIndex": 52,
             "sIndex": 1,
             "pieces": [
                 {
@@ -54,6 +55,7 @@ export class PieceFactory {
         },
         "blue": {
             "hIndex": 12,
+            "dIndex": 58,
             "sIndex": 14,
             "pieces": [
                 {
@@ -97,6 +99,7 @@ export class PieceFactory {
         },
         "yellow": {
             "hIndex": 25,
+            "dIndex": 64,
             "sIndex": 27,
             "pieces": [
                 {
@@ -140,6 +143,7 @@ export class PieceFactory {
         },
         "green": {
             "hIndex": 38,
+            "dIndex": 70,
             "sIndex": 40,
             "pieces": [
                 {
@@ -191,9 +195,10 @@ export class PieceFactory {
         let redConfig = this.pieceConfig.red
         let homeIndex = redConfig.hIndex
         let startIndex = redConfig.sIndex
+        let homeStartIndex = redConfig.dIndex
 
         redConfig.pieces.forEach((piece) => {
-            let redPiece = new Piece(this.scene, piece.x, piece.y, piece.x, piece.y, piece.index, homeIndex, startIndex, Red, piece.id);
+            let redPiece = new Piece(this.scene, piece.x, piece.y, piece.x, piece.y, piece.index, homeIndex, startIndex, Red, piece.id, homeStartIndex);
             redPieces.push(redPiece);
         }) 
 
@@ -207,8 +212,9 @@ export class PieceFactory {
         }) 
         let homeIndex = configs.hIndex
         let startIndex = configs.sIndex
+        let homeStartIndex = configs.dIndex
         let homeX = redPieceConfig[0].hx, homeY = redPieceConfig[0].hy
-        return new Piece(this.scene, 0, 0, homeX, homeY, -1, homeIndex, startIndex, Red, pieceId);
+        return new Piece(this.scene, 0, 0, homeX, homeY, -1, homeIndex, startIndex, Red, pieceId, homeStartIndex);
     }
 
 
@@ -217,9 +223,10 @@ export class PieceFactory {
         let blueConfig = this.pieceConfig.blue
         let homeIndex = blueConfig.hIndex
         let startIndex = blueConfig.sIndex
+        let homeStartIndex = blueConfig.dIndex
 
         blueConfig.pieces.forEach((piece) => {
-            let bluePiece = new Piece(this.scene, piece.x, piece.y, piece.x, piece.y, piece.index, homeIndex, startIndex, Blue, piece.id);
+            let bluePiece = new Piece(this.scene, piece.x, piece.y, piece.x, piece.y, piece.index, homeIndex, startIndex, Blue, piece.id, homeStartIndex);
             bluePieces.push(bluePiece);
         })
         return bluePieces;
@@ -232,8 +239,9 @@ export class PieceFactory {
         }) 
         let homeIndex = configs.hIndex
         let startIndex = configs.sIndex
+        let homeStartIndex = configs.dIndex
         let homeX = bluePieceConfig[0].hx, homeY = bluePieceConfig[0].hy
-        return new Piece(this.scene, 0, 0, homeX, homeY, -1, homeIndex, startIndex, Blue, pieceId);
+        return new Piece(this.scene, 0, 0, homeX, homeY, -1, homeIndex, startIndex, Blue, pieceId, homeStartIndex);
        
     }
     
@@ -243,9 +251,10 @@ export class PieceFactory {
         let yellowConfig = this.pieceConfig.yellow
         let homeIndex = yellowConfig.hIndex
         let startIndex = yellowConfig .sIndex
+        let homeStartIndex = yellowConfig.dIndex
 
         yellowConfig .pieces.forEach((piece) => {
-            let yellowPiece = new Piece(this.scene, piece.x, piece.y, piece.x, piece.y, piece.index, homeIndex, startIndex, Yellow, piece.id);
+            let yellowPiece = new Piece(this.scene, piece.x, piece.y, piece.x, piece.y, piece.index, homeIndex, startIndex, Yellow, piece.id, homeStartIndex);
             yellowPieces.push(yellowPiece);
         })
         return yellowPieces;
@@ -258,8 +267,9 @@ export class PieceFactory {
         }) 
         let homeIndex = configs.hIndex
         let startIndex = configs.sIndex
+        let homeStartIndex = configs.dIndex
         let homeX = yellowPieceConfig[0].hx, homeY = yellowPieceConfig[0].hy
-        return new Piece(this.scene, 0, 0, homeX, homeY, -1, homeIndex, startIndex, Yellow, pieceId);
+        return new Piece(this.scene, 0, 0, homeX, homeY, -1, homeIndex, startIndex, Yellow, pieceId, homeStartIndex);
        
     }
 
@@ -268,9 +278,10 @@ export class PieceFactory {
         let greenConfig = this.pieceConfig.green
         let homeIndex = greenConfig.hIndex
         let startIndex = greenConfig.sIndex
+        let homeStartIndex = greenConfig.dIndex
 
         greenConfig.pieces.forEach((piece) => {
-            let greenPiece = new Piece(this.scene, piece.x, piece.y, piece.x, piece.y, piece.index, homeIndex, startIndex, Green, piece.id);
+            let greenPiece = new Piece(this.scene, piece.x, piece.y, piece.x, piece.y, piece.index, homeIndex, startIndex, Green, piece.id, homeStartIndex);
             greenPieces.push(greenPiece);
         })
 
@@ -284,8 +295,9 @@ export class PieceFactory {
         })
         let homeIndex = configs.hIndex
         let startIndex = configs.sIndex
+        let homeStartIndex = configs.dIndex
         let homeX = greenPieceConfig[0].hx, homeY = greenPieceConfig[0].hy
-        return new Piece(this.scene, 0, 0, homeX, homeY, -1, homeIndex, startIndex, Green, pieceId);
+        return new Piece(this.scene, 0, 0, homeX, homeY, -1, homeIndex, startIndex, Green, pieceId, homeStartIndex);
        
     }
 

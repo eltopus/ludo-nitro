@@ -57,10 +57,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
-    let loadGame = true
+    let loadGame = false
     let loadAi = false
     let aiMode = false
-    let playerMode = 2
+    let playerMode = 4
 
     let conf = {
       text: this.add.text(800, 100, 'This is the test')

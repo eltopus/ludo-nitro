@@ -24,4 +24,5 @@ export interface Player {
     hasNoActivePieces(): boolean
     playerPlayDice(activePath: Array<ActivePath>): void
     addPiece(piece: Piece): void
+    hasExactlyOneInactivePiece(): boolean
 }

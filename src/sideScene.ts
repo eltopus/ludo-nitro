@@ -54,8 +54,8 @@ export class SideScene extends Phaser.Scene {
      rollDice.on('pointerdown', (pointer) => {
        let value1 =  Phaser.Math.Between(1, 6)
        let value2 =  Phaser.Math.Between(1, 6)
-       value1 = 3
-       value2 = 2
+       value1 = 5
+       value2 = 3
        this.emitter.emmitDiceRoll(value1, value2)
      });
 
