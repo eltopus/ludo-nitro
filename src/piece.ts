@@ -57,7 +57,7 @@ export class Piece extends Phaser.GameObjects.Sprite {
         if (!this.isActive() && moveby >= 6){
           moveby -= 6
         }
-        let activePath = this.generatePath(moveby)
+        let activePath = this.generatePath(moveby, true)
         if (activePath != null) {
           if (activePath.isValid) {
             this.scene.children.bringToTop(this)
@@ -71,8 +71,9 @@ export class Piece extends Phaser.GameObjects.Sprite {
         }
     }
 
-    generatePath(moveby: number): ActivePath {
+    generatePath(moveby: number, singleDie: boolean): ActivePath {
         let path = new ActivePath(this.scene, this)
+        path.singleDieValue = singleDie
         path.moveBy = moveby
         let function_id = this.getPathFunctionId(this.index)
         path = this.callPathFunction(function_id, moveby, this.index, this.x, this.y, path)
@@ -182,7 +183,6 @@ export class Piece extends Phaser.GameObjects.Sprite {
           ease: 'Linear',
           duration: 1000,
           repeat: 0,
-          //completeDelay: 5,
           yoyo: false
         }).on('complete', (tween, targets) => {
           

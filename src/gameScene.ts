@@ -12,6 +12,7 @@ import {PPlayer} from './persistence/ludo'
 import {PPiece} from './persistence/ludo'
 import {PDie} from './persistence/ludo'
 import {LoadJson} from './loadJson'
+const axios = require('axios').default;
 
 export class GameScene extends Phaser.Scene {
   info: Phaser.GameObjects.Text;
@@ -57,9 +58,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
-    let loadGame = false
-    let loadAi = false
-    let aiMode = false
+    let loadGame = true
+    let loadAi = true
+    let aiMode = true
     let playerMode = 4
 
     let conf = {
@@ -202,6 +203,11 @@ export class GameScene extends Phaser.Scene {
 
     save.on('pointerdown', (pointer) => {
       let ludo = new Ludo()
+      if (this.currentPlayer.selectedPiece !== null){
+        ludo.selectedPieceId = this.currentPlayer.selectedPiece.pieceId
+      }else {
+        ludo.selectedPieceId = null
+      }
       let pplayers = new Array<PPlayer>()
       for (let player of this.rule.players){
         console.log(player)
@@ -213,6 +219,9 @@ export class GameScene extends Phaser.Scene {
           ppiece.index = piece.index
           ppiece.x = piece.x
           ppiece.y = piece.y
+          ppiece.hx = piece.homeX
+          ppiece.hy = piece.homeY
+          ppiece.homeIndex = piece.homeIndex
           ppiece.pieceState = piece.showPieceState()
           ppiece.pieceType = piece.showPieceType()
           pplayer.pieces.push(ppiece)
@@ -235,6 +244,7 @@ export class GameScene extends Phaser.Scene {
         ludo.players.push(p)
       }
       ludo.players.unshift(currentPlayer)
+      
 
       let pdie1 = new PDie()
       pdie1.dieId = 'die1'
@@ -291,11 +301,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   evaluatePieceMovementCompletion(pieceId: string, pieceIndex: number): void {
-    for (let player of this.rule.players){
-      for (let piece of player.pieces){
-        //console.log("pieceId: " + piece.pieceId + " pieceIndex: " + piece.index + " state: " + piece.showPieceState())
-      }
-    }
+    this.pushDataToServer()
+    // for (let player of this.rule.players){
+    //   for (let piece of player.pieces){
+    //     //console.log("pieceId: " + piece.pieceId + " pieceIndex: " + piece.index + " state: " + piece.showPieceState())
+    //   }
+    // }
     let opposingPieces = this.rule.getAllPiecesAtIndex(pieceIndex)
     for (let oppossingPiece of opposingPieces){
       console.log("Opposing index: " + oppossingPiece.pieceId)
@@ -332,6 +343,7 @@ export class GameScene extends Phaser.Scene {
       //console.log("doublesix roll set: " + diceRollValue)
       //this.rule.rolledDoubleSix = true
     }
+    this.pushDataToServer()
     this.paths = this.rule.evaluateDiceRollCompletion()
     if (this.paths.length === 0) {
       this.currentPlayer = this.rule.getNextPlayer()
@@ -390,7 +402,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   playDiceValue(dieValue: number, diceIds: Array<string>): void {
-    let piecePath  = this.currentPlayer.selectedPiece.generatePath(dieValue)
+    let piecePath  = this.currentPlayer.selectedPiece.generatePath(dieValue, true)
     if (this.isVadidPath(piecePath)){
       console.log(piecePath.pathToString() + " is valid!")
       diceIds.forEach(id => {
@@ -404,5 +416,76 @@ export class GameScene extends Phaser.Scene {
       console.log(piecePath.pathToString() + " is NOT valid!")
     }   
   }
+
+  pushDataToServer(): void {
+        (async () => {
+          let ludo = new Ludo()
+          if (this.currentPlayer.selectedPiece !== null){
+            ludo.selectedPieceId = this.currentPlayer.selectedPiece.pieceId
+          }else {
+            ludo.selectedPieceId = null
+          }
+          let pplayers = new Array<PPlayer>()
+          for (let player of this.rule.players){
+            console.log(player)
+            let pplayer = new PPlayer()
+            pplayer.playerName = player.playerName
+            for (let piece of player.pieces){
+              let ppiece = new PPiece()
+              ppiece.pieceId = piece.pieceId
+              ppiece.index = piece.index
+              ppiece.x = piece.x
+              ppiece.y = piece.y
+              ppiece.hx = piece.homeX
+              ppiece.hy = piece.homeY
+              ppiece.homeIndex = piece.homeIndex
+              ppiece.pieceState = piece.showPieceState()
+              ppiece.pieceType = piece.showPieceType()
+              pplayer.pieces.push(ppiece)
+            }
+            for (let piece of player.exitedPieces){
+              let ppiece = new PPiece()
+              ppiece.pieceId = piece.pieceId
+              ppiece.index = piece.index
+              ppiece.x = piece.x
+              ppiece.y = piece.y
+              ppiece.pieceState = piece.showPieceState()
+              ppiece.pieceType = piece.showPieceType()
+              pplayer.pieces.push(ppiece)
+            }
+            pplayers.push(pplayer)
+          }
+
+          let currentPlayer = pplayers.reverse().pop()
+          for (let p of pplayers){
+            ludo.players.push(p)
+          }
+          ludo.players.unshift(currentPlayer)
+          let pdie1 = new PDie()
+          pdie1.dieId = 'die1'
+          pdie1.dieValue = this.registry.get('die1')
+          pdie1.selected = this.registry.get('die1-selected')
+          ludo.dice.push(pdie1)
+          let pdie2 = new PDie()
+          pdie2.dieId = 'die2'
+          pdie2.dieValue = this.registry.get('die2')
+          pdie2.selected = this.registry.get('die2-selected')
+          ludo.dice.push(pdie2) 
+          //console.log(JSON.stringify(ludo))
+          //let data = JSON.stringify(ludo)
+
+          const response = await axios({
+            url: 'http://localhost:3000/machine',
+            method: 'post',
+            data: ludo
+          })
+        
+          console.log(response)
+        })()
+      
+        
+    }
+        
+  
 
 };

@@ -147,7 +147,6 @@ export class Rule {
                     
                    return true
                 }
-               
             }
         }
         return false
@@ -162,7 +161,7 @@ export class Rule {
             for (let piece of this.currentPlayer.pieces) {
                 if (dieOneScore > 0){
                     if (piece.isOnHomePath()) {
-                        let validDie1Path = piece.generatePath(dieOneScore)
+                        let validDie1Path = piece.generatePath(dieOneScore, true)
                         if (validDie1Path !== null && validDie1Path.isValid){
                             validPaths.push(validDie1Path)
                         }
@@ -170,7 +169,7 @@ export class Rule {
                 }
                 if (dieTwoScore > 0){
                     if (piece.isOnHomePath()) {
-                        let validDie2Path = piece.generatePath(dieTwoScore)
+                        let validDie2Path = piece.generatePath(dieTwoScore, true)
                         if (validDie2Path !== null && validDie2Path.isValid) {
                             validPaths.push(validDie2Path)
                         }
@@ -191,7 +190,7 @@ export class Rule {
             let dieTwoScore = this.scene.registry.get('die2')
             if (dieOneScore > 0){
                 if (piece.isOnHomePath()) {
-                    let validDie1Path = piece.generatePath(dieOneScore)
+                    let validDie1Path = piece.generatePath(dieOneScore, true)
                     if (validDie1Path !== null && validDie1Path.isValid){
                         validPaths.push(validDie1Path)
                     }
@@ -199,7 +198,7 @@ export class Rule {
             }
             if (dieTwoScore > 0){
                 if (piece.isOnHomePath()) {
-                    let validDie2Path = piece.generatePath(dieTwoScore)
+                    let validDie2Path = piece.generatePath(dieTwoScore, true)
                     if (validDie2Path !== null && validDie2Path.isValid) {
                         validPaths.push(validDie2Path)
                     }
@@ -217,7 +216,7 @@ export class Rule {
         let dieTwoScore = this.scene.registry.get('die2')
         if (dieOneScore > 0){
             if (piece.isActive()) {
-                let validDie1Path = piece.generatePath(dieOneScore)
+                let validDie1Path = piece.generatePath(dieOneScore, true)
                 if (validDie1Path !== null && validDie1Path.isValid){
                     validPaths.push(validDie1Path)
                 }
@@ -225,37 +224,13 @@ export class Rule {
         }
         if (dieTwoScore > 0){
             if (piece.isActive()) {
-                let validDie2Path = piece.generatePath(dieTwoScore)
+                let validDie2Path = piece.generatePath(dieTwoScore, true)
                 if (validDie2Path !== null && validDie2Path.isValid) {
                     validPaths.push(validDie2Path)
                 }
             }
         }
         return validPaths.length > 0
-    }
-
-    eligibleForActivePathGeneration(piece: Piece): boolean {
-        return (piece.isActive() || this.homePieceCanUseOneOrMoreDice(piece) || this.atLeastOneSixIsRolled()) && !piece.isExited()
-    }
-
-    arrayIntersection(a1: Array<ActivePath>, a2: Array<ActivePath>): Array<ActivePath> {
-        return a1.filter((n)=> {
-            return a2.indexOf(n) !== -1
-        });
-    }
-
-    removePathByMoveby(moveby: number, pieceId: string, paths: Array<ActivePath>): Array<ActivePath> {
-        if (moveby !== null){
-                return paths.filter((path) => {
-                return path.moveBy !== moveby || path.activePiece.pieceId !== pieceId
-            })
-        }else {
-            return paths
-        }
-    }
-
-    bothDiceSelected(): boolean {
-        return this.scene.registry.get('die1-selected') && this.scene.registry.get('die2-selected')
     }
 
     doubleSixIsRolled(): boolean {
@@ -279,7 +254,7 @@ export class Rule {
         for (let piece of this.currentPlayer.pieces) {
             if (dieOneScore > 0 || dieTwoScore > 0) {
                 if (this.eligibleForActivePathGeneration(piece)) {
-                    let validBothDicePath = piece.generatePath(dieOneScore + dieTwoScore)
+                    let validBothDicePath = piece.generatePath(dieOneScore + dieTwoScore, false)
                     if (validBothDicePath !== null && validBothDicePath.isValid) {
                         validPaths.push(validBothDicePath)
                     }
@@ -297,7 +272,7 @@ export class Rule {
         for (let piece of this.currentPlayer.pieces) {
             if (dieOneScore > 0){
                 if ( this.eligibleForActivePathGeneration(piece)) {
-                    let validDie1Path = piece.generatePath(dieOneScore)
+                    let validDie1Path = piece.generatePath(dieOneScore, true)
                     if (validDie1Path !== null && validDie1Path.isValid){
                         validPaths.push(validDie1Path)
                     }
@@ -305,7 +280,7 @@ export class Rule {
             }
             if (dieTwoScore > 0){
                 if (this.eligibleForActivePathGeneration(piece)) {
-                    let validDie2Path = piece.generatePath(dieTwoScore)
+                    let validDie2Path = piece.generatePath(dieTwoScore, true)
                     if (validDie2Path !== null && validDie2Path.isValid) {
                         validPaths.push(validDie2Path)
                     }
@@ -313,7 +288,7 @@ export class Rule {
             }
             if (dieOneScore > 0 && dieTwoScore > 0) {
                 if (this.eligibleForActivePathGeneration(piece)) {
-                    let validBothDicePath = piece.generatePath(dieOneScore + dieTwoScore)
+                    let validBothDicePath = piece.generatePath(dieOneScore + dieTwoScore, false)
                     if (validBothDicePath !== null && validBothDicePath.isValid) {
                         validPaths.push(validBothDicePath)
                     }
@@ -330,18 +305,21 @@ export class Rule {
             let onlyActivePiece = this.currentPlayer.getFirstActivePiece() // should not be null
             let activePieveMovebys = []
             let nonActivePieveMovebys = []
+            let singleDieValue = true
+            let lock = false
             for (let path of paths){
-                if (onlyActivePiece.pieceId === path.activePiece.pieceId) {
+                if (onlyActivePiece.pieceId === path.activePiece.pieceId) {                
                     activePieveMovebys.push(path.moveBy)
                 }else {
                     nonActivePieveMovebys.push(path.moveBy)
                 }
             }
+
             activePieveMovebys = activePieveMovebys.filter((mb)=> {
                 return (mb >= 1 && mb <=6)
             })
+
             nonActivePieveMovebys = this.arrayIntersection(activePieveMovebys, nonActivePieveMovebys)
-            
             if (activePieveMovebys.toString() === nonActivePieveMovebys.toString()) {
                 console.log("Identical. Removing nothing...")
                 if (this.pathContainsDoubleSixValue(paths)){
@@ -351,6 +329,7 @@ export class Rule {
                 }
                 
             }else {
+               
                 let indexofPathToBeRemove = null
                 for (let m of activePieveMovebys){
                     if (nonActivePieveMovebys.includes(m)){
@@ -358,10 +337,9 @@ export class Rule {
                         indexofPathToBeRemove = m
                         break;
                     }
-                }
+                } 
                 return this.removePathByInactivePiecesWithoutDieValueSix(this.removePathByMoveby(indexofPathToBeRemove, onlyActivePiece.pieceId, paths))
             }
-            
         }else {
             return (this.removePathByInactivePiecesWithoutDieValueSix(paths))
         }
@@ -425,14 +403,14 @@ export class Rule {
         let cond2 = false
         
         if (dieValue1 > 0) {
-            let path = piece.generatePath(dieValue1)
+            let path = piece.generatePath(dieValue1, true)
            
             if (path !== null && path.isValid && path.projectedIndex >= piece.homeStartIndex){
                 cond1 = true 
             }
         }
         if (dieValue2 > 0) {
-            let path = piece.generatePath(dieValue2)
+            let path = piece.generatePath(dieValue2, true)
             if (path !== null && path.isValid && path.projectedIndex >= piece.homeStartIndex){
                 cond2 = true
             }
@@ -466,4 +444,29 @@ export class Rule {
         }
         return playerOrder
     }
+
+    eligibleForActivePathGeneration(piece: Piece): boolean {
+        return (piece.isActive() || this.homePieceCanUseOneOrMoreDice(piece) || this.atLeastOneSixIsRolled()) && !piece.isExited()
+    }
+
+    arrayIntersection(a1: Array<ActivePath>, a2: Array<ActivePath>): Array<ActivePath> {
+        return a1.filter((n)=> {
+            return a2.indexOf(n) !== -1
+        });
+    }
+
+    removePathByMoveby(moveby: number, pieceId: string, paths: Array<ActivePath>): Array<ActivePath> {
+        if (moveby !== null){
+                return paths.filter((path) => {
+                return path.moveBy !== moveby || path.activePiece.pieceId !== pieceId 
+            })
+        }else {
+            return paths
+        }
+    }
+
+    bothDiceSelected(): boolean {
+        return this.scene.registry.get('die1-selected') && this.scene.registry.get('die2-selected')
+    }
+
 }

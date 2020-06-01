@@ -14,6 +14,7 @@ export class ActivePath extends Phaser.Curves.Path {
     pieceType: any
     isValid: boolean
     moveBy: number
+    singleDieValue: boolean
     constructor(scene: Phaser.Scene, piece: Piece){
         super(piece.x, piece.y)
         this.scene = scene;
@@ -27,6 +28,8 @@ export class ActivePath extends Phaser.Curves.Path {
         this.projectedPieceState = piece.pieceState
         this.pieceType = piece.pieceType
         this.isValid = true
+        this.singleDieValue = false
+
         this.scene.add.path(piece.x, piece.y);
     }
 

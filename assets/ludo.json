@@ -3,34 +3,141 @@
     {
       "pieces": [
         {
+          "pieceId": "yellow1",
+          "index": 28,
+          "x": 601.3,
+          "y": 408.9,
+          "hx": 577.25,
+          "hy": 529.15,
+          "homeIndex": 25,
+          "pieceState": "Active",
+          "pieceType": "Yellow"
+        },
+        {
+          "pieceId": "yellow2",
+          "index": -1,
+          "x": 577.25,
+          "y": 625.35,
+          "hx": 577.25,
+          "hy": 625.35,
+          "homeIndex": 25,
+          "pieceState": "Inactive",
+          "pieceType": "Yellow"
+        },
+        {
+          "pieceId": "yellow3",
+          "index": 39,
+          "x": 312.6999999999999,
+          "y": 697.5,
+          "hx": 529.15,
+          "hy": 577.25,
+          "homeIndex": 25,
+          "pieceState": "Active",
+          "pieceType": "Yellow"
+        },
+        {
+          "pieceId": "yellow4",
+          "index": -1,
+          "x": 625.35,
+          "y": 577.25,
+          "hx": 625.35,
+          "hy": 577.25,
+          "homeIndex": 25,
+          "pieceState": "Inactive",
+          "pieceType": "Yellow"
+        }
+      ],
+      "playerName": "YellowPlayer"
+    },
+    {
+      "pieces": [
+        {
+          "pieceId": "green2",
+          "index": 48,
+          "x": 120.29999999999995,
+          "y": 409.49999999999994,
+          "hx": 96.25,
+          "hy": 577.25,
+          "homeIndex": 38,
+          "pieceState": "Active",
+          "pieceType": "Green"
+        },
+        {
+          "pieceId": "green3",
+          "index": -1,
+          "x": 144.35,
+          "y": 529.15,
+          "hx": 144.35,
+          "hy": 529.15,
+          "homeIndex": 38,
+          "pieceState": "Inactive",
+          "pieceType": "Green"
+        },
+        {
+          "pieceId": "green4",
+          "index": -1,
+          "x": 144.35,
+          "y": 625.35,
+          "hx": 144.35,
+          "hy": 625.35,
+          "homeIndex": 38,
+          "pieceState": "Inactive",
+          "pieceType": "Green"
+        },
+        {
+          "pieceId": "green1",
+          "index": 50,
+          "x": 24.099999999999966,
+          "y": 409.5,
+          "pieceState": "Active",
+          "pieceType": "Green"
+        }
+      ],
+      "playerName": "GreenPlayer"
+    },
+    {
+      "pieces": [
+        {
           "pieceId": "red1",
           "index": -1,
           "x": 144.35,
           "y": 96.25,
+          "hx": 144.35,
+          "hy": 96.25,
+          "homeIndex": 51,
           "pieceState": "Inactive",
           "pieceType": "Red"
         },
         {
           "pieceId": "red2",
-          "index": 57,
-          "x": 312.70000000000005,
-          "y": 360.8,
-          "pieceState": "Exited",
+          "index": 36,
+          "x": 408.90000000000015,
+          "y": 649.4000000000001,
+          "hx": 144.35,
+          "hy": 192.45,
+          "homeIndex": 51,
+          "pieceState": "Active",
           "pieceType": "Red"
         },
         {
           "pieceId": "red3",
-          "index": -1,
-          "x": 96.25,
-          "y": 144.35,
-          "pieceState": "Inactive",
+          "index": 3,
+          "x": 168.4,
+          "y": 312.7,
+          "hx": 96.25,
+          "hy": 144.35,
+          "homeIndex": 51,
+          "pieceState": "Active",
           "pieceType": "Red"
         },
         {
           "pieceId": "red4",
-          "index": 17,
-          "x": 408.90000000000003,
-          "y": 216.5,
+          "index": 8,
+          "x": 312.70000000000005,
+          "y": 168.39999999999998,
+          "hx": 192.45,
+          "hy": 144.35,
+          "homeIndex": 51,
           "pieceState": "Active",
           "pieceType": "Red"
         }
@@ -41,124 +148,60 @@
       "pieces": [
         {
           "pieceId": "blue1",
-          "index": -1,
-          "x": 529.15,
-          "y": 144.35,
-          "pieceState": "Inactive",
-          "pieceType": "Blue"
-        },
-        {
-          "pieceId": "blue2",
-          "index": -1,
-          "x": 625.35,
-          "y": 144.35,
-          "pieceState": "Inactive",
+          "index": 20,
+          "x": 505.1,
+          "y": 312.70000000000005,
+          "hx": 529.15,
+          "hy": 144.35,
+          "homeIndex": 12,
+          "pieceState": "Active",
           "pieceType": "Blue"
         },
         {
           "pieceId": "blue3",
-          "index": -1,
-          "x": 577.25,
-          "y": 192.45,
-          "pieceState": "Inactive",
+          "index": 59,
+          "x": 360.79999999999995,
+          "y": 120.30000000000008,
+          "hx": 577.25,
+          "hy": 192.45,
+          "homeIndex": 12,
+          "pieceState": "Active",
           "pieceType": "Blue"
         },
         {
           "pieceId": "blue4",
-          "index": -1,
-          "x": 577.25,
-          "y": 96.25,
-          "pieceState": "Inactive",
+          "index": 14,
+          "x": 408.9,
+          "y": 72.2,
+          "hx": 577.25,
+          "hy": 96.25,
+          "homeIndex": 12,
+          "pieceState": "Active",
+          "pieceType": "Blue"
+        },
+        {
+          "pieceId": "blue2",
+          "index": 16,
+          "x": 408.9,
+          "y": 168.4,
+          "pieceState": "Active",
           "pieceType": "Blue"
         }
       ],
       "playerName": "BluePlayer"
-    },
-    {
-      "pieces": [
-        {
-          "pieceId": "yellow1",
-          "index": -1,
-          "x": 577.25,
-          "y": 529.15,
-          "pieceState": "Inactive",
-          "pieceType": "Yellow"
-        },
-        {
-          "pieceId": "yellow2",
-          "index": -1,
-          "x": 577.25,
-          "y": 625.35,
-          "pieceState": "Inactive",
-          "pieceType": "Yellow"
-        },
-        {
-          "pieceId": "yellow3",
-          "index": -1,
-          "x": 529.15,
-          "y": 577.25,
-          "pieceState": "Inactive",
-          "pieceType": "Yellow"
-        },
-        {
-          "pieceId": "yellow4",
-          "index": -1,
-          "x": 625.35,
-          "y": 577.25,
-          "pieceState": "Inactive",
-          "pieceType": "Yellow"
-        }
-      ],
-      "playerName": "YellowPlayer"
-    },
-    {
-      "pieces": [
-        {
-          "pieceId": "green1",
-          "index": -1,
-          "x": 192.45,
-          "y": 577.25,
-          "pieceState": "Inactive",
-          "pieceType": "Green"
-        },
-        {
-          "pieceId": "green2",
-          "index": -1,
-          "x": 96.25,
-          "y": 577.25,
-          "pieceState": "Inactive",
-          "pieceType": "Green"
-        },
-        {
-          "pieceId": "green3",
-          "index": -1,
-          "x": 144.35,
-          "y": 529.15,
-          "pieceState": "Inactive",
-          "pieceType": "Green"
-        },
-        {
-          "pieceId": "green4",
-          "index": -1,
-          "x": 144.35,
-          "y": 625.35,
-          "pieceState": "Inactive",
-          "pieceType": "Green"
-        }
-      ],
-      "playerName": "GreenPlayer"
     }
   ],
   "dice": [
     {
       "dieId": "die1",
-      "dieValue": 6,
+      "dieValue": 5,
       "selected": false
     },
     {
       "dieId": "die2",
-      "dieValue": 3,
+      "dieValue": 4,
       "selected": false
     }
-  ]
+  ],
+  "selectedPieceId": null
 }
