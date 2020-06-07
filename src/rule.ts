@@ -84,14 +84,18 @@ export class Rule {
 
                             }
                         }else {
-                            
                             if (this.homePiecesCanUseOneOrMoreDice()){
                                 //console.log("D2 split dice")
                                 return false
                             }else {
                                 if (this.activePieceCanUseOneOrMoreDice()){
-                                    //console.log("X2 split dice")
-                                    return false
+                                    if (this.canPutPieceOnHomePath()){
+                                        //console.log("X2 split dice")
+                                        return false
+                                    }else {
+                                        //console.log("W2 play both")
+                                        return true
+                                    }
                                 }else {
                                    //console.log("E2 Play both")
                                     return true 
@@ -245,20 +249,8 @@ export class Rule {
         return validPaths.length > 0
     }
 
-    doubleSixIsRolled(): boolean {
-        return this.scene.registry.get('die1') === 6 && this.scene.registry.get('die2') === 6
-    }
-
-    hasExactlyOneUnspentDie(): boolean {
-        if (this.scene.registry.get('die1') <= 0 && this.scene.registry.get('die2') > 0) {
-            return true
-        }
-        if (this.scene.registry.get('die2') <= 0 && this.scene.registry.get('die1') > 0) {
-            return true
-        }
-        return false
-    }
-
+    doubleSixIsRolled = () => this.scene.registry.get('die1') === 6 && this.scene.registry.get('die2') === 6
+    
     generateActivePathsForBothDice(): Array<ActivePath> {
         let dieOneScore = this.scene.registry.get('die1')
         let dieTwoScore = this.scene.registry.get('die2')
@@ -384,14 +376,9 @@ export class Rule {
         return false
     }
     
-    playerhasActivePiecesOrRolledAtLeasetOneSix(): boolean {
-        return this.currentPlayer.hasActivePieces() || this.atLeastOneSixIsRolled()
-    }
-
-    atLeastOneSixIsRolled(): boolean {
-        return (this.scene.registry.get('die1') === 6 || this.scene.registry.get('die2')=== 6)
-    }
-
+    playerhasActivePiecesOrRolledAtLeasetOneSix = () => this.currentPlayer.hasActivePieces() || this.atLeastOneSixIsRolled()
+    atLeastOneSixIsRolled = () => (this.scene.registry.get('die1') === 6 || this.scene.registry.get('die2')=== 6)
+    
     evaluateNonActivePiecePlay(): boolean {
         if (this.atLeastOneSixIsRolled()){
             return true
@@ -477,8 +464,6 @@ export class Rule {
         }
     }
 
-    bothDiceSelected(): boolean {
-        return this.scene.registry.get('die1-selected') && this.scene.registry.get('die2-selected')
-    }
-
+    bothDiceSelected = () => this.scene.registry.get('die1-selected') && this.scene.registry.get('die2-selected')
+    
 }

@@ -94,10 +94,8 @@ export class Piece extends Phaser.GameObjects.Sprite {
         return path;
     }
 
-    getPathFunctionId(index: number): string {
-        return this.movement.getPathFunctionId(index);
-    }
-
+    getPathFunctionId = (index: number) => this.movement.getPathFunctionId(index);
+    
     callPathFunction(funct_id:string, moveby:number, index:number, x:number, y:number, path:ActivePath): ActivePath {
       switch(funct_id) {
         case "Z1": {
@@ -216,47 +214,21 @@ export class Piece extends Phaser.GameObjects.Sprite {
         });
       }
 
-      isMoving(): boolean {
-        return this.moving
-      }
-
-      isActive(): boolean {
-        return this.pieceState === PieceState.Active
-      }
-
-      isExited(): boolean {
-        return this.pieceState === PieceState.Exited
-      }
-
-      isNotActive(): boolean {
-        return this.pieceState !== PieceState.Inactive
-      }
-
-      isInActive(): boolean {
-        return this.pieceState === PieceState.Inactive
-      }
-
-      isOnHomePath(): boolean {
-        return this.pieceState === PieceState.OnHomePath
-      }
-
-      becomeActive(): void {
-        this.pieceState = PieceState.Active
-      }
-
+      isMoving = () => this.moving
+      isActive = () => this.pieceState === PieceState.Active
+      isExited = () => this.pieceState === PieceState.Exited
+      isNotActive = () => this.pieceState !== PieceState.Inactive
+      isInActive = () => this.pieceState === PieceState.Inactive
+      isOnHomePath = () => this.pieceState === PieceState.OnHomePath
+      becomeActive = () => this.pieceState = PieceState.Active
+      becomeHomeBound = () => this.pieceState = PieceState.OnHomePath
+      becomeExited = () => this.pieceState = PieceState.Exited
+      
       becomeInActive(): void {
         this.pieceState = PieceState.Inactive
         this.index = -1
       }
-
-      becomeHomeBound(): void {
-        this.pieceState = PieceState.OnHomePath
-      }
-
-      becomeExited(): void {
-        this.pieceState = PieceState.Exited
-      }
-
+      
       showPieceState(): string {
         switch(this.pieceState){
             case PieceState.Active: {
@@ -339,9 +311,7 @@ export class Piece extends Phaser.GameObjects.Sprite {
       this.movePieceTo(this.homeX, this.homeY)
     }
 
-    indexIsBetween(index1: number, index2: number): boolean {
-      return (this.index > index1) && (this.index < index2)
-    }
+    indexIsBetween = (index1: number, index2: number) => (this.index > index1) && (this.index < index2)
 
     updatePiece(config: PPiece): void {
       if (this.pieceId === config.pieceId) {

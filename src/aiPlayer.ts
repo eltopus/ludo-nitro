@@ -14,7 +14,7 @@ export class AIPlayer extends Player {
         let value1 =  Phaser.Math.Between(1, 6)
         let value2 =  Phaser.Math.Between(1, 6)
         //value1 = 6
-        //value2 = 2
+        //value2 = 6
         setTimeout(()=> {
             this.scene.scene.get('SideScene').events.emit('rollDice', value1, value2)
         }, 1000);
@@ -43,6 +43,9 @@ export class AIPlayer extends Player {
             }else if (enemyAlong.length > 0){
                 console.log("Choosing enemy along path...............")
                 chosenPath = enemyAlong[0]
+            }
+            if (chosenPath){
+
             }
             let chosenPiece = chosenPath.activePiece
             this.determineDieId(chosenPath)

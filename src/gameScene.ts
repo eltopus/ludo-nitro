@@ -62,7 +62,7 @@ export class GameScene extends Phaser.Scene {
     let loadGame = true
     let loadAi = false
     let aiMode = false
-    let playerMode = 4
+    let playerMode = 2
 
 
     let rule = this.rule
@@ -321,9 +321,9 @@ export class GameScene extends Phaser.Scene {
     this.paths = this.rule.evaluatePieceMovementCompletion()
     if (this.paths.length === 0) {
       if (this.rule.rolledDoubleSix){
-        //console.log("Stay on current player because of prior double six")
-        //this.rule.rolledDoubleSix = false
-        //this.currentPlayer.playerPlayDice(this.paths)
+        console.log("Stay on current player because of prior double six")
+        this.rule.rolledDoubleSix = false
+        this.currentPlayer.playerRollDice()
       }else {
         this.currentPlayer = this.rule.getNextPlayer()
         this.currentPlayer.playerRollDice()
@@ -339,8 +339,8 @@ export class GameScene extends Phaser.Scene {
 
   evaluateDiceRollCompletion(diceRollValue: number): void {
     if (diceRollValue === 12){
-      //console.log("doublesix roll set: " + diceRollValue)
-      //this.rule.rolledDoubleSix = true
+      console.log("doublesix roll set: " + diceRollValue)
+      this.rule.rolledDoubleSix = true
     }
     //this.pushDataToServer()
     this.paths = this.rule.evaluateDiceRollCompletion()
@@ -349,9 +349,9 @@ export class GameScene extends Phaser.Scene {
       this.currentPlayer.playerRollDice()
     }else {
       console.log("Evaluate Game is true. Stay on player: " + this.currentPlayer.playerName)
-      for (let path of this.paths) {
-        console.log(path.pathToString())
-      }
+      // for (let path of this.paths) {
+      //   console.log(path.pathToString())
+      // }
       this.currentPlayer.playerPlayDice(this.paths)
     }
   }

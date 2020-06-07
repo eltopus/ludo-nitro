@@ -19,6 +19,12 @@ export abstract class  Player {
         this.exitedPieces = new Array<Piece>()
     }
 
+    hasSelectedPiece = () => this.selectedPiece !== null
+    selectedPieceIsActive = () => this.selectedPiece.isActive()
+    selectedPieceIsNotActive = () => this.selectedPiece.isNotActive()
+    doesNotBelong = (piece: Piece) => this.group.contains(piece) === false
+    
+
     addPieces(pieces: Array<Piece>): void {
         for (let piece of pieces){
             this.pieces.push(piece)
@@ -163,18 +169,7 @@ export abstract class  Player {
         return (inactivePieceCount === 1);
     }
 
-    hasSelectedPiece(): boolean {
-        return this.selectedPiece !== null
-    }
-
-    selectedPieceIsActive(): boolean {
-        return this.selectedPiece.isActive()
-    }
-
-    selectedPieceIsNotActive(): boolean {
-        return this.selectedPiece.isNotActive()
-    }
-
+    
     hasHomePieces(): boolean {
         for (let piece of this.pieces) {
             if (piece.isOnHomePath()){
@@ -211,10 +206,6 @@ export abstract class  Player {
             }
         }
         return inActivePieces
-    }
-
-    doesNotBelong(piece: Piece): boolean {
-        return this.group.contains(piece) === false
     }
 
     bringPiecesToTop(): void {
