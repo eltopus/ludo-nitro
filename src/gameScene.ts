@@ -5,13 +5,14 @@ import {AIPlayerFactory} from './aiPlayerFactory'
 import {Player} from './player'
 import {Rule} from './rule'
 import {Draggable} from './draggable'
-import {TextBox} from 'phaser3-rex-plugins/templates/ui/ui-components.js';
+import {TextBox, Label} from 'phaser3-rex-plugins/templates/ui/ui-components.js';
 import {ActivePath} from "./activePath"
 import {Ludo} from './persistence/ludo'
 import {PPlayer} from './persistence/ludo'
 import {PPiece} from './persistence/ludo'
 import {PDie} from './persistence/ludo'
 import {LoadJson} from './loadJson'
+import { AIPlayer } from "./aiPlayer";
 const axios = require('axios').default;
 
 export class GameScene extends Phaser.Scene {
@@ -59,37 +60,24 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     let loadGame = true
-    let loadAi = true
-    let aiMode = true
+    let loadAi = false
+    let aiMode = false
     let playerMode = 4
 
-    let conf = {
-      text: this.add.text(800, 100, 'This is the test')
-    }
-    let tb = new TextBox(this, conf);
-    
-    this.add.existing(tb)
-    tb.setInteractive()
 
-    tb.on('pointerdown', function () {
-      let icon = this.getElement('action').setVisible(false);
-      this.resetChildVisibleState(icon);
-      if (this.isTyping) {
-          this.stop(true);
-      } else {
-          this.typeNextPage();
-      }
-    }, tb)
+    let rule = this.rule
+    let scene = this
 
+  
     this.cameras.main.setViewport(0, 0, 1020, 721);
     this.add.image(361, 361, 'board')  
-     let play = this.add.sprite(868, 600, 'play')
+    let play = this.add.sprite(868, 600, 'play')
     play.setInteractive()
 
     let flick = this.add.sprite(950, 50, 'flick')
     flick.setInteractive()
 
-    let save = this.add.sprite(800, 50, 'save')
+    let save = this.add.sprite(800, 500, 'save')
     save.setInteractive()
 
     
@@ -167,96 +155,107 @@ export class GameScene extends Phaser.Scene {
         this.rule.addPlayers(p3)
         this.rule.addPlayers(p4)
       }
-
-      
       this.currentPlayer = this.rule.getNextPlayer()
       this.registry.set('currentPlayer', this.currentPlayer.playerName)
       this.currentPlayer.playerRollDice()
     }else {
       let ludoGame = new LoadJson(this)
       this.ludo = ludoGame
-      let players = ludoGame.loadGame(loadAi)
-      this.rule.addPlayers(players)
-      for (let die of ludoGame.data.dice) {
-        if (die.dieId === "die1"){
-          this.registry.set('die1', die.dieValue)
+      let gp = async function getAllPlayers(){
+        let players = await ludoGame.getPlayers(loadAi)
+        rule.addPlayers(players)
+        for (let die of ludoGame.data.dice) {
+          if (die.dieId === "die1"){
+            scene.registry.set('die1', die.dieValue)
+          }
+          if (die.dieId === "die2"){
+            scene.registry.set('die2', die.dieValue)
+          }
         }
-        if (die.dieId === "die2"){
-          this.registry.set('die2', die.dieValue)
+        for (let player of rule.players){
+          player.setPieceDraggable()
         }
-       
+        for (let player of rule.players){
+          rule.addOpposingPlayerstoAI(player)
+        }
+        scene.currentPlayer = rule.getNextPlayer()
+        scene.registry.set('currentPlayer', scene.currentPlayer.playerName)
+        scene.paths = rule.evaluateDiceRollCompletion()
+        for (let path of scene.paths) {
+          console.log(path.pathToString())
+        }
+        
+        scene.currentPlayer.playerRollDice()
       }
-      for (let player of this.rule.players){
-        player.setPieceDraggable()
-      }
-      this.currentPlayer = this.rule.getNextPlayer()
-      this.registry.set('currentPlayer', this.currentPlayer.playerName)
-      this.paths = this.rule.evaluateDiceRollCompletion()
-      for (let path of this.paths) {
-        console.log(path.pathToString())
-      }
-      this.currentPlayer.playerRollDice()
+      gp()
     }
     
     flick.on('pointerdown', (pointer) => {
     })
 
     save.on('pointerdown', (pointer) => {
-      let ludo = new Ludo()
-      if (this.currentPlayer.selectedPiece !== null){
-        ludo.selectedPieceId = this.currentPlayer.selectedPiece.pieceId
-      }else {
-        ludo.selectedPieceId = null
-      }
-      let pplayers = new Array<PPlayer>()
-      for (let player of this.rule.players){
-        console.log(player)
-        let pplayer = new PPlayer()
-        pplayer.playerName = player.playerName
-        for (let piece of player.pieces){
-          let ppiece = new PPiece()
-          ppiece.pieceId = piece.pieceId
-          ppiece.index = piece.index
-          ppiece.x = piece.x
-          ppiece.y = piece.y
-          ppiece.hx = piece.homeX
-          ppiece.hy = piece.homeY
-          ppiece.homeIndex = piece.homeIndex
-          ppiece.pieceState = piece.showPieceState()
-          ppiece.pieceType = piece.showPieceType()
-          pplayer.pieces.push(ppiece)
+      (async () => {
+        let ludo = new Ludo()
+        if (this.currentPlayer.selectedPiece !== null){
+          ludo.selectedPieceId = this.currentPlayer.selectedPiece.pieceId
+        }else {
+          ludo.selectedPieceId = null
         }
-        for (let piece of player.exitedPieces){
-          let ppiece = new PPiece()
-          ppiece.pieceId = piece.pieceId
-          ppiece.index = piece.index
-          ppiece.x = piece.x
-          ppiece.y = piece.y
-          ppiece.pieceState = piece.showPieceState()
-          ppiece.pieceType = piece.showPieceType()
-          pplayer.pieces.push(ppiece)
+        let pplayers = new Array<PPlayer>()
+        for (let player of this.rule.players){
+          let pplayer = new PPlayer()
+          pplayer.playerName = player.playerName
+          for (let piece of player.pieces){
+            let ppiece = new PPiece()
+            ppiece.pieceId = piece.pieceId
+            ppiece.index = piece.index
+            ppiece.x = piece.x
+            ppiece.y = piece.y
+            ppiece.hx = piece.homeX
+            ppiece.hy = piece.homeY
+            ppiece.homeIndex = piece.homeIndex
+            ppiece.pieceState = piece.showPieceState()
+            ppiece.pieceType = piece.showPieceType()
+            pplayer.pieces.push(ppiece)
+          }
+          for (let piece of player.exitedPieces){
+            let ppiece = new PPiece()
+            ppiece.pieceId = piece.pieceId
+            ppiece.index = piece.index
+            ppiece.x = piece.x
+            ppiece.y = piece.y
+            ppiece.pieceState = piece.showPieceState()
+            ppiece.pieceType = piece.showPieceType()
+            pplayer.pieces.push(ppiece)
+          }
+          pplayers.push(pplayer)
         }
-        pplayers.push(pplayer)
-      }
 
-      let currentPlayer = pplayers.reverse().pop()
-      for (let p of pplayers){
-        ludo.players.push(p)
-      }
-      ludo.players.unshift(currentPlayer)
-      
+        let currentPlayer = pplayers.reverse().pop()
+        for (let p of pplayers){
+          ludo.players.push(p)
+        }
+        ludo.players.unshift(currentPlayer)
+        
 
-      let pdie1 = new PDie()
-      pdie1.dieId = 'die1'
-      pdie1.dieValue = this.registry.get('die1')
-      pdie1.selected = this.registry.get('die1-selected')
-      ludo.dice.push(pdie1)
-      let pdie2 = new PDie()
-      pdie2.dieId = 'die2'
-      pdie2.dieValue = this.registry.get('die2')
-      pdie2.selected = this.registry.get('die2-selected')
-      ludo.dice.push(pdie2) 
-      console.log(JSON.stringify(ludo, null, 2))
+        let pdie1 = new PDie()
+        pdie1.dieId = 'die1'
+        pdie1.dieValue = this.registry.get('die1')
+        pdie1.selected = this.registry.get('die1-selected')
+        ludo.dice.push(pdie1)
+        let pdie2 = new PDie()
+        pdie2.dieId = 'die2'
+        pdie2.dieValue = this.registry.get('die2')
+        pdie2.selected = this.registry.get('die2-selected')
+        ludo.dice.push(pdie2) 
+        //console.log(JSON.stringify(ludo, null, 2))
+        const response = await axios({
+          url: 'http://localhost:3000/data',
+          method: 'post',
+          data: ludo
+        })
+        console.log(response)
+      })()
     })
 
     play.on('pointerdown', (pointer) => {
@@ -297,11 +296,12 @@ export class GameScene extends Phaser.Scene {
 
     this.events.on('pieceMovementCompleted', this.evaluatePieceMovementCompletion, this);
     this.events.on('dieRolledCompleted', this.evaluateDiceRollCompletion, this);
+    this.addOpposingPlayers()
 
   }
 
   evaluatePieceMovementCompletion(pieceId: string, pieceIndex: number): void {
-    this.pushDataToServer()
+    //this.pushDataToServer()
     // for (let player of this.rule.players){
     //   for (let piece of player.pieces){
     //     //console.log("pieceId: " + piece.pieceId + " pieceIndex: " + piece.index + " state: " + piece.showPieceState())
@@ -309,7 +309,6 @@ export class GameScene extends Phaser.Scene {
     // }
     let opposingPieces = this.rule.getAllPiecesAtIndex(pieceIndex)
     for (let oppossingPiece of opposingPieces){
-      console.log("Opposing index: " + oppossingPiece.pieceId)
       this.rule.handlePeckingSituation(pieceId, oppossingPiece)
       break
     }
@@ -331,9 +330,9 @@ export class GameScene extends Phaser.Scene {
       }
     }else {
       console.log("Evaluate Game is true after first play. Stay on player: " + this.currentPlayer.playerName)
-      for (let path of this.paths) {
-        console.log(path.pathToString())
-      }
+      // for (let path of this.paths) {
+      //   console.log(path.pathToString())
+      // }
       this.currentPlayer.playerPlayDice(this.paths)
     }
   }
@@ -343,7 +342,7 @@ export class GameScene extends Phaser.Scene {
       //console.log("doublesix roll set: " + diceRollValue)
       //this.rule.rolledDoubleSix = true
     }
-    this.pushDataToServer()
+    //this.pushDataToServer()
     this.paths = this.rule.evaluateDiceRollCompletion()
     if (this.paths.length === 0) {
       this.currentPlayer = this.rule.getNextPlayer()
@@ -357,9 +356,7 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  update(time: number): void {
-    
-  }
+  
 
   singleDieIsSelected(): boolean {
     return (this.registry.get('die1-selected') && !this.registry.get('die2-selected')) || 
@@ -485,7 +482,19 @@ export class GameScene extends Phaser.Scene {
       
         
     }
-        
-  
 
+    addOpposingPlayers(): void {
+      for (let player of this.rule.players){
+        this.rule.addOpposingPlayerstoAI(player)
+      }
+    }
+        
+    update(time: number): void {
+      for (let player of this.rule.players){
+        for (let piece of player.pieces){
+          piece.text.setX(piece.x -  22.1)
+          piece.text.setY(piece.y - 30.1)
+        }
+      }
+    }
 };

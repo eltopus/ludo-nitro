@@ -4,9 +4,9 @@
       "pieces": [
         {
           "pieceId": "yellow1",
-          "index": 28,
-          "x": 601.3,
-          "y": 408.9,
+          "index": 47,
+          "x": 168.4,
+          "y": 408.90000000000003,
           "hx": 577.25,
           "hy": 529.15,
           "homeIndex": 25,
@@ -26,24 +26,24 @@
         },
         {
           "pieceId": "yellow3",
-          "index": 39,
-          "x": 312.6999999999999,
-          "y": 697.5,
+          "index": -1,
+          "x": 529.15,
+          "y": 577.25,
           "hx": 529.15,
           "hy": 577.25,
           "homeIndex": 25,
-          "pieceState": "Active",
+          "pieceState": "Inactive",
           "pieceType": "Yellow"
         },
         {
           "pieceId": "yellow4",
-          "index": -1,
-          "x": 625.35,
-          "y": 577.25,
+          "index": 42,
+          "x": 312.70000000000005,
+          "y": 553.2,
           "hx": 625.35,
           "hy": 577.25,
           "homeIndex": 25,
-          "pieceState": "Inactive",
+          "pieceState": "Active",
           "pieceType": "Yellow"
         }
       ],
@@ -89,6 +89,9 @@
           "index": 50,
           "x": 24.099999999999966,
           "y": 409.5,
+          "hx": 192.45,
+          "hy": 577.25,
+          "homeIndex": 38,
           "pieceState": "Active",
           "pieceType": "Green"
         }
@@ -148,8 +151,8 @@
       "pieces": [
         {
           "pieceId": "blue1",
-          "index": 20,
-          "x": 505.1,
+          "index": 21,
+          "x": 553.2,
           "y": 312.70000000000005,
           "hx": 529.15,
           "hy": 144.35,
@@ -159,9 +162,9 @@
         },
         {
           "pieceId": "blue3",
-          "index": 59,
-          "x": 360.79999999999995,
-          "y": 120.30000000000008,
+          "index": 10,
+          "x": 312.70000000000005,
+          "y": 72.2,
           "hx": 577.25,
           "hy": 192.45,
           "homeIndex": 12,
@@ -170,21 +173,24 @@
         },
         {
           "pieceId": "blue4",
-          "index": 14,
-          "x": 408.9,
-          "y": 72.2,
+          "index": -1,
+          "x": 577.25,
+          "y": 96.25,
           "hx": 577.25,
           "hy": 96.25,
           "homeIndex": 12,
-          "pieceState": "Active",
+          "pieceState": "Inactive",
           "pieceType": "Blue"
         },
         {
           "pieceId": "blue2",
-          "index": 16,
-          "x": 408.9,
-          "y": 168.4,
-          "pieceState": "Active",
+          "index": -1,
+          "x": 625.35,
+          "y": 144.35,
+          "hx": 625.35,
+          "hy": 144.35,
+          "homeIndex": 12,
+          "pieceState": "Inactive",
           "pieceType": "Blue"
         }
       ],
@@ -194,14 +200,14 @@
   "dice": [
     {
       "dieId": "die1",
-      "dieValue": 5,
+      "dieValue": 0,
       "selected": false
     },
     {
       "dieId": "die2",
-      "dieValue": 4,
+      "dieValue": 0,
       "selected": false
     }
   ],
-  "selectedPieceId": null
+  "selectedPieceId": "yellow4"
 }

@@ -21,6 +21,7 @@ export class Piece extends Phaser.GameObjects.Sprite {
     homeX: number
     homeY: number
     homeStartIndex: number
+    text: Phaser.GameObjects.Text
     
     constructor(scene: Phaser.Scene, x: number, y: number, homeX: number, homeY: number, index: number, homeIndex: number, startIndex: number, pieceType: any, texture: string, homeStartIndex: number){
         super(scene, x, y, texture);
@@ -40,6 +41,11 @@ export class Piece extends Phaser.GameObjects.Sprite {
         this.on('pointerdown', (pointer) => {
           this.scene.events.emit('pieceSelected', this.pieceId)
         });
+        this.text = this.scene.add.text(x, y, this.pieceId, { font: "bold 12px Arial", fill: "#000000" })
+        this.text.setAlign('center')
+        this.text.setVisible(false)
+        //this.setBlendMode(Phaser.BlendModes.MULTIPLY)
+        
         
     }
 
@@ -176,12 +182,13 @@ export class Piece extends Phaser.GameObjects.Sprite {
         }
         let pathFollower = new PathFollower(this, config)
         this.moving = true
-       
+
         scene.tweens.add({
           targets: pathFollower,
           t: 1,
           ease: 'Linear',
-          duration: 1000,
+          duration: 1500,
+          totalDuration: 2,
           repeat: 0,
           yoyo: false
         }).on('complete', (tween, targets) => {
@@ -190,13 +197,13 @@ export class Piece extends Phaser.GameObjects.Sprite {
           this.scene.events.emit('pieceMovementCompleted', this.pieceId, this.index)
           if (this.pieceState === PieceState.Exited){
             this.scene.events.emit('pieceExited', this.pieceId)
+            this.text.setVisible(false)
             console.log(this.x + ", " + this.y + ", " + this.index)
           }
         });
     }
 
     movePieceTo(x: number, y: number): void{
-        console.log("Moving to new pos")
         let config = {
           speed: 400,
           rotateToTarget: true
@@ -330,6 +337,10 @@ export class Piece extends Phaser.GameObjects.Sprite {
       this.index = -1
       this.becomeInActive()
       this.movePieceTo(this.homeX, this.homeY)
+    }
+
+    indexIsBetween(index1: number, index2: number): boolean {
+      return (this.index > index1) && (this.index < index2)
     }
 
     updatePiece(config: PPiece): void {

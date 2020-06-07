@@ -1,228 +1,20 @@
 import {Piece} from './piece'
 import {Player} from './player'
 import {ActivePath} from "./activePath"
-import {PPlayer} from './persistence/ludo'
 
-
-export class AIPlayer implements Player {
-    playerName: string
-    pieces: Array<Piece>
-    exitedPieces: Array<Piece>
-    scene: Phaser.Scene
-    group: Phaser.Physics.Arcade.Group
-    selectedPiece: Piece
+export class AIPlayer extends Player {
+    opposingPlayers: Array<Player>
 
     constructor(playerName: string, scene: Phaser.Scene) {
-        this.playerName = playerName
-        this.scene = scene
-        this.group =this.scene.physics.add.group({})
-        this.scene.events.on('pieceSelected', this.pieceSelected, this);
-        this.scene.events.on('pieceExited', this.destroyPiece, this);
-        this.selectedPiece = null
-        this.pieces = new Array<Piece>()
-        this.exitedPieces = new Array<Piece>()
-    }
-
-    addPieces(pieces: Array<Piece>): void {
-        for (let piece of pieces){
-            this.pieces.push(piece)
-        }
-        this.group.addMultiple(pieces)
-    }
-
-    addPiece(piece: Piece): void {
-        this.pieces.push(piece)
-        this.group.add(piece)
-    }
-
-    pieceSelected(pieceId: string): void {
-        for (let piece of this.pieces) {
-            if (piece.pieceId === pieceId && this.group.contains(piece)){
-                //console.log("Piece " + pieceId + " has been selected")
-                piece.tint = 0x808080;
-                
-                if (this.selectedPiece != null && this.selectedPiece != piece) {
-                    this.selectedPiece.clearTint()
-                }
-                this.selectedPiece = piece
-                break
-            }
-        }
-    }
-
-    moveSelectedPiece(moveBy: number): boolean {
-        if (this.selectedPiece != null && !this.selectedPiece.isMoving()) {
-            this.selectedPiece.move(moveBy)
-            return true;
-        }else {
-            return false
-        }
-    }
-
-    destroyPiece(pieceId: string): void {
-        let indexOf = -1
-        for (let piece of this.pieces) {
-            if (piece.pieceId === pieceId) {
-                indexOf = this.pieces.indexOf(piece)
-                piece.setVisible(false)
-                this.exitedPieces.push(piece)
-                if (indexOf >= 0) {
-                    console.log("Removing piece: " + pieceId)
-                    this.pieces.splice(indexOf, 1);
-                    break
-                }
-            }
-        }
-    }
-
-    setPieceDraggable(): void {
-        for (let piece of this.pieces) {
-            piece.setDraggable()
-        }
-    }
-
-    hasActivePieces(): boolean {
-        for (let piece of this.pieces) {
-            if (piece.isActive()){
-                return true
-            }
-        }
-        return false;
-    }
-
-    hasJustActivePieces(): boolean {
-        for (let piece of this.pieces) {
-            if (piece.isNotActive() || piece.isOnHomePath()){
-                return false
-            }
-        }
-        return true;
-    }
-
-    hasInActivePieces(): boolean {
-        for (let piece of this.pieces) {
-            if (piece.isInActive()){
-                return true
-            }
-        }
-        return false;
-    }
-
-    hasNoActivePieces(): boolean {
-        for (let piece of this.pieces) {
-            if (piece.isActive()){
-                return false
-            }
-        }
-        return true;
-    }
-
-    hasExactlyOneActiveAndAtLeastOneHomePiece(): boolean {
-        let activePieceCount = 0;
-        for (let piece of this.pieces) {
-            if (piece.isActive() || piece.isOnHomePath()){
-                ++activePieceCount
-                if (activePieceCount > 1){
-                    break
-                }
-            }
-        }
-        return (activePieceCount > 1);
-    }
-
-    allPiecesAreInactive(): boolean {
-        for (let piece of this.pieces) {
-            if (piece.isNotActive()){
-                return false
-            }
-        }
-        return true;
-    }
-
-    hasExactlyOneActivePiece(): boolean {
-        let activePieceCount = 0;
-        for (let piece of this.pieces) {
-            if (piece.isActive()){
-                ++activePieceCount
-                if (activePieceCount > 1){
-                    break
-                }
-            }
-        }
-        return (activePieceCount === 1);
-    }
-
-    hasExactlyOneInactivePiece(): boolean {
-        let inactivePieceCount = 0;
-        for (let piece of this.pieces) {
-            if (piece.isInActive()){
-                ++inactivePieceCount
-                if (inactivePieceCount > 1){
-                    break
-                }
-            }
-        }
-        return (inactivePieceCount === 1);
-    }
-
-    hasSelectedPiece(): boolean {
-        return this.selectedPiece !== null
-    }
-
-    selectedPieceIsActive(): boolean {
-        return this.selectedPiece.isActive()
-    }
-
-    selectedPieceIsNotActive(): boolean {
-        return this.selectedPiece.isNotActive()
-    }
-
-    hasHomePieces(): boolean {
-        for (let piece of this.pieces) {
-            if (piece.isOnHomePath()){
-                return true;
-            }
-        }
-        return false
-    }
-
-    getFirstActivePiece(): Piece {
-        for (let piece of this.pieces) {
-            if (piece.isActive()){
-                return piece
-            }
-        }
-        return null
-    }
-
-    doesNotBelong(piece: Piece): boolean {
-        return this.group.contains(piece) === false
-    }
-
-    bringPiecesToTop(): void {
-        this.group.getChildren().forEach((child) => {
-            this.scene.children.bringToTop(child)
-        })
-    }
-
-    hasNoPiecesLeft(): boolean {
-        let count = 0
-        for (let piece of this.pieces) {
-            if (piece.isActive() || piece.isInActive() || piece.isOnHomePath()){
-                ++ count
-                if (count > 0){
-                    break
-                }
-            }
-        }
-        return count === 0
+       super(playerName, scene)
+        this.opposingPlayers = new Array<Player>()
     }
 
     playerRollDice(): void {
         let value1 =  Phaser.Math.Between(1, 6)
         let value2 =  Phaser.Math.Between(1, 6)
-        //value1 = 1
-        //value2 = 1
+        //value1 = 6
+        //value2 = 2
         setTimeout(()=> {
             this.scene.scene.get('SideScene').events.emit('rollDice', value1, value2)
         }, 1000);
@@ -233,16 +25,29 @@ export class AIPlayer implements Player {
             activePaths = activePaths.filter((path)=> {
                 return path.isValid && path.activePiece !== null
             })
-            let randPathIndex = Phaser.Math.Between(0, activePaths.length - 1)
-            if (randPathIndex < 0)
-                randPathIndex = 0
+            activePaths.sort((p1, p2) => (p1.projectedIndex < p2.projectedIndex) ? 1 : -1)
+            //activePaths.forEach((path) => console.log(path.pathToString()))
 
+            let randPathIndex = this.getRandomIndex(activePaths)
+            let peckingPaths = this.getPeckingPaths(activePaths)
+            let passEnemy = this.getPassEnemyPaths(activePaths)
+            let enemyAlong = this.getEnemiesAlongPaths(activePaths)
+            
             let chosenPath = activePaths[randPathIndex]
+            if (peckingPaths.length > 0){
+                console.log("Choosing pecking path...............")
+                chosenPath = peckingPaths[0]
+            }else if (passEnemy.length > 0){
+                console.log("Choosing pass enemy path...............")
+                chosenPath = passEnemy[0]
+            }else if (enemyAlong.length > 0){
+                console.log("Choosing enemy along path...............")
+                chosenPath = enemyAlong[0]
+            }
             let chosenPiece = chosenPath.activePiece
             this.determineDieId(chosenPath)
             chosenPiece.move(chosenPath.moveBy)
         }, 1000);
-        
     }
 
     determineDieId(path: ActivePath): void {
@@ -254,7 +59,6 @@ export class AIPlayer implements Player {
             //this.scene.registry.set('die2', 0)
             this.scene.scene.get('SideScene').events.emit('resetBothDice')
         }else {
-           
             if (path.moveBy === dieOneValue){
                 //this.scene.registry.set('die1', 0)
                 this.scene.scene.get('SideScene').events.emit('resetSingleDie', 'die1')
@@ -266,8 +70,6 @@ export class AIPlayer implements Player {
         }
     }
 
-    
-
     isVadidPath(currentPath: ActivePath, allPaths: Array<ActivePath>) {
         for (let path of allPaths){
           if (path.pathToString() === currentPath.pathToString()){
@@ -275,5 +77,148 @@ export class AIPlayer implements Player {
           }
         }
         return false
-      }
+    }
+
+    addOpposingPlayer(player: Player): void {
+        if (this.playerName !== player.playerName){
+            //console.log("PlayerName: " + this.playerName + " OpposingPlayer " + player.playerName)  
+            this.opposingPlayers.push(player)
+        }
+        
+    }
+    getPeckingPaths(activePaths: Array<ActivePath>): Array<ActivePath> {
+        let peckingPaths = [] 
+        for (let player of this.opposingPlayers){
+            peckingPaths = peckingPaths.concat(this.determinePeckingSituations(player, activePaths))
+        }
+        return peckingPaths
+    }
+
+    getEnemiesAlongPaths(activePaths: Array<ActivePath>): Array<ActivePath> {
+        let ap = activePaths.concat()
+        let enemyAlongPath = []
+        
+        for (let opposingPlayer of this.opposingPlayers){
+            let activePieces = this.getAllInActivePiece()
+            enemyAlongPath = enemyAlongPath.concat(opposingPlayer.getPiecesAlongHomeIndex(activePieces)) 
+        }
+
+        if (enemyAlongPath.length > 0){
+            let groupedMap = this.groupByPieceId(enemyAlongPath)
+            
+            groupedMap = this.groupByLeastValues(groupedMap)
+            //console.log(groupedMap)
+            let alongPaths = activePaths.filter((path) => {
+                return path.filterByJsonInActivePieces(groupedMap) === true
+            })
+            return alongPaths
+        }else {
+            //console.log("No enemy along home paths...")
+            return []
+        }
+    }
+
+    getPassEnemyPaths(activePaths: Array<ActivePath>): Array<ActivePath> {
+        let ap = activePaths.concat()
+        let passEnemyPath = []
+        
+        for (let opposingPlayer of this.opposingPlayers){
+            let activePieces = this.getAllActivePiece()
+            passEnemyPath = passEnemyPath.concat(opposingPlayer.getPiecesBetweenIndex(activePieces)) 
+        }
+
+        if (passEnemyPath.length > 0){
+            let groupedMap = this.groupByPieceId(passEnemyPath)
+            groupedMap = this.groupByLeastValues(groupedMap)
+            //console.log(groupedMap)
+            let enemyPaths = activePaths.filter((path) => {
+                return path.filterByJson(groupedMap) === true
+            })
+
+            //enemyPaths.forEach((path) => console.log(path.pathToString()))
+            //console.log(enemyPaths)
+            return enemyPaths
+        }else {
+            //console.log("No pass enemy paths...")
+            return []
+        }
+    }
+
+    groupByPieceId(jsonPaths: any): any {
+        return jsonPaths.reduce(
+            (entryMap, e) => entryMap.set(e.playerPieceId, [...entryMap.get(e.playerPieceId)||[], e]),
+            new Map())
+    }
+
+    groupByLeastValues(jsonPath: any): any {
+        let minArr = []
+        jsonPath.forEach((path)=> {
+             path = path.reduce(function (first, next) {
+                if (first.opposingPieceIndex < next.opposingPieceIndex){
+                    return first
+                }else {
+                    return next
+                }
+             })
+             minArr = minArr.concat(path)
+          })
+        return minArr
+          
+     }
+
+    sortByOpposingIndex(jsonPath: any): any {
+       jsonPath.forEach((path)=> {
+            path.sort((j1, j2) => (j1["opposingPieceIndex"] > j2["opposingPieceIndex"]) ? 1 : -1) 
+         })
+    }
+
+    
+    determineEnemyPassSituations(activePaths: Array<ActivePath>, jsonPath: any): ActivePath[]{
+        return activePaths.filter((path)=> {
+            console.log(path.projectedIndex + " < " + jsonPath['opposingPieceIndex'] + " " + path.activePiece.pieceId)
+            return path.activePiece.pieceId === jsonPath['playerPieceId'] && path.projectedIndex < jsonPath['opposingPieceIndex']
+        })
+
+    }
+
+    determinePeckingSituations(player: Player, allPaths: Array<ActivePath>): Array<ActivePath> {
+        let opposingPieces = player.getAllActivePiece()
+        let peckingPaths = []
+        for (let piece of opposingPieces){
+            peckingPaths = peckingPaths.concat(this.peckingSituations(piece, allPaths))
+        }
+        return peckingPaths
+    }
+
+    peckingSituations(piece: Piece, allPaths: Array<ActivePath>): Array<ActivePath> {
+        let peckingPaths = allPaths.filter((path) => {
+            return path.projectedIndex === piece.index
+        })
+        peckingPaths.map((path) => {
+            path.rating = 10
+        })
+        return peckingPaths
+    }
+
+    getRandomIndex(activePaths: Array<ActivePath>): number {
+        let randPathIndex = Phaser.Math.Between(0, activePaths.length - 1)
+        if (randPathIndex < 0){
+            randPathIndex = 0
+        }
+        return randPathIndex       
+    }
+
+    getOpposingActivePieces(): Piece[] {
+        let pieces = []
+        for (let player of this.opposingPlayers){
+            pieces = pieces.concat(player.getAllActivePiece())
+        }
+        return pieces
+    }
+
+    getAllActivePaths(activePaths: ActivePath[]): ActivePath[] {
+        return activePaths.filter((path)=> {
+            return path.activePiece.isActive()
+        })
+    }
 }

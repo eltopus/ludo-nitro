@@ -35,7 +35,7 @@ export class SideScene extends Phaser.Scene {
     graphics.lineStyle(4, 0xffffff, 1);
     graphics.strokeRoundedRect(723, 1, 300, 721, 32);
     graphics.strokeRoundedRect(723, 300, 300, 120, 32);
-    let rollDice = this.add.sprite(868, 500, 'rollDice')
+    let rollDice = this.add.sprite(950, 500, 'rollDice')
     rollDice.setScale(0.2, 0.2)
     rollDice.setInteractive()
     let data = this.cache.json.get('data');
@@ -55,7 +55,7 @@ export class SideScene extends Phaser.Scene {
        let value1 =  Phaser.Math.Between(1, 6)
        let value2 =  Phaser.Math.Between(1, 6)
        value1 = 6
-       value2 = 4
+       value2 = 6
        this.emitter.emmitDiceRoll(value1, value2)
      });
 

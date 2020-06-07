@@ -1,6 +1,7 @@
 import {Player} from './player'
 import { ActivePath } from './activePath'
 import { Piece } from './piece'
+import { AIPlayer } from './aiPlayer'
 export class Rule {
     players: Array<Player>
     currentPlayer: Player
@@ -20,6 +21,12 @@ export class Rule {
         }
     }
 
+    addOpposingPlayerstoAI(opposingPlayer: Player): void {
+        for (let player of this.players){
+            player.addOpposingPlayer(opposingPlayer)
+        }
+    }
+
     getNextPlayer(): Player {
         this.currentPlayer = this.players.pop()
         this.players.unshift(this.currentPlayer)
@@ -31,11 +38,11 @@ export class Rule {
 
     evaluateDiceRollCompletion(): Array<ActivePath> {
         if (this.shouldPlayBothDice()){
-            //console.log("Play both after dice roll")
+            console.log("Play both after dice roll")
              return this.generateActivePathsForBothDice()
         }
         else {
-            //console.log("Play single after dice roll")
+            console.log("Play single after dice roll")
             return this.generateActivePathsForEachAndBothDice()
         }
     }
@@ -52,58 +59,63 @@ export class Rule {
     }
 
     shouldPlayBothDice(): boolean {
-        console.log(this.canPutPieceOnHomePath())
         if (this.currentPlayer.allPiecesAreInactive() && (!this.doubleSixIsRolled() || !this.atLeastOneSixIsRolled())){
-            console.log("A2 plath both")
+            //console.log("A2 plath both")
             return true
         }else {
             if (this.currentPlayer.hasActivePieces()){
                 if (this.currentPlayer.hasExactlyOneActivePiece()){
                     if (this.atLeastOneSixIsRolled() || this.doubleSixIsRolled()){
                         if (this.currentPlayer.hasInActivePieces()){
+                            
                             if (this.currentPlayer.hasHomePieces()){
                                 if (this.homePiecesCanUseOneOrMoreDice()){
                                     return false
                                 }else {
                                     if (this.currentPlayer.hasInActivePieces()){
-                                        console.log("B2 Split dice")
+                                        //console.log("B2 Split dice")
                                         return false
                                     }else {
-                                        console.log("C2 Play both")
+                                        //console.log("C2 Play both")
                                         return true
                                     }
-                                    
                                 }
                             }else {
 
                             }
                         }else {
+                            
                             if (this.homePiecesCanUseOneOrMoreDice()){
-                                console.log("D2 split dice")
+                                //console.log("D2 split dice")
                                 return false
                             }else {
-                                console.log("E2 Play both")
-                                return true
+                                if (this.activePieceCanUseOneOrMoreDice()){
+                                    //console.log("X2 split dice")
+                                    return false
+                                }else {
+                                   //console.log("E2 Play both")
+                                    return true 
+                                }
                             }
                         }
 
                     }else {
                         if (this.activePieceCanUseOneOrMoreDice()){
                             if (this.canPutPieceOnHomePath()){
-                                console.log("F2 split dice")
+                                //console.log("F2 split dice")
                                 return false
                             }else {
                                 if (this.homePiecesCanUseOneOrMoreDice()){
-                                    console.log("G2 split dice")
+                                    //console.log("G2 split dice")
                                     return false
                                 }else {
-                                    console.log("H2 Play both")
+                                    //console.log("H2 Play both")
                                     return true
                                 }
                                
                             }
                         }else {
-                            console.log("I2 plath both")
+                            //console.log("I2 plath both")
                             return true
                         }
                     }
@@ -117,15 +129,15 @@ export class Rule {
                     if (this.homePiecesCanUseOneOrMoreDice()){
                         if (this.currentPlayer.hasInActivePieces()){
                             if (this.atLeastOneSixIsRolled() || this.doubleSixIsRolled()){
-                                console.log("J2 split dice")
+                                //console.log("J2 split dice")
                                 return false
                             }else {
-                                console.log("K2 Play both")
+                                //console.log("K2 Play both")
                                 return true
                             }
                         }
                     }else {
-                        console.log("L2 Play both")
+                        //console.log("L2 Play both")
                         return true
                     }
 
@@ -133,16 +145,16 @@ export class Rule {
                     if (this.currentPlayer.hasInActivePieces()){
                         if (this.currentPlayer.hasExactlyOneInactivePiece()){
                             if (this.doubleSixIsRolled() || this.atLeastOneSixIsRolled()){
-                                console.log("M2 Play both")
+                                //console.log("M2 Play both")
                                 return true
                             }
                         }else {
-                            console.log("N2 Split dice") 
+                            //console.log("N2 Split dice") 
                             return false
                         }
                         
                     }else {
-                        console.log("Not sure")
+                        //console.log("Not sure")
                     }
                     
                    return true
@@ -321,7 +333,7 @@ export class Rule {
 
             nonActivePieveMovebys = this.arrayIntersection(activePieveMovebys, nonActivePieveMovebys)
             if (activePieveMovebys.toString() === nonActivePieveMovebys.toString()) {
-                console.log("Identical. Removing nothing...")
+                //console.log("Identical. Removing nothing...")
                 if (this.pathContainsDoubleSixValue(paths)){
                     return this.removePathByInactivePiecesWithoutDieValueSix(paths)
                 }else {
